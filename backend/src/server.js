@@ -7,6 +7,8 @@ import { functions, inngest } from "./config/inngest.js";
 import { ENV } from "./config/env.js";
 import { connectDB } from "./config/db.js";
 
+import adminRoutes from "./routes/admin.routes.js";
+
 const app = express();
 
 const __dirname = path.resolve();
@@ -23,7 +25,6 @@ app.post("/api/webhooks/clerk", async (req, res) => {
       name: `clerk.${event.type}`,
       data: event.data,
     });
-
     res.status(200).json({ received: true });
   } catch (error) {
     console.error("Error sending event to Inngest:", error);
@@ -34,6 +35,8 @@ app.post("/api/webhooks/clerk", async (req, res) => {
 app.use("/api/inngest", serve({client:inngest, functions}));
 
 app.use(clerkMiddleware());
+
+app.use("/api/admin", adminRoutes);
 
 app.get("/api/health", (req, res) => {
     res.status(200).json({ message: "Success" });

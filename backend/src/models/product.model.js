@@ -17,51 +17,32 @@ const productSchema = new mongoose.Schema({
    stock:{
     type: Number,
     required: true,
-    min: 0
-   },
-   image:{
-    type: String,
-    required: true
+    min: 0,
+    default: 0
    },
    category:{
     type: String,
     required: true
    },
-   brand:{
+   image:{
     type: String,
     required: true
    },
-   color:{
-    type: String,
-    required: true
-   },
-   size:{
-    type: String,
-    required: true
-   },
-   rating:{
+   averageRating:{
     type: Number,
-    required: true
+    min: 0,
+    max: 5,
+    default: 0
    },
-   numReviews:{
+   totalReviews:{
     type: Number,
-    required: true
-   },
-   user:{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
-   },
-   createdAt:{
-    type: Date,
-    required: true
-   },
-   updatedAt:{
-    type: Date,
-    required: true
-   }     
+    min: 0,
+    default: 0
+   }    
 },
 {
     timestamps: true
 }
 );
+
+export const Product = mongoose.model("Product", productSchema);
