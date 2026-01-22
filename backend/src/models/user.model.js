@@ -47,13 +47,17 @@ const userSchema = new mongoose.Schema(
             unique: true,
             required: true,
         },
-        address: [addressSchema],
+        stripeCustomerId: {
+            type: String,
+            default: ""
+        },
+        addresses: [addressSchema],
         wishlist: [
             {
                 type: mongoose.Schema.Types.ObjectId,
                 ref: "Product",
-            }
-        ]    
+            },
+        ],    
     },
     {
         timestamps: true,
