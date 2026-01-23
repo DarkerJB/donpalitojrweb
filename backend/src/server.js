@@ -44,14 +44,14 @@ app.use("/api/inngest", serve({client:inngest, functions}));
 
 app.use(clerkMiddleware());
 
+app.use(cors({origin:ENV.CLIENT_URL, credentials:true}));
+
 app.use("/api/admin", adminRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/reviews", reviewRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/cart", cartRoutes);
-
-app.use(cors({origin:ENV.CLIENT_URL, credentials:true}));
 
 app.get("/api/health", (req, res) => {
     res.status(200).json({ message: "Success" });
