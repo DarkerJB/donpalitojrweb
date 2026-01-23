@@ -9,6 +9,7 @@ import { connectDB } from "./config/db.js";
 
 import adminRoutes from "./routes/admin.routes.js";
 import userRoutes from "./routes/user.routes.js";
+import orderRoutes from "./routes/order.routes.js"
 
 const app = express();
 
@@ -39,6 +40,7 @@ app.use(clerkMiddleware());
 
 app.use("/api/admin", adminRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/orders", orderRoutes)
 
 app.get("/api/health", (req, res) => {
     res.status(200).json({ message: "Success" });
