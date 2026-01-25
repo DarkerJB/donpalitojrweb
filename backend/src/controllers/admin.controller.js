@@ -128,7 +128,7 @@ export async function updateOrderStatus (req, res) {
 export async function getAllCustomers (_, res) {
     try {
         const customers = await User.find().sort({createdAt: -1});
-        return res.status(200).json({customers});
+        return res.status(200).json({ customers});
     } catch (error) {
         console.error("Error in getAllCustomers controller", error);
         return res.status(500).json({message: "Internal server error"});
@@ -150,15 +150,13 @@ export async function getDashboardStats (_, res) {
         const totalRevenue = revenueResult[0]?.total || 0;
         const totalCustomers = await User.countDocuments();
         const totalProducts = await Product.countDocuments();
-
-        const stats = {
-            totalOrders,
-            totalRevenue,
-            totalCustomers,
-            totalProducts
-        };
         
-        return res.status(200).json({stats});
+        return res.status(200).json({
+            totalRevenue,
+            totalOrders,
+            totalCustomers,
+            totalProducts,
+        });
 
     } catch (error) {
         console.error("Error in getDashboardStats controller", error);
