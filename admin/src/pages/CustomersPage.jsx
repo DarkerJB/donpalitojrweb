@@ -3,7 +3,7 @@ import { customerApi } from "../lib/api";
 import { formatDate } from "../lib/utils";
 
 function CustomersPage() {
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError, error } = useQuery({
     queryKey: ["customers"],
     queryFn: customerApi.getAll,
   });
@@ -11,7 +11,7 @@ function CustomersPage() {
   const customers = data?.customers || [];
 
   return (
-    <div className="spacey-6">
+    <div className="space-y-6">
       {/* HEADER */}
       <div>
         <h1 className="text-2xl font-bold">Clientes</h1>
@@ -26,6 +26,11 @@ function CustomersPage() {
           {isLoading ? (
             <div className="flex justify-center py-12">
               <span className="loading loading-spinner loading-lg" />
+            </div>
+          ) : isError ? (
+            <div className="text-center py-12 text-error">
+              <p className="text-xl font-semibold mb-2">Error al cargar los clientes</p>
+              <p className="text-sm">{error?.message ?? "Intente de nuevo más tarde"}</p>
             </div>
           ) : customers.length === 0 ? (
             <div className="text-center py-12 text-base-content/60">
