@@ -125,7 +125,7 @@ export async function updateOrderStatus (req, res) {
         order.status = status;
 
         if (status === "paid" && !order.paidAt) {
-            order.shippedAt = new Date();
+            order.paidAt = new Date();
         }
 
         if (status === "delivered" && !order.deliveredAt) {

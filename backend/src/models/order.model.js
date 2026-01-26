@@ -70,10 +70,10 @@ const orderSchema = new mongoose.Schema({
         enum: ["pending", "paid", "delivered"],
         default: "pending"
     },
-    deliveredAt: {
+    paidAt: {
         type: Date,
     },
-    shippedAt: {
+    deliveredAt: {
         type: Date,
     },
 },
