@@ -96,6 +96,7 @@ const ProductDetailScreen = () => {
             horizontal
             pagingEnabled
             showsHorizontalScrollIndicator={false}
+            scrollEventThrottle={16}
             onScroll={(e) => {
               const index = Math.round(e.nativeEvent.contentOffset.x / width);
               setSelectedImageIndex(index);
@@ -213,13 +214,13 @@ const ProductDetailScreen = () => {
             </View>
 
             {quantity >= product.stock && inStock && (
-              <Text className="text-orange-500 text-sm mt-2">Superaste la cantidad máxima disponible</Text>
+              <Text className="text-orange-500 text-sm mt-2">Seleccionaste la cantidad máxima disponible</Text>
             )}
           </View>
 
           {/* Description */}
           <View className="mb-8">
-            <Text className="text-text-primary text-lg font-bold mb-3">Description</Text>
+            <Text className="text-text-primary text-lg font-bold mb-3">Descripción</Text>
             <Text className="text-text-secondary text-base leading-6">{product.description}</Text>
           </View>
         </View>
@@ -231,7 +232,7 @@ const ProductDetailScreen = () => {
           <View className="flex-1">
             <Text className="text-text-primary text-sm font-bold mb-1">Total</Text>
             <Text className="text-brand-accent text-2xl font-bold">
-              ${(product.price * quantity)}
+              ${(product.price * quantity).toLocaleString()} COP
             </Text>
           </View>
           <TouchableOpacity
