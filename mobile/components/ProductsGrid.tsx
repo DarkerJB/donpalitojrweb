@@ -34,7 +34,10 @@ const ProductsGrid = ({products, isLoading, isError}: ProductsGridProps) => {
             className="bg-ui-surface/55 rounded-3xl overflow-hidden mb-3"
             style={{ width: "48%" }}
             activeOpacity={0.8}
-            //onPress={() => router.push(`/product/${product._id}`)}
+            onPress={() => router.push({
+                pathname: "/product/[id]",
+                params: { id: product._id }
+            })}
         >
             {/* IMAGE */}
             <View className="relative">
@@ -55,7 +58,7 @@ const ProductsGrid = ({products, isLoading, isError}: ProductsGridProps) => {
                     <Ionicons
                         name={isInWishlist(product._id) ? "heart" : "heart-outline"}
                         size={18}
-                        color={isInWishlist(product._id) ? "#FF6B6B" : "#333333"}
+                        color={isInWishlist(product._id) ? "#C34928" : "#5B3A29"}
                     />
                     )}
                 </TouchableOpacity>
@@ -78,7 +81,7 @@ const ProductsGrid = ({products, isLoading, isError}: ProductsGridProps) => {
                 <View className="flex-row items-center justify-between">
                     <Text className="text-brand-accent font-bold text-lg">${product.price} COP</Text>
                     <TouchableOpacity
-                        className="bg-brand-secondary/60 rounded-full w-8 h-8 items-center justify-center"
+                        className="bg-brand-secondary/45 rounded-full w-8 h-8 items-center justify-center"
                         activeOpacity={0.7}
                         onPress={() => handleAddToCart(product._id, product.name)}
                         disabled={isAddingToCart}

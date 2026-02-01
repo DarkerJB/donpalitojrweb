@@ -69,7 +69,7 @@ const ShopScreen = () => {
           </View>
           {/* SEARCH BAR */}
           <View
-            className="bg-ui-surface flex-row items-center px-3 py-2 rounded-2xl border border-ui-border"
+            className="bg-ui-surface flex-row items-center px-3 py-2 rounded-2xl border border-brand-secondary/20"
             style={{
               shadowColor: "#000",
               shadowOpacity: 0.06,
