@@ -60,7 +60,16 @@ function AddressesScreen() {
   const handleDeleteAddress = (addressId: string, label: string) => {
     Alert.alert("Eliminar Dirección", `¿Estás seguro de eliminar la dirección: ${label}?`, [
       { text: "Cancelar", style: "cancel" },
-      { text: "Eliminar", style: "destructive", onPress: () => deleteAddress(addressId) },
+      { 
+        text: "Eliminar", 
+        style: "destructive", 
+        onPress: () => deleteAddress(addressId , {
+          onSuccess: () => Alert.alert("Éxito", "Dirección eliminada exitosamente"),
+          onError: (error: any) =>
+            Alert.alert("Error", error?.response?.data?.error || "Error al eliminar la dirección"),
+          }
+        ),
+      },
     ]);
   };
 
