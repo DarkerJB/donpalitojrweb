@@ -1,4 +1,8 @@
 import SafeScreen from "@/components/SafeScreen";
+import { Header } from "@/components/Header";
+import { ErrorState } from "@/components/ErrorState";
+import LoadingState from "@/components/LoadingState";
+import { EmptyState } from "@/components/EmptyState";
 import { useAddresses } from "@/hooks/useAddresses";
 import useCart from "@/hooks/useCart";
 import { useApi } from "@/lib/api";
@@ -193,137 +197,140 @@ const CartScreen = () => {
     }
   };
 
-  if (isLoading && !cart) {
-    return <LoadingUI />;
+  if (isLoading) {
+    return <SafeScreen><LoadingState /></SafeScreen>;
   }
 
-  if (isError && !cart) {
-    return <ErrorUI />;
-  }
-
-  if (!isError && cartItems.length === 0) {
-    return <EmptyUI />;
+  if (isError) {
+    return <SafeScreen><ErrorState /></SafeScreen>;
   }
 
   return (
     <SafeScreen>
-      <Text className="px-6 pb-5 text-brand-secondary text-3xl font-bold tracking-tight">Carrito</Text>
+      <Header header="Carrito" />
+      {cartItems.length === 0 ? (
+        <EmptyState
+          icon="cart-outline"
+          title="Tu carrito está vacío"
+          description="Agrega productos para comenzar"
+        />
+      ) : (
+        <>
+          <ScrollView
+            className="flex-1"
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{ paddingBottom: 240 }}
+          >
+            <View className="px-6 gap-2">
+              {cartItems.map((item, index) => (
+                <View key={item._id} className="bg-ui-surface/55 rounded-3xl overflow-hidden ">
+                  <View className="p-4 flex-row">
+                    {/* product image */}
+                    <View className="relative">
+                      <View className="flex-1"
+                          style={{
+                            width: 100,
+                            height: 100,
+                            borderRadius: 16,
+                            overflow: 'hidden',         
+                            backgroundColor: '#FFFFFF'  
+                          }}  
+                      >
+                        <Image
+                            source={item.product.images[0]}
+                            style={{ width: '100%', height: '100%' }}
+                            contentFit="contain"
+                        />
+                      </View>
+                      <View className="absolute top-2 right-2 bg-brand-primary rounded-full px-2 py-0.5">
+                        <Text className="text-white text-xs font-bold">×{item.quantity}</Text>
+                      </View>
+                    </View>
 
-      <ScrollView
-        className="flex-1"
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 240 }}
-      >
-        <View className="px-6 gap-2">
-          {cartItems.map((item, index) => (
-            <View key={item._id} className="bg-ui-surface/55 rounded-3xl overflow-hidden ">
-              <View className="p-4 flex-row">
-                {/* product image */}
-                <View className="relative">
-                  <View className="flex-1"
-                      style={{
-                        width: 100,
-                        height: 100,
-                        borderRadius: 16,
-                        overflow: 'hidden',         
-                        backgroundColor: '#FFFFFF'  
-                      }}  
-                  >
-                    <Image
-                        source={item.product.images[0]}
-                        style={{ width: '100%', height: '100%' }}
-                        contentFit="contain"
-                    />
-                  </View>
-                  <View className="absolute top-2 right-2 bg-brand-primary rounded-full px-2 py-0.5">
-                    <Text className="text-white text-xs font-bold">×{item.quantity}</Text>
+                    <View className="flex-1 ml-4 justify-between">
+                      <View>
+                        <Text
+                          className="text-text-primary font-bold text-lg leading-tight"
+                          numberOfLines={2}
+                        >
+                          {item.product.name}
+                        </Text>
+                        <View className="flex-row items-center mt-2">
+                          <Text className="text-brand-accent font-bold text-2xl">
+                            ${(item.product.price * item.quantity)} COP
+                          </Text>
+                        </View>
+                        <View className="flex-row items-center mt-1">
+                          <Text className="text-text-secondary text-sm ml-2">
+                            ${item.product.price} COP unidad
+                          </Text>
+                        </View>
+                      </View>
+
+                      <View className="flex-row items-center mt-3">
+                        <TouchableOpacity
+                          className="bg-brand-secondary/40 rounded-full w-9 h-9 items-center justify-center"
+                          activeOpacity={0.7}
+                          onPress={() => handleQuantityChange(item.product._id, item.quantity, -1)}
+                          disabled={isUpdating}
+                        >
+                          <Ionicons name="remove" size={18} color="#FFFFFF" />
+                        </TouchableOpacity>
+
+                        <View className="mx-4 min-w-[32px] items-center">
+                          <Text className="text-brand-secondary font-bold text-lg">{item.quantity}</Text>
+                        </View>
+
+                        <TouchableOpacity
+                          className="bg-brand-secondary/40 rounded-full w-9 h-9 items-center justify-center"
+                          activeOpacity={0.7}
+                          onPress={() => handleQuantityChange(item.product._id, item.quantity, 1)}
+                          disabled={isUpdating}
+                        >
+                          <Ionicons name="add" size={18} color="#FFFFFF" />
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                          className="ml-auto bg-red-500/10 rounded-full w-9 h-9 items-center justify-center"
+                          activeOpacity={0.7}
+                          onPress={() => handleRemoveItem(item.product._id, item.product.name)}
+                          disabled={isRemoving}
+                        >
+                          <Ionicons name="trash-outline" size={18} color="#EF4444" />
+                        </TouchableOpacity>
+                      </View>
+                    </View>
                   </View>
                 </View>
-
-                <View className="flex-1 ml-4 justify-between">
-                  <View>
-                    <Text
-                      className="text-text-primary font-bold text-lg leading-tight"
-                      numberOfLines={2}
-                    >
-                      {item.product.name}
-                    </Text>
-                    <View className="flex-row items-center mt-2">
-                      <Text className="text-brand-accent font-bold text-2xl">
-                        ${(item.product.price * item.quantity)} COP
-                      </Text>
-                    </View>
-                    <View className="flex-row items-center mt-1">
-                      <Text className="text-text-secondary text-sm ml-2">
-                        ${item.product.price} COP unidad
-                      </Text>
-                    </View>
-                  </View>
-
-                  <View className="flex-row items-center mt-3">
-                    <TouchableOpacity
-                      className="bg-brand-secondary/40 rounded-full w-9 h-9 items-center justify-center"
-                      activeOpacity={0.7}
-                      onPress={() => handleQuantityChange(item.product._id, item.quantity, -1)}
-                      disabled={isUpdating}
-                    >
-                      <Ionicons name="remove" size={18} color="#FFFFFF" />
-                    </TouchableOpacity>
-
-                    <View className="mx-4 min-w-[32px] items-center">
-                      <Text className="text-brand-secondary font-bold text-lg">{item.quantity}</Text>
-                    </View>
-
-                    <TouchableOpacity
-                      className="bg-brand-secondary/40 rounded-full w-9 h-9 items-center justify-center"
-                      activeOpacity={0.7}
-                      onPress={() => handleQuantityChange(item.product._id, item.quantity, 1)}
-                      disabled={isUpdating}
-                    >
-                      <Ionicons name="add" size={18} color="#FFFFFF" />
-                    </TouchableOpacity>
-
-                    <TouchableOpacity
-                      className="ml-auto bg-red-500/10 rounded-full w-9 h-9 items-center justify-center"
-                      activeOpacity={0.7}
-                      onPress={() => handleRemoveItem(item.product._id, item.product.name)}
-                      disabled={isRemoving}
-                    >
-                      <Ionicons name="trash-outline" size={18} color="#EF4444" />
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              </View>
+              ))}
             </View>
-          ))}
-        </View>
 
-        <OrderSummary subtotal={subtotal} shipping={shipping} tax={tax} total={total} />
-      </ScrollView>
-
-      <View
-        className="absolute bottom-0 left-0 right-0 bg-brand-secondary/20 backdrop-blur-xl border-t border-brand-secondary/30 pt-4 pb-16 px-6"
-      >
-        {/* Checkout Button */}
-        <TouchableOpacity
-          className="bg-brand-primary rounded-2xl overflow-hidden"
-          activeOpacity={0.9}
-          onPress={handleCheckout}
-          disabled={paymentLoading}
-        >
-          <View className="py-5 flex-row items-center justify-center">
-            {paymentLoading ? (
-              <ActivityIndicator size="small" color="#5B3A29" />
-            ) : (
-              <>
-                <Text className="text-white font-bold text-lg mr-2">Continuar</Text>
-                <Ionicons name="arrow-forward" size={20} color="#FFFFFF" />
-              </>
-            )}
+            <OrderSummary subtotal={subtotal} shipping={shipping} tax={tax} total={total} />
+          </ScrollView>
+          <View
+            className="absolute bottom-0 left-0 right-0 bg-brand-secondary/20 backdrop-blur-xl border-t border-brand-secondary/30 pt-4 pb-16 px-6"
+          >
+            {/* Checkout Button */}
+            <TouchableOpacity
+              className="bg-brand-primary rounded-2xl overflow-hidden"
+              activeOpacity={0.9}
+              onPress={handleCheckout}
+              disabled={paymentLoading}
+            >
+              <View className="py-5 flex-row items-center justify-center">
+                {paymentLoading ? (
+                  <ActivityIndicator size="small" color="#5B3A29" />
+                ) : (
+                  <>
+                    <Text className="text-white font-bold text-lg mr-2">Continuar</Text>
+                    <Ionicons name="arrow-forward" size={20} color="#FFFFFF" />
+                  </>
+                )}
+              </View>
+            </TouchableOpacity>
           </View>
-        </TouchableOpacity>
-      </View>
-
+        </>
+      )}
       <AddressSelectionModal
         visible={addressModalVisible}
         onClose={() => setAddressModalVisible(false)}
@@ -342,40 +349,3 @@ const CartScreen = () => {
 
 export default CartScreen;
 
-function LoadingUI() {
-  return (
-    <View className="flex-1 items-center justify-center bg-ui-background">
-      <ActivityIndicator size="large" color="#5B3A29" />
-      <Text className="text-text-secondary mt-4">Cargando el Carrito...</Text>
-    </View>
-  );
-}
-
-function ErrorUI() {
-  return (
-    <View className="flex-1 items-center justify-center px-6 bg-ui-background">
-      <Ionicons name="alert-circle-outline" size={64} color="#FF6B6B" />
-      <Text className="text-text-primary font-semibold text-xl mt-4">Error al cargar el carrito</Text>
-      <Text className="text-text-secondary text-center mt-2">
-        Por favor, verifica tu conexión e intenta nuevamente
-      </Text>
-    </View>
-  );
-}
-
-function EmptyUI() {
-  return (
-    <View className="flex-1 bg-ui-background">
-      <View className="px-6 pt-16 pb-5">
-        <Text className="text-brand-secondary text-3xl font-bold tracking-tight">Carrito</Text>
-      </View>
-      <View className="flex-1 items-center justify-center px-6">
-        <Ionicons name="cart-outline" size={80} color="#666" />
-        <Text className="text-text-primary font-semibold text-xl mt-4">Tu carrito está vacío</Text>
-        <Text className="text-text-secondary text-center mt-2">
-          Agrega algunos productos para comenzar
-        </Text>
-      </View>
-    </View>
-  );
-}

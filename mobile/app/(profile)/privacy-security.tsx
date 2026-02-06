@@ -1,4 +1,5 @@
 import SafeScreen from "@/components/SafeScreen";
+import { Header } from "@/components/Header";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useState } from "react";
@@ -98,13 +99,7 @@ function PrivacyAndSecurityScreen() {
 
   return (
     <SafeScreen>
-      {/* HEADER */}
-      <View className="px-6 pt-5 pb-5 flex-row items-center">
-        <TouchableOpacity onPress={() => router.back()} className="mr-4">
-          <Ionicons name="arrow-back" size={28} color="#5B3A29" />
-        </TouchableOpacity>
-        <Text className="text-brand-secondary text-2xl font-bold">Privacidad & Seguridad</Text>
-      </View>
+      <Header header="Privacidad & Seguridad" />
 
       <ScrollView
         className="flex-1"
@@ -123,7 +118,7 @@ function PrivacyAndSecurityScreen() {
             >
               <View className="flex-row items-center">
                 <View className="bg-brand-secondary/10 rounded-full w-12 h-12 items-center justify-center mr-4">
-                  <Ionicons name={setting.icon as any} size={24} color="#C34928" />
+                  <Ionicons name={setting.icon as any} size={24} color="#5B3A29" />
                 </View>
 
                 <View className="flex-1">
@@ -157,7 +152,7 @@ function PrivacyAndSecurityScreen() {
               <View className="bg-ui-surface/55 rounded-2xl p-4 mb-3">
                 <View className="flex-row items-center">
                   <View className="bg-brand-secondary/10 rounded-full w-12 h-12 items-center justify-center mr-4">
-                    <Ionicons name={setting.icon as any} size={24} color="#C34928" />
+                    <Ionicons name={setting.icon as any} size={24} color="#5B3A29" />
                   </View>
                   <View className="flex-1">
                     <Text className="text-text-primary font-bold text-base mb-1">
@@ -189,7 +184,7 @@ function PrivacyAndSecurityScreen() {
             >
               <View className="flex-row items-center">
                 <View className="bg-brand-secondary/10 rounded-full w-12 h-12 items-center justify-center mr-4">
-                  <Ionicons name={setting.icon as any} size={24} color="#C34928" />
+                  <Ionicons name={setting.icon as any} size={24} color="#5B3A29" />
                 </View>
                 <View className="flex-1">
                   <Text className="text-text-primary font-bold text-base mb-1">

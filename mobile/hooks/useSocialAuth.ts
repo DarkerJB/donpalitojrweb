@@ -1,6 +1,7 @@
 import { useSSO } from "@clerk/clerk-expo";
 import { useState } from "react";
 import { Alert } from "react-native";
+import * as Linking from "expo-linking";
 
 function useSocialAuth() {
     const [loadingStrategy, setLoadingStrategy] = useState<string | null>(null);
@@ -10,7 +11,8 @@ function useSocialAuth() {
         setLoadingStrategy(strategy);
 
         try {
-            const { createdSessionId, setActive } = await startSSOFlow({ strategy });
+            const redirectUrl = Linking.createURL("/sso-callback");
+            const { createdSessionId, setActive } = await startSSOFlow({ strategy, redirectUrl });
             if (createdSessionId && setActive) {
                 await setActive({ session: createdSessionId });
             }
