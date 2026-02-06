@@ -1,10 +1,13 @@
 import SafeScreen from "@/components/SafeScreen";
+import { Header } from "@/components/Header";
+import { ErrorState } from "@/components/ErrorState";
+import LoadingState from "@/components/LoadingState";
 import useCart from "@/hooks/useCart";
 import useWishlist from "@/hooks/useWishlist";
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { router } from "expo-router";
-import { ActivityIndicator, Alert, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { Alert, ScrollView, Text, TouchableOpacity, View } from "react-native";
 
 function WishlistScreen() {
     const { wishlist, isLoading, isError, removeFromWishlist, isRemovingFromWishlist } = useWishlist();
@@ -35,22 +38,12 @@ function WishlistScreen() {
         );
     };
 
-    if (isLoading && !wishlist) return <LoadingUI />;
-    if (isError && !wishlist) return <ErrorUI />;
+    if (isLoading && !wishlist) return <LoadingState />;
+    if (isError && !wishlist) return <ErrorState />;
 
     return (
         <SafeScreen>
-            {/* HEADER */}
-            <View className="px-6 pt-5 pb-5 flex-row items-center">
-                <TouchableOpacity onPress={() => router.back()} className="mr-4">
-                    <Ionicons name="arrow-back" size={28} color="#5B3A29" />
-                </TouchableOpacity>
-                <Text className="text-brand-secondary text-2xl font-bold">Lista de Deseos</Text>
-                <Text className="text-text-secondary text-sm ml-auto">
-                    {wishlist.length} {wishlist.length === 1 ? "item" : "items"}
-                </Text>
-            </View>
-
+            <Header header="Lista de Deseos" />
             {wishlist.length === 0 ? (
                 <View className="flex-1 items-center justify-center px-6">
                     <Ionicons name="heart-outline" size={80} color="#666666" />
@@ -146,41 +139,3 @@ function WishlistScreen() {
 
 export default WishlistScreen;
 
-function LoadingUI() {
-    return (
-        <SafeScreen>
-            <View className="px-6 pt-5 pb-5 flex-row items-center">
-                <TouchableOpacity onPress={() => router.back()} className="mr-4">
-                <Ionicons name="arrow-back" size={28} color="#5B3A29" />
-                </TouchableOpacity>
-                <Text className="text-brand-secondary text-2xl font-bold">Lista de Deseos</Text>
-            </View>
-            <View className="flex-1 items-center justify-center">
-                <ActivityIndicator size="large" color="#5B3A29" />
-                <Text className="text-text-secondary mt-4">Cargando la lista de deseos...</Text>
-            </View>
-        </SafeScreen>
-    );
-}
-
-function ErrorUI() {
-    return (
-        <SafeScreen>
-            <View className="px-6 pt-5 pb-5 flex-row items-center">
-                <TouchableOpacity onPress={() => router.back()} className="mr-4">
-                <Ionicons name="arrow-back" size={28} color="#5B3A29" />
-                </TouchableOpacity>
-                <Text className="text-brand-secondary text-2xl font-bold">Lista de Deseos</Text>
-            </View>
-            <View className="flex-1 items-center justify-center px-6">
-                <Ionicons name="alert-circle-outline" size={64} color="#FF6B6B" />
-                <Text className="text-text-primary font-semibold text-xl mt-4">
-                    Error al cargar la lista de deseos
-                </Text>
-                <Text className="text-text-secondary text-center mt-2">
-                    Verifica tu conexión e intenta nuevamente
-                </Text>
-            </View>
-        </SafeScreen>
-    );
-}

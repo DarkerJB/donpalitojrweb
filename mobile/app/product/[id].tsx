@@ -1,4 +1,6 @@
 import SafeScreen from "@/components/SafeScreen";
+import { ErrorState } from "@/components/ErrorState";
+import LoadingState from "@/components/LoadingState";
 import useCart from "@/hooks/useCart";
 import { useProduct } from "@/hooks/useProduct";
 import useWishlist from "@/hooks/useWishlist";
@@ -7,7 +9,6 @@ import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { View, Text, Alert, ActivityIndicator, TouchableOpacity, ScrollView, Dimensions, TextInput } from "react-native";
-import { Product } from "@/types";
 
 const { width } = Dimensions.get("window");
 
@@ -50,8 +51,8 @@ const ProductDetailScreen = () => {
     );
   };
 
-  if (isLoading) return <LoadingUI />;
-  if (isError || !product) return <ErrorUI />;
+  if (isLoading) return <LoadingState />;
+  if (isError || !product) return <ErrorState />;
 
   const inStock = product.stock > 0;
 
@@ -263,34 +264,3 @@ const ProductDetailScreen = () => {
 };
 
 export default ProductDetailScreen;
-
-function ErrorUI() {
-  return (
-    <SafeScreen>
-      <View className="flex-1 items-center justify-center px-6">
-        <Ionicons name="alert-circle-outline" size={64} color="#FF6B6B" />
-        <Text className="text-text-primary font-semibold text-xl mt-4">Producto no encontrado</Text>
-        <Text className="text-text-secondary text-center mt-2">
-          No hay coincidencias para el producto buscado
-        </Text>
-        <TouchableOpacity
-          className="bg-brand-primary rounded-2xl px-6 py-3 mt-6"
-          onPress={() => router.back()}
-        >
-          <Text className="text-white font-bold">Regresar</Text>
-        </TouchableOpacity>
-      </View>
-    </SafeScreen>
-  );
-}
-
-function LoadingUI() {
-  return (
-    <SafeScreen>
-      <View className="flex-1 items-center justify-center">
-        <ActivityIndicator size="large" color="#5B3A29" />
-        <Text className="text-text-secondary mt-4">Cargando detalles del producto...</Text>
-      </View>
-    </SafeScreen>
-  );
-}

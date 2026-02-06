@@ -34,7 +34,7 @@ const RatingModal = ({
 }: RatingModalProps) => {
   return (
     <Modal visible={visible} animationType="slide" onRequestClose={onClose}>
-      <View className="flex-1 bg-brand-secondary/50">
+      <View className="flex-1 bg-ui-background">
         <View 
           style={{
             position: "absolute", 
@@ -43,19 +43,15 @@ const RatingModal = ({
             right: 0,
             bottom: 0,
           }}
-          className="bg-ui-surface/55"
         >
           {/* Modal Header */}
-          <View className="flex-row items-center justify-between p-6 border-b border-brand-secondary/30">
+          <View className="flex-row items-center justify-between p-6">
             <View className="flex-1">
               <Text className="text-brand-secondary text-2xl font-bold">
                 Calificar Productos
               </Text>
-              <Text className="text-text-secondary text-sm mt-1">
-                Evalúa cada producto de tu pedido
-              </Text>
             </View>
-            <TouchableOpacity onPress={onClose} className="bg-brand-secondary/20 rounded-full p-2">
+            <TouchableOpacity onPress={onClose}>
               <Ionicons name="close" size={24} color="#5B3A29" />
             </TouchableOpacity>
           </View>
@@ -131,7 +127,7 @@ const RatingModal = ({
 
                     {/* Rating Label */}
                     {currentRating > 0 && (
-                      <Text className="text-center text-text-secondary font-semibold text-sm mt-2">
+                      <Text className="text-center text-brand-secondary font-semibold text-sm mt-2">
                         {RATING_LABELS[currentRating]}
                       </Text>
                     )}

@@ -1,8 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
-import { View, Text, Modal, TouchableOpacity, ScrollView, Dimensions, Linking, Alert } from "react-native";
+import { View, Text, Modal, TouchableOpacity, ScrollView, Linking, Alert } from "react-native";
 
-const SCREEN_HEIGHT = Dimensions.get("window").height;
 const FOOTER_HEIGHT = 96;
 
 interface PaymentMethodModalProps {
@@ -68,7 +67,7 @@ const PaymentMethodModal = ({
 
     return (
         <Modal visible={visible} animationType="slide" onRequestClose={onClose}>
-            <View className="flex-1 bg-brand-secondary/50">
+            <View className="flex-1 bg-ui-background">
                 <View
                     style={{
                         position: "absolute",
@@ -77,12 +76,11 @@ const PaymentMethodModal = ({
                         right: 0,
                         bottom: 0,
                     }}
-                    className="bg-ui-surface/55"
                 >
                     {/* Modal Header */}
-                    <View className="flex-row items-center justify-between p-6 border-b border-brand-secondary/30">
+                    <View className="flex-row items-center justify-between p-6">
                         <Text className="text-brand-secondary text-2xl font-bold">Método de Pago</Text>
-                        <TouchableOpacity onPress={onClose} className="bg-brand-secondary/20 rounded-full p-2">
+                        <TouchableOpacity onPress={onClose}>
                         <Ionicons name="close" size={24} color="#5B3A29" />
                         </TouchableOpacity>
                     </View>
@@ -97,7 +95,7 @@ const PaymentMethodModal = ({
                         showsVerticalScrollIndicator={false}
                     >
                         {/* Total a Pagar */}
-                        <View className="bg-brand-primary/10 rounded-2xl p-4 mb-6">
+                        <View className="bg-brand-primary/20 rounded-2xl p-4 mb-6">
                             <Text className="text-brand-secondary font-semibold text-sm mb-1">Total a pagar</Text>
                             <Text className="text-brand-accent text-3xl font-bold">${total} COP</Text>
                         </View>
@@ -107,7 +105,7 @@ const PaymentMethodModal = ({
                             <TouchableOpacity
                                 className={`bg-ui-surface/40 rounded-3xl p-4 border-2 ${
                                 selectedMethod === "card"
-                                    ? "border-brand-primary"
+                                    ? "border-brand-accent"
                                     : "border-brand-secondary/30"
                                 }`}
                                 activeOpacity={0.7}
@@ -136,8 +134,8 @@ const PaymentMethodModal = ({
                                     </View>
                                 </View>
                                 {selectedMethod === "card" && (
-                                    <View className="bg-brand-primary/40 rounded-full p-2 ml-3">
-                                    <Ionicons name="checkmark" size={24} color="#5B3A29" />
+                                    <View className="ml-3">
+                                    <Ionicons name="checkmark" size={24} color="#C34928" />
                                     </View>
                                 )}
                                 </View>
@@ -147,7 +145,7 @@ const PaymentMethodModal = ({
                             <TouchableOpacity
                                 className={`bg-ui-surface/40 rounded-3xl p-4 border-2 ${
                                 selectedMethod === "transfer"
-                                    ? "border-brand-primary"
+                                    ? "border-brand-accent"
                                     : "border-brand-secondary/30"
                                 }`}
                                 activeOpacity={0.7}
@@ -225,8 +223,8 @@ const PaymentMethodModal = ({
                                         )}
                                     </View>
                                     {selectedMethod === "transfer" && (
-                                        <View className="bg-brand-primary/40 rounded-full p-2 ml-3">
-                                        <Ionicons name="checkmark" size={24} color="#5B3A29" />
+                                        <View className="ml-3">
+                                        <Ionicons name="checkmark" size={24} color="#C34928" />
                                         </View>
                                     )}
                                 </View>

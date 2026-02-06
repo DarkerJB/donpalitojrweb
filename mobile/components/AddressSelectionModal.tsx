@@ -25,7 +25,7 @@ const AddressSelectionModal = ({
 
   return (
     <Modal visible={visible} animationType="slide" onRequestClose={onClose}>
-      <View className="flex-1 bg-brand-secondary/50">
+      <View className="flex-1 bg-ui-background">
         <View 
           style={{
             position: "absolute", 
@@ -34,12 +34,11 @@ const AddressSelectionModal = ({
             right: 0,
             bottom: 0,
           }}
-          className="bg-ui-surface/55"
         >
           {/* Modal Header */}
-          <View className="flex-row items-center justify-between p-6 border-b border-brand-secondary/30">
+          <View className="flex-row items-center justify-between p-6">
             <Text className="text-brand-secondary text-2xl font-bold">Elegir Dirección de Envío</Text>
-            <TouchableOpacity onPress={onClose} className="bg-brand-secondary/20 rounded-full p-2">
+            <TouchableOpacity onPress={onClose}>
               <Ionicons name="close" size={24} color="#5B3A29" />
             </TouchableOpacity>
           </View>
@@ -64,7 +63,7 @@ const AddressSelectionModal = ({
                     key={address._id}
                     className={`bg-ui-surface/40 rounded-3xl p-4 border-2 ${
                       selectedAddress?._id === address._id
-                        ? "border-brand-primary"
+                        ? "border-brand-accent"
                         : "border-brand-secondary/30"
                     }`}
                     activeOpacity={0.7}
@@ -94,8 +93,8 @@ const AddressSelectionModal = ({
                         <Text className="text-text-secondary text-base">{address.phoneNumber}</Text>
                       </View>
                       {selectedAddress?._id === address._id && (
-                        <View className="bg-brand-primary/40 rounded-full p-2 ml-3">
-                          <Ionicons name="checkmark" size={24} color="#5B3A29" />
+                        <View className="ml-3">
+                          <Ionicons name="checkmark" size={24} color="#C34928" />
                         </View>
                       )}
                     </View>

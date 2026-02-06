@@ -1,12 +1,15 @@
 import AddressCard from "@/components/AddressCard";
-import AddressHeader from "@/components/AddressHeader";
+import { Header } from "@/components/Header";
 import AddressFormModal from "@/components/AddressFormModal";
 import SafeScreen from "@/components/SafeScreen";
+import { ErrorState } from "@/components/ErrorState";
+import LoadingState from "@/components/LoadingState";
 import { useAddresses } from "@/hooks/useAddresses";
 import { Address } from "@/types";
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
-import { ActivityIndicator, Alert, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { Alert, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { EmptyState } from "@/components/EmptyState";
 
 function AddressesScreen() {
   const {
@@ -122,28 +125,29 @@ function AddressesScreen() {
     setEditingAddressId(null);
   };
 
-  if (isLoading && !addresses) return <LoadingUI />;
-  if (isError && !addresses) return <ErrorUI />;
+  if (isLoading && !addresses) return <LoadingState />;
+  if (isError && !addresses) return <ErrorState />;
 
   return (
     <SafeScreen>
-      <AddressHeader />
+      <Header header="Direcciones" />
 
       {addresses.length === 0 ? (
-        <View className="flex-1 items-center justify-center px-6">
-          <Ionicons name="location-outline" size={80} color="#666" />
-          <Text className="text-text-primary font-semibold text-xl mt-4">No tienes direcciones registradas</Text>
-          <Text className="text-text-secondary text-center mt-2">
-            Agrega tu direccion de entrega
-          </Text>
+        <EmptyState
+          icon="location-outline"
+          title="No tienes direcciones registradas"
+          description="Agrega tu direccion de entrega"
+        >
           <TouchableOpacity
-            className="bg-brand-primary rounded-2xl px-8 py-4 mt-6"
+            className="bg-brand-primary rounded-2xl py-4 px-6 items-center"
             activeOpacity={0.8}
             onPress={handleAddAddress}
           >
-            <Text className="text-white font-bold text-base">Agregar Dirección</Text>
+            <Text className="text-white font-bold text-base">
+              Agregar Dirección
+            </Text>
           </TouchableOpacity>
-        </View>
+        </EmptyState>
       ) : (
         <ScrollView
           className="flex-1"
@@ -190,32 +194,3 @@ function AddressesScreen() {
   );
 }
 export default AddressesScreen;
-
-function ErrorUI() {
-  return (
-    <SafeScreen>
-      <AddressHeader />
-      <View className="flex-1 items-center justify-center px-6">
-        <Ionicons name="alert-circle-outline" size={64} color="#FF6B6B" />
-        <Text className="text-text-primary font-semibold text-xl mt-4">
-          Error al cargar tus direcciones
-        </Text>
-        <Text className="text-text-secondary text-center mt-2">
-          Verifica tu conexión e intenta nuevamente
-        </Text>
-      </View>
-    </SafeScreen>
-  );
-}
-
-function LoadingUI() {
-  return (
-    <SafeScreen>
-      <AddressHeader />
-      <View className="flex-1 items-center justify-center px-6">
-        <ActivityIndicator size="large" color="#5B3A29" />
-        <Text className="text-text-secondary mt-4">Cargando tus direcciones...</Text>
-      </View>
-    </SafeScreen>
-  );
-}

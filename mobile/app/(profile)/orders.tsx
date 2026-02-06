@@ -1,5 +1,9 @@
 import RatingModal from "@/components/RatingModal";
 import SafeScreen from "@/components/SafeScreen";
+import { Header } from "@/components/Header";
+import { ErrorState } from "@/components/ErrorState";
+import LoadingState from "@/components/LoadingState";
+import { EmptyState } from "@/components/EmptyState";
 import { useOrders } from "@/hooks/useOrders";
 import { useReviews } from "@/hooks/useReviews";
 import { formatDate, getOrderStatus } from "@/lib/utils";
@@ -7,7 +11,7 @@ import { Order } from "@/types";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useState } from "react";
-import { ActivityIndicator, Alert, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { Alert, ScrollView, Text, TouchableOpacity, View } from "react-native";
 
 function OrdersScreen() {
   const { data: orders, isLoading, isError } = useOrders();
@@ -68,26 +72,19 @@ function OrdersScreen() {
 
   return (
     <SafeScreen>
-      {/* Header */}
-      <View className="px-6 pb-5 pt-5 flex-row items-center">
-        <TouchableOpacity onPress={() => router.back()} className="mr-4">
-          <Ionicons name="arrow-back" size={28} color="#5B3A29" />
-        </TouchableOpacity>
-        <Text className="text-brand-secondary text-2xl font-bold">Mis Pedidos</Text>
-      </View>
-
       {isLoading ? (
-        <LoadingUI />
+        <LoadingState />
       ) : isError ? (
-        <ErrorUI />
+        <ErrorState />
       ) : !orders || orders.length === 0 ? (
-        <EmptyUI />
+        <EmptyState title="No has realizado pedidos" description="Tu historial de pedidos aparecerá aquí" icon="receipt-outline" header="Pedidos" />
       ) : (
         <ScrollView
           className="flex-1"
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ paddingBottom: 100 }}
         >
+          <Header header="Pedidos" />
           <View className="px-6 py-4">
             {orders.map((order) => {
               const totalItems = order.orderItems.reduce((sum, item) => sum + item.quantity, 0);
@@ -176,36 +173,3 @@ function OrdersScreen() {
   );
 }
 export default OrdersScreen;
-
-function LoadingUI() {
-  return (
-    <View className="flex-1 items-center justify-center">
-      <ActivityIndicator size="large" color="#5B3A29" />
-      <Text className="text-text-secondary mt-4">Cargando tus pedidos...</Text>
-    </View>
-  );
-}
-
-function ErrorUI() {
-  return (
-    <View className="flex-1 items-center justify-center px-6">
-      <Ionicons name="alert-circle-outline" size={64} color="#FF6B6B" />
-      <Text className="text-text-primary font-semibold text-xl mt-4">Error al cargar tus pedidos</Text>
-      <Text className="text-text-secondary text-center mt-2">
-        Verifica tu conexión e intenta nuevamente
-      </Text>
-    </View>
-  );
-}
-
-function EmptyUI() {
-  return (
-    <View className="flex-1 items-center justify-center px-6">
-      <Ionicons name="receipt-outline" size={80} color="#666" />
-      <Text className="text-text-primary font-semibold text-xl mt-4">No has realizado pedidos</Text>
-      <Text className="text-text-secondary text-center mt-2">
-        Tu historial de pedidos aparecerá aquí
-      </Text>
-    </View>
-  );
-}
