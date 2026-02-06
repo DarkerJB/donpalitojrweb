@@ -1,3 +1,5 @@
+import { Order } from "@/types";
+
 export const capitalizeFirstLetter = (text: string) => {
     return text.charAt(0).toUpperCase() + text.slice(1);
 };
@@ -7,7 +9,7 @@ export const formatDate = (dateString: string) => {
     return date.toLocaleDateString("es-CO", { month: "short", day: "numeric", year: "numeric" });
 };
 
-export const getOrderStatus = (status: string) => {
+export const getOrderStatus = (status: Order["status"]) => {
     switch (status.toLowerCase()) {
         case "pending":
             return {

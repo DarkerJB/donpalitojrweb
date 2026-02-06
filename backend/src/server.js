@@ -37,8 +37,6 @@ const corsOptions = {
           'http://127.0.0.1:5173',          // Alternativa localhost
           'http://10.0.2.2:3000',           // Emulador Android
           'http://10.0.2.2:8081',           // Expo en emulador
-          'http://192.168.40.137:3000',     // Red local (backend)
-          'http://192.168.40.137:8081',     // Expo en red local
         ];
         
         if (origin.startsWith('exp://')) {

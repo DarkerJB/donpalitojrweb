@@ -1,9 +1,8 @@
 import { Order } from "@/types";
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
-import { View, Text, Modal, ScrollView, TouchableOpacity, ActivityIndicator, Dimensions } from "react-native";
+import { View, Text, Modal, ScrollView, TouchableOpacity, ActivityIndicator } from "react-native";
 
-const SCREEN_HEIGHT = Dimensions.get("window").height;
 const FOOTER_HEIGHT = 96;
 
 interface RatingModalProps {
@@ -15,6 +14,14 @@ interface RatingModalProps {
   onSubmit: () => void;
   isSubmitting: boolean;
 }
+
+const RATING_LABELS: Record<number, string> = {
+  1: "Muy malo",
+  2: "Malo",
+  3: "Regular",
+  4: "Bueno",
+  5: "Excelente",
+};
 
 const RatingModal = ({
   visible,
@@ -86,7 +93,7 @@ const RatingModal = ({
                         }}
                       >
                         <Image
-                          source={{ uri: item.product.images[0] }}
+                          source={{ uri: item.product.images?.[0] }}
                           style={{ width: '100%', height: '100%' }}
                           contentFit="contain"
                         />
@@ -125,11 +132,7 @@ const RatingModal = ({
                     {/* Rating Label */}
                     {currentRating > 0 && (
                       <Text className="text-center text-text-secondary font-semibold text-sm mt-2">
-                        {currentRating === 1 && "Muy malo"}
-                        {currentRating === 2 && "Malo"}
-                        {currentRating === 3 && "Regular"}
-                        {currentRating === 4 && "Bueno"}
-                        {currentRating === 5 && "Excelente"}
+                        {RATING_LABELS[currentRating]}
                       </Text>
                     )}
                   </View>
@@ -152,12 +155,10 @@ const RatingModal = ({
               >
                 {isSubmitting ? (
                   <ActivityIndicator size="small" color="#5B3A29" />
-                ) : (
-                  <>
-                    <Text className="text-white font-bold text-base text-center px-2">
-                      Enviar Calificaciones
-                    </Text>
-                  </>
+                ) : (             
+                  <Text className="text-white font-bold text-base text-center px-2">
+                    Enviar Calificaciones
+                  </Text>
                 )}
               </TouchableOpacity>
 

@@ -41,12 +41,20 @@ function OrdersScreen() {
     }
 
     try {
-      for (const item of selectedOrder.orderItems) {
-        await createReviewAsync({
-          productId: item.product._id,
-          orderId: selectedOrder._id,
-          rating: productRatings[item.product._id],
-        });
+      const results = await Promise.allSettled(
+        selectedOrder.orderItems.map((item) =>
+          createReviewAsync({
+            productId: item.product._id,
+            orderId: selectedOrder._id,
+            rating: productRatings[item.product._id],
+          })
+        )
+      );
+
+      const failures = results.filter((r) => r.status === "rejected");
+      if (failures.length > 0) {
+        Alert.alert("Error", `${failures.length} calificación(es) no se enviaron. Intenta nuevamente.`);
+        return;
       }
 
       Alert.alert("Éxito", "Gracias por calificar todos los productos!");
@@ -83,6 +91,7 @@ function OrdersScreen() {
           <View className="px-6 py-4">
             {orders.map((order) => {
               const totalItems = order.orderItems.reduce((sum, item) => sum + item.quantity, 0);
+              const { label: statusLabel, color: statusColor } = getOrderStatus(order.status);
               return (
                 <View key={order._id} className="bg-ui-surface/40 rounded-3xl p-5 mb-4">
                   <View className="flex-row mb-4">
@@ -95,13 +104,13 @@ function OrdersScreen() {
                       </Text>
                       <View
                         className="self-start px-3 py-1.5 rounded-full"
-                        style={{ backgroundColor: getOrderStatus(order.status).color + "20" }}
+                        style={{ backgroundColor: statusColor + "20" }}
                       >
                         <Text
                           className="text-xs font-bold"
-                          style={{ color: getOrderStatus(order.status).color }}
+                          style={{ color: statusColor }}
                         >
-                          {getOrderStatus(order.status).label}
+                          {statusLabel}
                         </Text>
                       </View>
                     </View>
