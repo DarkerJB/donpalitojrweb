@@ -5,19 +5,8 @@ import Constants from "expo-constants";
 import { Platform } from "react-native";
 
 const getApiUrl = () => {
-  // En producción
   if (!__DEV__) {
-    return "https://tu-dominio-produccion.com/api"; // ← Cambia esto cuando despliegues
-  }
-
-  // En desarrollo
-  // Intentar obtener la IP automáticamente del debugger de Expo
-  const debuggerHost = Constants.expoConfig?.hostUri?.split(":").shift();
-
-  if (debuggerHost) {
-    // Si Expo detectó la IP automáticamente (dispositivo físico)
-    console.log("📱 Usando IP detectada por Expo:", debuggerHost);
-    return `http://${debuggerHost}:3000/api`;
+    return "https://tu-dominio-produccion.com/api";
   }
 
   if (Platform.OS === "android") {
@@ -25,52 +14,106 @@ const getApiUrl = () => {
     return "http://10.0.2.2:3000/api";
   }
 
-  const MANUAL_IP = "192.168.40.137"; 
+  const debuggerHost = Constants.expoConfig?.hostUri?.split(":").shift();
+
+  if (debuggerHost) {
+    console.log("📱 Usando IP detectada por Expo:", debuggerHost);
+    return `http://${debuggerHost}:3000/api`;
+  }
+  const MANUAL_IP = "192.168.40.137";
   console.log("💻 Usando IP manual:", MANUAL_IP);
-  return `http://${MANUAL_IP}:3000/api`
+  return `http://${MANUAL_IP}:3000/api`;
 };
 
 const API_URL = getApiUrl();
 
 const api = axios.create({
   baseURL: API_URL,
+  timeout: 15000,
   headers: {
     "Content-Type": "application/json",
-  },
-  timeout: 90000,
-
-  validateStatus: (status) => {
-    return status < 500;
-  },
+  }
 });
 
 export const useApi = () => {
-  const { getToken } = useAuth();
-  const interceptorId = useRef<number | null>(null);
+  const { getToken, isSignedIn } = useAuth();
+  
+  const requestInterceptorRef = useRef<number | null>(null);
+  const responseInterceptorRef = useRef<number | null>(null);
 
   useEffect(() => {
-    
-    if (interceptorId.current !== null) {
-      api.interceptors.request.eject(interceptorId.current);
+    if (requestInterceptorRef.current !== null) {
+      api.interceptors.request.eject(requestInterceptorRef.current);
+    }
+    if (responseInterceptorRef.current !== null) {
+      api.interceptors.response.eject(responseInterceptorRef.current);
     }
 
-    interceptorId.current = api.interceptors.request.use(async (config) => {
-      const token = await getToken();
+    requestInterceptorRef.current = api.interceptors.request.use(
+      async (config) => {
+        try {
+          const skipCache = config.headers['X-Retry-Request'] === 'true';
+         
+          const token = await getToken({ 
+            template: "mobile-app-token", 
+            skipCache
+          });
 
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
+          if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+            
+            try {
+              const payload = JSON.parse(atob(token.split('.')[1]));
+              const expiresIn = payload.exp - Math.floor(Date.now() / 1000);
+              const status = skipCache ? "Generado" : "desde caché";
+            } catch (e) {
+              console.log("Error al decodificar token");
+            }
+          }
+        } catch (error) {
+          console.error("Error obteniendo token:", error);
+        }
+
+        return config;
+      },
+      (error) => {
+        return Promise.reject(error);
       }
+    );
 
-      return config;
-    });
+    responseInterceptorRef.current = api.interceptors.response.use(
+      (response) => {
+        return response;
+      },
+      async (error) => {
+        const originalRequest = error.config;
+
+        if (error.response?.status === 401 && originalRequest && !originalRequest._retry) {
+          
+          originalRequest._retry = true;
+
+          try {
+            originalRequest.headers['X-Retry-Request'] = 'true';              
+            return await api(originalRequest);
+          } catch (refreshError) {
+            return Promise.reject(refreshError);
+          }
+        }
+        return Promise.reject(error);
+      }
+    );
 
     return () => {
-      if (interceptorId.current !== null) {
-        api.interceptors.request.eject(interceptorId.current);
+      if (requestInterceptorRef.current !== null) {
+        api.interceptors.request.eject(requestInterceptorRef.current);
+      }
+      if (responseInterceptorRef.current !== null) {
+        api.interceptors.response.eject(responseInterceptorRef.current);
       }
     };
-  }, [getToken]);
-  
-  return api;
+  }, [getToken, isSignedIn]);
 
+  return api;
 };
+
+export default api;

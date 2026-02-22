@@ -31,6 +31,8 @@ export default defineConfig({
           'vendor-forms': ['react-hook-form', 'yup', '@hookform/resolvers'],
           'vendor-ui': ['react-icons', 'react-toastify'],
           'vendor-utils': ['axios', 'moment'],
+          'vendor-query': ['@tanstack/react-query'],
+          'vendor-stripe': ['@stripe/react-stripe-js', '@stripe/stripe-js'],
         },
       },
     },

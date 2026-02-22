@@ -1,4 +1,3 @@
-import React from 'react'
 import { useState } from "react";
 import { PlusIcon, PencilIcon, Trash2Icon, XIcon, ImageIcon } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -126,7 +125,7 @@ function ProductsPage() {
           <h1 className="text-2xl font-bold">Productos</h1>
           <p className="text-base-content/70 mt-1">Gestionar inventario de productos</p>
         </div>
-        <button onClick={() => setShowModal(true)} className="btn btn-primary gap-2">
+        <button onClick={() => setShowModal(true)} className="btn btn-primary gap-2 text-white">
           <PlusIcon className="w-5 h-5" />
           Agregar Producto
         </button>

@@ -1,12 +1,13 @@
 import { Link } from 'react-router-dom';
-import { 
-  IoLogoFacebook, 
-  IoLogoInstagram, 
+import {
+  IoLogoFacebook,
+  IoLogoInstagram,
   IoLogoWhatsapp,
   IoMail,
   IoCall,
-  IoLocation 
+  IoLocation
 } from 'react-icons/io5';
+import logoColor from '../../assets/images/logo-color.png';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -17,11 +18,8 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Columna 1: About */}
           <div>
-            <div className="flex items-center mb-4">
-              <div className="bg-primary rounded-full w-10 h-10 flex items-center justify-center">
-                <span className="text-white font-bold">DP</span>
-              </div>
-              <h3 className="ml-2 text-white font-bold text-lg">Don Palito Jr</h3>
+            <div className="mb-4">
+              <img src={logoColor} alt="Don Palito Jr" className="h-14 w-auto" />
             </div>
             <p className="text-sm leading-relaxed">
               Productos tradicionales de la mejor calidad.<br/> 
@@ -65,7 +63,7 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/productos" className="text-sm hover:text-primary transition-colors">
+                <Link to="/catalogo" className="text-sm hover:text-primary transition-colors">
                   Productos
                 </Link>
               </li>
@@ -144,7 +142,7 @@ const Footer = () => {
       {/* Copyright */}
       <div className="border-t border-gray-800">
         <div className="container-custom py-6">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+          <div className="flex flex-col items-center gap-1 text-center">
             <p className="text-sm text-gray-500">
               © {currentYear} Don Palito Jr. Todos los derechos reservados.
             </p>

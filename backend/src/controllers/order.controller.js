@@ -11,7 +11,6 @@ export async function createOrder(req, res) {
             return res.status(400).json({ error: "No order items" });
         }
 
-        // validate products and stock
         for (const item of orderItems) {
             const product = await Product.findById(item.product._id);
             if (!product) {
@@ -31,7 +30,6 @@ export async function createOrder(req, res) {
             totalPrice,
         });
 
-        // update product stock
         for (const item of orderItems) {
             await Product.findByIdAndUpdate(item.product._id, {
                 $inc: { stock: -item.quantity },
@@ -47,22 +45,29 @@ export async function createOrder(req, res) {
 
 export async function getUserOrders(req, res) {
     try {
-        const orders = await Order.find({ clerkId: req.user.clerkId }).populate("orderItems.product").sort({ createdAt: -1 });
-
-        // check if each order has been reviewed
+        const orders = await Order.find({ clerkId: req.user.clerkId }).populate("orderItems.product", "name images price").sort({ createdAt: -1 });
 
         const orderIds = orders.map((order) => order._id);
         const reviews = await Review.find({ orderId: { $in: orderIds } });
         const reviewedOrderIds = new Set(reviews.map((review) => review.orderId.toString()));
 
-        const ordersWithReviewStatus = await Promise.all(
-            orders.map(async (order) => {
-                return {
-                    ...order.toObject(),
-                    hasReviewed: reviewedOrderIds.has(order._id.toString()),
-                };
-            })
-        );
+        const ordersWithReviewStatus = orders.map((order) => {
+            const orderObj = order.toObject();
+            
+            const orderItemsWithNames = orderObj.orderItems.map(item => ({
+                _id: item._id,
+                product: item.product,
+                name: item.name || item.product?.name || 'Producto no disponible',
+                price: item.price,
+                quantity: item.quantity
+            }));
+
+            return {
+                ...orderObj,
+                orderItems: orderItemsWithNames,
+                hasReviewed: reviewedOrderIds.has(order._id.toString()),
+            };
+        });
 
         return res.status(200).json({ orders: ordersWithReviewStatus });
     } catch (error) {

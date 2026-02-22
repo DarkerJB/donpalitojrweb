@@ -1,13 +1,20 @@
 import { Link } from 'react-router-dom';
-import { IoArrowForward, IoLocation, IoTime, IoStar } from 'react-icons/io5';
+import { IoArrowForward } from 'react-icons/io5';
 import ProductCard from '../components/products/ProductCard';
 import Button from '../components/common/Button';
-import Card from '../components/common/Card';
-import Badge from '../components/common/Badge';
-import { getFeaturedProducts, promotions } from '../data/mockData';
+import Loading from '../components/common/Loading';
+import useProducts from '../hooks/useProducts';
+import { getProductId } from '../utils/productHelpers';
+import { promotions } from '../data/mockData';
 
 const Home = () => {
-  const featured = getFeaturedProducts();
+  const { data: allProducts = [], isLoading } = useProducts();
+
+  // Preferir los marcados como featured; si no hay suficientes, completar con el resto
+  const featured = allProducts.filter((p) => p.featured).slice(0, 4).length > 0
+    ? allProducts.filter((p) => p.featured).slice(0, 4)
+    : allProducts.slice(0, 4);
+
   const activePromos = promotions.filter((p) => p.active);
 
   return (
@@ -16,9 +23,6 @@ const Home = () => {
       <section className="relative overflow-hidden gradient-primary py-20 text-white lg:py-32">
         <div className="container relative z-10">
           <div className="max-w-2xl">
-            <span className="inline-block mb-4 bg-brand-accent text-white px-4 py-2 rounded-full text-sm font-medium">
-              📍 Sabaneta, Antioquia
-            </span>
             <h1 className="font-serif text-4xl font-black leading-tight lg:text-6xl">
               El sabor auténtico de{' '}
               <span className="text-ui-background">Colombia</span>
@@ -44,7 +48,7 @@ const Home = () => {
               >
                 <Button
                   size="lg"
-                  variant="outline"
+                  variant="ghost"
                   className="border-2 border-white text-white hover:bg-white hover:text-brand-primary"
                 >
                   Pedir por WhatsApp
@@ -58,7 +62,7 @@ const Home = () => {
         <div className="absolute right-0 top-0 h-full w-1/2 opacity-20 lg:opacity-30">
           <div className="absolute inset-0 bg-gradient-to-l from-transparent to-brand-primary" />
           <img
-            src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800"
+            src="https://res.cloudinary.com/diqoi03kk/image/upload/v1771179829/Comida-de-navidad-en-Colombia_rpr88g.jpg"
             alt="Comida colombiana"
             className="h-full w-full object-cover"
           />
@@ -95,11 +99,15 @@ const Home = () => {
             </p>
           </div>
 
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {featured.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
+          {isLoading ? (
+            <Loading />
+          ) : (
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {featured.map((product) => (
+                <ProductCard key={getProductId(product)} product={product} />
+              ))}
+            </div>
+          )}
 
           <div className="mt-10 text-center">
             <Link to="/catalogo">
@@ -113,47 +121,6 @@ const Home = () => {
               </Button>
             </Link>
           </div>
-        </div>
-      </section>
-
-      {/* Info Cards */}
-      <section className="border-t border-ui-border bg-ui-background py-16">
-        <div className="container grid gap-8 md:grid-cols-3">
-          <Card className="bg-white">
-            <div className="flex flex-col items-center p-6 text-center">
-              <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-brand-primary/10">
-                <IoLocation className="h-8 w-8 text-brand-primary" />
-              </div>
-              <h3 className="font-serif font-bold text-text-primary">Ubicación</h3>
-              <p className="mt-2 text-sm text-text-secondary">
-                Sabaneta, Antioquia, Colombia
-              </p>
-            </div>
-          </Card>
-
-          <Card className="bg-white">
-            <div className="flex flex-col items-center p-6 text-center">
-              <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-brand-primary/10">
-                <IoTime className="h-8 w-8 text-brand-primary" />
-              </div>
-              <h3 className="font-serif font-bold text-text-primary">Horario</h3>
-              <p className="mt-2 text-sm text-text-secondary">
-                Lun-Sáb: 6:00am - 8:00pm
-              </p>
-            </div>
-          </Card>
-
-          <Card className="bg-white">
-            <div className="flex flex-col items-center p-6 text-center">
-              <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-brand-accent/10">
-                <IoStar className="h-8 w-8 text-brand-accent fill-current" />
-              </div>
-              <h3 className="font-serif font-bold text-text-primary">Calificación</h3>
-              <p className="mt-2 text-sm text-text-secondary">
-                4.8/5 – Más de 500 reseñas
-              </p>
-            </div>
-          </Card>
         </div>
       </section>
 

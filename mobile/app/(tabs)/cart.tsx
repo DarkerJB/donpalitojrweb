@@ -6,7 +6,7 @@ import { EmptyState } from "@/components/EmptyState";
 import { useAddresses } from "@/hooks/useAddresses";
 import useCart from "@/hooks/useCart";
 import { useApi } from "@/lib/api";
-import { ActivityIndicator, Alert, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Alert, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { useStripe } from "@stripe/stripe-react-native";
 import { useState } from "react";
 import { Address } from "@/types";
@@ -17,6 +17,20 @@ import AddressSelectionModal from "@/components/AddressSelectionModal";
 import PaymentMethodModal from "@/components/PaymentMethod";
 
 import * as Sentry from "@sentry/react-native";
+
+interface AppliedCoupon {
+  code: string;
+  discountType: "percentage" | "fixed";
+  discountValue: number; 
+}
+
+const calculateDiscount = (subtotal: number, coupon: AppliedCoupon | null): number => {
+  if (!coupon) return 0;
+  if (coupon.discountType === "percentage") {
+    return Math.round((subtotal * coupon.discountValue) / 100);
+  }
+  return Math.min(coupon.discountValue, subtotal); 
+};
 
 const CartScreen = () => {
   const api = useApi();
@@ -41,11 +55,16 @@ const CartScreen = () => {
   const [paymentMethodModalVisible, setPaymentMethodModalVisible] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
 
+  const [couponInput, setCouponInput] = useState("");
+  const [appliedCoupon, setAppliedCoupon] = useState<AppliedCoupon | null>(null);
+  const [couponLoading, setCouponLoading] = useState(false);
+  const [couponError, setCouponError] = useState<string | null>(null);
+
   const cartItems = cart?.items || [];
   const subtotal = cartTotal;
   const shipping = 10000; 
-  const tax = Math.round(subtotal * 0.19);
-  const total = subtotal + shipping + tax;
+  const discount = calculateDiscount(subtotal, appliedCoupon);
+  const total = subtotal + shipping - discount;
 
   const handleQuantityChange = (productId: string, currentQuantity: number, change: number) => {
     const newQuantity = currentQuantity + change;
@@ -54,7 +73,7 @@ const CartScreen = () => {
   };
 
   const handleRemoveItem = (productId: string, productName: string) => {
-      Alert.alert("Eliminar Producto", `¿Desea eliminar ${productName} del carrito?`, [
+    Alert.alert("Eliminar Producto", `¿Desea eliminar ${productName} del carrito?`, [
       { text: "Cancelar", style: "cancel" },
       {
         text: "Eliminar",
@@ -64,10 +83,36 @@ const CartScreen = () => {
     ]);
   };
 
+  const handleApplyCoupon = async () => {
+    const code = couponInput.trim().toUpperCase();
+    if (!code) return;
+
+    setCouponError(null);
+    setCouponLoading(true);
+
+    try {
+      const { data } = await api.post("/coupons/validate", { code, subtotal });
+      setAppliedCoupon(data.coupon);
+      setCouponInput("");
+    } catch (error: any) {
+      const message =
+        error?.response?.data?.error ||
+        "No se pudo validar el cupón. Intenta de nuevo.";
+      setCouponError(message);
+    } finally {
+      setCouponLoading(false);
+    }
+  };
+
+  const handleRemoveCoupon = () => {
+    setAppliedCoupon(null);
+    setCouponError(null);
+    setCouponInput("");
+  };
+
   const handleCheckout = () => {
     if (cartItems.length === 0) return;
 
-    // check if user has addresses
     if (!addresses || addresses.length === 0) {
       Alert.alert(
         "No tienes direcciones guardadas",
@@ -77,14 +122,12 @@ const CartScreen = () => {
       return;
     }
 
-    // show address selection modal
     setAddressModalVisible(true);
   };
 
   const handleAddressSelected = (address: Address) => {
     setSelectedAddress(address);
     setAddressModalVisible(false);
-    // Mostrar el modal de método de pago
     setPaymentMethodModalVisible(true);
   };
 
@@ -93,19 +136,20 @@ const CartScreen = () => {
 
     setPaymentMethodModalVisible(false);
 
-    // log chechkout initiated
     Sentry.logger.info("Redirigiendo a Plataforma de Pago", {
       itemCount: cartItemCount,
       total: total,
       city: selectedAddress.city,
+      couponCode: appliedCoupon?.code ?? null,
+      discount,
     });
 
     try {
       setPaymentLoading(true);
 
-      // create payment intent with cart items and shipping address
       const { data } = await api.post("/payment/create-intent", {
         cartItems,
+        couponCode: appliedCoupon?.code ?? null,
         shippingAddress: {
           fullName: selectedAddress.fullName,
           streetAddress: selectedAddress.streetAddress,
@@ -133,7 +177,6 @@ const CartScreen = () => {
         allowsDelayedPaymentMethods: false,
       });
 
-
       if (initError) {
         Sentry.logger.error("Error al iniciar el pago", {
           errorCode: initError.code,
@@ -147,7 +190,6 @@ const CartScreen = () => {
         return;
       }
 
-      // present payment sheet
       const { error: presentError } = await presentPaymentSheet();
 
       if (presentError) {
@@ -167,13 +209,15 @@ const CartScreen = () => {
         Sentry.logger.info("Pago Exitoso", {
           total: total,
           itemCount: cartItems.length,
+          couponCode: appliedCoupon?.code ?? null,
         });
 
-        Alert.alert("Éxito", "Tu pago se realizó correctamente. Tu orden será procesada.", 
+        Alert.alert("Éxito", "Tu pago se realizó correctamente. Tu orden será procesada.",
           [
-            { text: "OK", onPress: () => {} },
+            { text: "OK", onPress: () => { } },
           ]);
         clearCart();
+        handleRemoveCoupon(); 
       }
     } catch (error: any) {
       Sentry.logger.error("Pago fallido", {
@@ -183,13 +227,10 @@ const CartScreen = () => {
         itemCount: cartItems.length,
       });
 
-      let errorMessage = "Error al procesar el pago. Por favor, intenta de nuevo.";
-      
-      if (error?.response?.data?.error) {
-        errorMessage = error.response.data.error;
-      } else if (error?.message) {
-        errorMessage = error.message;
-      }
+      const errorMessage =
+        error?.response?.data?.error ||
+        error?.message ||
+        "Error al procesar el pago. Por favor, intenta de nuevo.";
 
       Alert.alert("Error", errorMessage);
     } finally {
@@ -197,18 +238,26 @@ const CartScreen = () => {
     }
   };
 
-  if (isLoading) {
+  const renderCouponLabel = () => {
+    if (!appliedCoupon) return null;
+    if (appliedCoupon.discountType === "percentage") {
+      return `${appliedCoupon.code} (-${appliedCoupon.discountValue}%)`;
+    }
+    return `${appliedCoupon.code} (-$${discount} COP)`;
+  };
+
+  if (isLoading && cartItems.length === 0) {
     return <SafeScreen><LoadingState /></SafeScreen>;
   }
 
-  if (isError) {
+  if (isError && cartItems.length === 0) {
     return <SafeScreen><ErrorState /></SafeScreen>;
   }
 
   return (
     <SafeScreen>
       <Header header="Carrito" />
-      {cartItems.length === 0 ? (
+      {!isLoading && cartItems.length === 0 ? (
         <EmptyState
           icon="cart-outline"
           title="Tu carrito está vacío"
@@ -222,24 +271,23 @@ const CartScreen = () => {
             contentContainerStyle={{ paddingBottom: 240 }}
           >
             <View className="px-6 gap-2">
-              {cartItems.map((item, index) => (
+              {cartItems.map((item) => (
                 <View key={item._id} className="bg-ui-surface/55 rounded-3xl overflow-hidden ">
                   <View className="p-4 flex-row">
-                    {/* product image */}
                     <View className="relative">
                       <View className="flex-1"
-                          style={{
-                            width: 100,
-                            height: 100,
-                            borderRadius: 16,
-                            overflow: 'hidden',         
-                            backgroundColor: '#FFFFFF'  
-                          }}  
+                        style={{
+                          width: 100,
+                          height: 100,
+                          borderRadius: 16,
+                          overflow: 'hidden',
+                          backgroundColor: '#FFFFFF'
+                        }}
                       >
                         <Image
-                            source={item.product.images[0]}
-                            style={{ width: '100%', height: '100%' }}
-                            contentFit="contain"
+                          source={item.product.images[0]}
+                          style={{ width: '100%', height: '100%' }}
+                          contentFit="contain"
                         />
                       </View>
                       <View className="absolute top-2 right-2 bg-brand-primary rounded-full px-2 py-0.5">
@@ -299,18 +347,99 @@ const CartScreen = () => {
                           <Ionicons name="trash-outline" size={18} color="#EF4444" />
                         </TouchableOpacity>
                       </View>
+                      {item.quantity >= item.product.stock && (
+                        <Text className="text-orange-500 text-sm mt-2">Seleccionaste la cantidad máxima disponible</Text>
+                      )}
                     </View>
                   </View>
                 </View>
               ))}
             </View>
 
-            <OrderSummary subtotal={subtotal} shipping={shipping} tax={tax} total={total} />
+            <View className="px-6 mt-4">
+              <View className="bg-ui-surface/55 rounded-3xl p-4">
+                <Text className="text-brand-primary font-bold text-base mb-3">
+                  Cupón de Descuento
+                </Text>
+
+                {appliedCoupon ? (
+                  <View className="flex-row items-center justify-between">
+                    <View className="flex-row items-center gap-2">
+                      <View className="bg-brand-primary/20 rounded-full px-3 py-1.5 flex-row items-center gap-1.5">
+                        <Ionicons
+                          name="pricetag-outline"
+                          size={14}
+                          color="#B06A4A"
+                        />
+                        <Text className="text-brand-primary font-bold text-sm">
+                          {renderCouponLabel()}
+                        </Text>
+                      </View>
+                    </View>
+                    <TouchableOpacity
+                      onPress={handleRemoveCoupon}
+                      className="bg-red-500/10 rounded-full w-8 h-8 items-center justify-center"
+                      activeOpacity={0.7}
+                    >
+                      <Ionicons name="close" size={16} color="#EF4444" />
+                    </TouchableOpacity>
+                  </View>
+                ) : (
+                  <View>
+                    <View className="flex-row gap-2">
+                      <TextInput
+                        className="flex-1 bg-white/10 border border-brand-secondary/30 rounded-xl px-4 py-3 text-text-primary text-sm"
+                        placeholder="Ingresa tu cupón"
+                        placeholderTextColor="#9CA3AF"
+                        value={couponInput}
+                        onChangeText={(text) => {
+                          setCouponInput(text);
+                          if (couponError) setCouponError(null);
+                        }}
+                        autoCapitalize="characters"
+                        returnKeyType="done"
+                        onSubmitEditing={handleApplyCoupon}
+                        editable={!couponLoading}
+                      />
+                      <TouchableOpacity
+                        className="bg-brand-primary rounded-xl px-4 items-center justify-center"
+                        activeOpacity={0.8}
+                        onPress={handleApplyCoupon}
+                        disabled={couponLoading || !couponInput.trim()}
+                        style={{ opacity: couponLoading || !couponInput.trim() ? 0.6 : 1 }}
+                      >
+                        {couponLoading ? (
+                          <ActivityIndicator size="small" color="#FFFFFF" />
+                        ) : (
+                          <Text className="text-white font-bold text-sm">
+                            Aplicar
+                          </Text>
+                        )}
+                      </TouchableOpacity>
+                    </View>
+
+                    {couponError && (
+                      <View className="flex-row items-center mt-2 gap-1">
+                        <Ionicons
+                          name="alert-circle-outline"
+                          size={14}
+                          color="#EF4444"
+                        />
+                        <Text className="text-red-400 text-xs flex-1">
+                          {couponError}
+                        </Text>
+                      </View>
+                    )}
+                  </View>
+                )}
+              </View>
+            </View>
+
+            <OrderSummary subtotal={subtotal} shipping={shipping} total={total} discount={discount} couponLabel={renderCouponLabel()}/>
           </ScrollView>
           <View
             className="absolute bottom-0 left-0 right-0 bg-brand-secondary/20 backdrop-blur-xl border-t border-brand-secondary/30 pt-4 pb-16 px-6"
           >
-            {/* Checkout Button */}
             <TouchableOpacity
               className="bg-brand-primary rounded-2xl overflow-hidden"
               activeOpacity={0.9}

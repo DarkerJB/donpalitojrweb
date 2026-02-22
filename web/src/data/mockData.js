@@ -1,12 +1,12 @@
 // ============ DATOS MOCK - DON PALITO JR ============
 
 export const categories = [
-  { id: "1", name: "Palitos de Queso", icon: "�" },
-  { id: "2", name: "Buñuelos", icon: "🧇" },
-  { id: "3", name: "Bebidas Calientes", icon: "☕" },
-  { id: "4", name: "Bebidas Frías", icon: "🥤" },
-  { id: "5", name: "Acompañamientos", icon: "🍽️" },
-  { id: "6", name: "Combos", icon: "🎁" },
+  { id: "1", name: "Palitos de Queso" },
+  { id: "2", name: "Buñuelos" },
+  { id: "3", name: "Bebidas Calientes" },
+  { id: "4", name: "Bebidas Frías" },
+  { id: "5", name: "Acompañamientos" },
+  { id: "6", name: "Combos" },
 ];
 
 export const products = [

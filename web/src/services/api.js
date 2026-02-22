@@ -2,45 +2,49 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api',
+  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3000/api',
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
   },
-  withCredentials: true, // Para cookies si el backend las usa
+  withCredentials: true,
 });
 
-// Request interceptor - Agregar token a cada petición
+// ─── Singleton para getToken de Clerk ────────────────────────────────────────
+// Se inicializa en ClerkTokenSync.jsx, dentro del árbol de ClerkProvider
+let _getToken = null;
+export const setTokenGetter = (fn) => {
+  _getToken = fn;
+};
+
+// ─── Request interceptor — adjunta token Clerk a cada petición ───────────────
 api.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+  async (config) => {
+    if (_getToken) {
+      try {
+        const token = await _getToken({ template: 'web-app-token' });
+        if (token) {
+          config.headers.Authorization = `Bearer ${token}`;
+        }
+      } catch {
+        // Usuario no autenticado — la petición continúa sin token
+      }
     }
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
-// Response interceptor - Manejar errores globalmente
+// ─── Response interceptor — manejo global de errores ─────────────────────────
 api.interceptors.response.use(
-  (response) => {
-    return response;
-  },
+  (response) => response,
   (error) => {
     if (error.response) {
       const { status, data } = error.response;
 
       switch (status) {
         case 401:
-          localStorage.removeItem('token');
-          localStorage.removeItem('user');
-          if (window.location.pathname !== '/login') {
-            window.location.href = '/login';
-          }
-          toast.error('Sesión expirada. Por favor inicia sesión nuevamente.');
+          // No redirigir automáticamente — Clerk maneja la sesión
           break;
 
         case 403:
@@ -48,11 +52,11 @@ api.interceptors.response.use(
           break;
 
         case 404:
-          toast.error('Recurso no encontrado.');
+          // No mostrar toast para 404 — los hooks lo manejan con fallback a mock
           break;
 
         case 422:
-          if (data.error && data.error.details) {
+          if (data?.error?.details) {
             Object.values(data.error.details).forEach((msg) => {
               toast.error(msg);
             });
@@ -68,16 +72,17 @@ api.interceptors.response.use(
           break;
 
         default:
-          toast.error(
-            data?.message || 
-            data?.error?.message || 
-            'Ocurrió un error. Por favor intenta nuevamente.'
-          );
+          if (status >= 500) {
+            toast.error(
+              data?.message ||
+                data?.error?.message ||
+                'Ocurrió un error. Por favor intenta nuevamente.'
+            );
+          }
       }
     } else if (error.request) {
-      toast.error('No se pudo conectar con el servidor. Verifica tu conexión a internet.');
-    } else {
-      toast.error('Error al procesar la solicitud.');
+      // No mostrar toast aquí — los hooks hacen fallback a datos mock
+      console.warn('Sin conexión al servidor — usando datos locales');
     }
 
     return Promise.reject(error);

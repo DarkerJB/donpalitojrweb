@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useCart } from '../../contexts/CartContext';
 import { useAuth } from '../../contexts/AuthContext';
 import Button from '../common/Button';
+import logoColor from '../../assets/images/logo-color.png';
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
@@ -24,11 +25,12 @@ const Navbar = () => {
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 group">
-            <span className="text-2xl transition-transform group-hover:scale-110">🥖</span>
-            <span className="font-serif text-xl font-bold text-brand-primary">
-              Don Palito Jr
-            </span>
+          <Link to="/" className="flex items-center group">
+            <img
+              src={logoColor}
+              alt="Don Palito Jr"
+              className="h-10 w-auto transition-transform group-hover:scale-105"
+            />
           </Link>
 
           {/* Nav Desktop */}

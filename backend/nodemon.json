@@ -1,0 +1,5 @@
+﻿{
+  "watch": ["src"],
+  "ignore": ["node_modules", ".env"],
+  "ext": "js,mjs,cjs,json"
+}
