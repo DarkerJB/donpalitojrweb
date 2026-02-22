@@ -4,6 +4,16 @@ import { addressSchema } from '../../utils/validationSchemas';
 import Input from '../common/Input';
 import Button from '../common/Button';
 
+const noNumbers = (e) => {
+  if (/\d/.test(e.key)) e.preventDefault();
+};
+
+const onlyNumbers = (e) => {
+  if (!/[\d]/.test(e.key) && !['Backspace', 'Delete', 'Tab', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+    e.preventDefault();
+  }
+};
+
 const AddressForm = ({ address, onSubmit, onCancel }) => {
   const {
     register,
@@ -47,6 +57,7 @@ const AddressForm = ({ address, onSubmit, onCancel }) => {
         placeholder="Nombre del destinatario"
         error={errors.fullName?.message}
         required
+        onKeyDown={noNumbers}
         {...register('fullName')}
       />
 
@@ -63,12 +74,16 @@ const AddressForm = ({ address, onSubmit, onCancel }) => {
         placeholder="Ciudad"
         error={errors.city?.message}
         required
+        onKeyDown={noNumbers}
         {...register('city')}
       />
 
       <Input
         label="Teléfono"
+        type="tel"
         placeholder="3001234567"
+        maxLength={10}
+        onKeyDown={onlyNumbers}
         error={errors.phoneNumber?.message}
         required
         {...register('phoneNumber')}

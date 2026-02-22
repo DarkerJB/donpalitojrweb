@@ -14,8 +14,9 @@ const Navbar = () => {
 
   const links = [
     { to: '/', label: 'Inicio' },
-    { to: '/catalogo', label: 'Catálogo' },
-    { to: '/carrito', label: 'Carrito' },
+    { to: '/catalogo', label: 'Productos' },
+    { to: '/sobre-nosotros', label: 'Sobre Nosotros' },
+    { to: '/contacto', label: 'Contacto' },
   ];
 
   const isActive = (path) => location.pathname === path;
@@ -23,13 +24,13 @@ const Navbar = () => {
   return (
     <header className="sticky top-0 z-50 border-b border-ui-border backdrop-blur-nav shadow-sm">
       <div className="container mx-auto px-4">
-        <div className="flex h-16 items-center justify-between">
+        <div className="flex h-20 items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center group">
             <img
               src={logoColor}
               alt="Don Palito Jr"
-              className="h-10 w-auto transition-transform group-hover:scale-105"
+              className="h-14 w-auto transition-transform group-hover:scale-105"
             />
           </Link>
 

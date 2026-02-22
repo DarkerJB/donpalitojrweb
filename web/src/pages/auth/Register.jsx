@@ -13,6 +13,11 @@ import logoColor from '../../assets/images/logo-color.png';
 const clerkKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
 // Mock register page
+// Solo letras (incluyendo tildes y ñ), espacios permitidos
+const noNumbers = (e) => {
+  if (/\d/.test(e.key)) e.preventDefault();
+};
+
 const MockRegister = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
@@ -55,6 +60,7 @@ const MockRegister = () => {
               icon={<IoPerson size={20} />}
               error={errors.name?.message}
               required
+              onKeyDown={noNumbers}
               {...register('name')}
             />
 
@@ -161,8 +167,8 @@ const Register = () => {
           afterSignUpUrl="/post-login"
           appearance={{
             elements: {
-              headerTitle: 'Crear Cuenta',
-              headerSubtitle: 'Únete a la familia Don Palito Jr.',
+              headerTitle: { display: 'none' },
+              headerSubtitle: { display: 'none' },
             },
           }}
         />

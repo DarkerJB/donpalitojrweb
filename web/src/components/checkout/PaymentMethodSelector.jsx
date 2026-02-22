@@ -1,4 +1,4 @@
-import { IoCash, IoQrCode, IoSwapHorizontal } from 'react-icons/io5';
+import { IoCash, IoQrCode, IoSwapHorizontal, IoCard } from 'react-icons/io5';
 import { BANK_INFO } from '../../utils/constants';
 
 const methods = [
@@ -19,6 +19,12 @@ const methods = [
     label: 'Efectivo contra entrega',
     icon: <IoCash size={24} />,
     description: 'Paga al recibir tu pedido',
+  },
+  {
+    id: 'tarjeta',
+    label: 'Tarjeta de crédito/débito',
+    icon: <IoCard size={24} />,
+    description: 'Paga de forma segura con Stripe',
   },
 ];
 
@@ -52,6 +58,7 @@ const PaymentMethodSelector = ({ selected, onChange }) => {
         </label>
       ))}
 
+      {/* Datos bancarios para transferencia */}
       {selected === 'transferencia' && (
         <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mt-3">
           <h4 className="font-semibold text-blue-800 mb-2">Datos bancarios</h4>
@@ -61,6 +68,16 @@ const PaymentMethodSelector = ({ selected, onChange }) => {
             <p><span className="font-medium">Cuenta:</span> {BANK_INFO.numero}</p>
             <p><span className="font-medium">Tipo:</span> {BANK_INFO.tipo}</p>
           </div>
+        </div>
+      )}
+
+      {/* Aviso para tarjeta */}
+      {selected === 'tarjeta' && (
+        <div className="bg-brand-primary/5 border border-brand-primary/20 rounded-xl p-4 mt-3">
+          <p className="text-sm text-brand-secondary">
+            🔒 Tu pago es procesado de forma segura por <strong>Stripe</strong>.
+            Al continuar, se te solicitarán los datos de tu tarjeta.
+          </p>
         </div>
       )}
     </div>

@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useEffect, useRef } from 'react';
 import { toast } from 'react-toastify';
 import { useAuth } from './AuthContext';
 import useServerCart from '../hooks/useServerCart';
@@ -9,18 +9,21 @@ const LIMITS = { maxQuantityPerItem: 99 };
 const CartContext = createContext();
 
 // ─── Carrito local (sin login) ───
-const LocalCartProvider = ({ children }) => {
+const LocalCartProvider = ({ children, onItemsRef }) => {
   const [items, setItems] = useState([]);
+
+  // Exponemos los items locales via ref para que CartProvider los pueda leer
+  // justo antes de cambiar al ServerCartProvider
+  useEffect(() => {
+    if (onItemsRef) onItemsRef.current = items;
+  }, [items, onItemsRef]);
 
   const addItem = (product, quantity = 1) => {
     setItems((prev) => {
       const id = getProductId(product);
       const existing = prev.find((i) => getProductId(i.product) === id);
       if (existing) {
-        const newQty = Math.min(
-          existing.quantity + quantity,
-          LIMITS.maxQuantityPerItem
-        );
+        const newQty = Math.min(existing.quantity + quantity, LIMITS.maxQuantityPerItem);
         toast.success(`${product.name} actualizado en el carrito`);
         return prev.map((i) =>
           getProductId(i.product) === id ? { ...i, quantity: newQty } : i
@@ -32,27 +35,18 @@ const LocalCartProvider = ({ children }) => {
   };
 
   const removeItem = (productId) => {
-    setItems((prev) =>
-      prev.filter((i) => getProductId(i.product) !== productId)
-    );
+    setItems((prev) => prev.filter((i) => getProductId(i.product) !== productId));
     toast.info('Producto eliminado del carrito');
   };
 
   const updateQuantity = (productId, quantity) => {
-    if (quantity <= 0) {
-      removeItem(productId);
-      return;
-    }
+    if (quantity <= 0) { removeItem(productId); return; }
     setItems((prev) =>
-      prev.map((i) =>
-        getProductId(i.product) === productId ? { ...i, quantity } : i
-      )
+      prev.map((i) => getProductId(i.product) === productId ? { ...i, quantity } : i)
     );
   };
 
-  const clearCart = () => {
-    setItems([]);
-  };
+  const clearCart = () => setItems([]);
 
   const subtotal = items.reduce((sum, i) => {
     const price = i.product.discount
@@ -60,6 +54,8 @@ const LocalCartProvider = ({ children }) => {
       : i.product.price || 0;
     return sum + price * i.quantity;
   }, 0);
+
+  const itemCount = items.reduce((s, i) => s + i.quantity, 0);
 
   return (
     <CartContext.Provider
@@ -69,7 +65,8 @@ const LocalCartProvider = ({ children }) => {
         removeItem,
         updateQuantity,
         clearCart,
-        itemCount: items.reduce((s, i) => s + i.quantity, 0),
+        itemCount,
+        totalItems: itemCount,
         subtotal,
         isLoading: false,
       }}
@@ -80,8 +77,25 @@ const LocalCartProvider = ({ children }) => {
 };
 
 // ─── Carrito del servidor (con login) ───
-const ServerCartProvider = ({ children }) => {
+const ServerCartProvider = ({ children, pendingItems }) => {
   const serverCart = useServerCart();
+  const transferredRef = useRef(false);
+
+  // Transferir items locales al servidor una sola vez al montar
+  useEffect(() => {
+    if (transferredRef.current) return;
+    if (!pendingItems || pendingItems.length === 0) return;
+    if (serverCart.isLoading) return; // esperar a que cargue el carrito del servidor
+
+    transferredRef.current = true;
+    pendingItems.forEach((item) => {
+      const productId = getProductId(item.product);
+      if (productId) {
+        serverCart.addItem(item.product, item.quantity);
+      }
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [serverCart.isLoading]);
 
   const updateQuantity = (productId, quantity) => {
     if (quantity <= 0) {
@@ -100,6 +114,7 @@ const ServerCartProvider = ({ children }) => {
         updateQuantity,
         clearCart: serverCart.clearCart,
         itemCount: serverCart.itemCount,
+        totalItems: serverCart.itemCount,
         subtotal: serverCart.subtotal,
         isLoading: serverCart.isLoading,
       }}
@@ -112,11 +127,22 @@ const ServerCartProvider = ({ children }) => {
 // ─── Provider principal (elige según auth) ───
 export const CartProvider = ({ children }) => {
   const { isAuthenticated } = useAuth();
+  // Ref para capturar los items locales justo antes de que el usuario se autentique
+  const localItemsRef = useRef([]);
 
   if (isAuthenticated) {
-    return <ServerCartProvider>{children}</ServerCartProvider>;
+    return (
+      <ServerCartProvider pendingItems={localItemsRef.current}>
+        {children}
+      </ServerCartProvider>
+    );
   }
-  return <LocalCartProvider>{children}</LocalCartProvider>;
+
+  return (
+    <LocalCartProvider onItemsRef={localItemsRef}>
+      {children}
+    </LocalCartProvider>
+  );
 };
 
 export const useCart = () => {

@@ -18,7 +18,8 @@ const useServerCart = () => {
     },
   });
 
-  const items = cartData?.items || [];
+  // El backend devuelve { cart: { items: [...] } }, pero también soportamos { items: [...] }
+  const items = cartData?.cart?.items || cartData?.items || [];
   const subtotal = items.reduce((acc, item) => {
     const price = item.product?.discount
       ? Math.round(item.product.price * (1 - item.product.discount / 100))

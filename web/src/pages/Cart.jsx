@@ -1,14 +1,15 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { IoArrowBack, IoClose } from 'react-icons/io5';
+import { Link, useNavigate } from 'react-router-dom';
+import { IoArrowBack, IoClose, IoLockClosed, IoLogoWhatsapp } from 'react-icons/io5';
 import { toast } from 'react-toastify';
 
 import { useCart } from '../contexts/CartContext';
+import { useAuth } from '../contexts/AuthContext';
 import { formatCurrency } from '../utils/formatters';
 import { IVA_RATE, CONTACT_INFO } from '../utils/constants';
 
 const SHIPPING_COST = 10000;
-const promotions = [
+const FALLBACK_PROMOS = [
   { code: 'BIENVENIDO10', discountPercent: 10, active: true },
   { code: 'PALITO15', discountPercent: 15, active: true },
 ];
@@ -23,15 +24,16 @@ import Modal from '../components/common/Modal';
 
 const Cart = () => {
   const { items, subtotal, totalItems } = useCart();
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
 
   const [couponCode, setCouponCode] = useState('');
   const [appliedCoupon, setAppliedCoupon] = useState(null);
   const [couponError, setCouponError] = useState('');
-  const [showCheckoutModal, setShowCheckoutModal] = useState(false);
   const [includeShipping, setIncludeShipping] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
 
-  // IVA ya está incluido en el precio del producto
-  // Desglose: base = precio * (1 - IVA_RATE), iva = precio * IVA_RATE
+  // Cálculo de totales
   const couponDiscount = appliedCoupon
     ? Math.round(subtotal * (appliedCoupon.discountPercent / 100))
     : 0;
@@ -44,18 +46,13 @@ const Cart = () => {
   const handleApplyCoupon = () => {
     const code = couponCode.trim().toUpperCase();
     if (!code) return;
-
-    const promo = promotions.find(
-      (p) => p.code === code && p.active === true
-    );
-
+    const promo = FALLBACK_PROMOS.find((p) => p.code === code && p.active);
     if (promo) {
       setAppliedCoupon(promo);
       setCouponError('');
       toast.success(`Cupón "${promo.code}" aplicado: ${promo.discountPercent}% de descuento`);
     } else {
       setCouponError('Cupón inválido o expirado');
-      toast.error('Cupón inválido o expirado');
     }
   };
 
@@ -63,7 +60,25 @@ const Cart = () => {
     setAppliedCoupon(null);
     setCouponCode('');
     setCouponError('');
-    toast.info('Cupón removido');
+  };
+
+  /**
+   * method: 'tarjeta' | 'otros' | null
+   * - 'tarjeta' → checkout preseleccionado con Stripe
+   * - 'otros'   → checkout en step de selección de método (tranferencia/QR/efectivo)
+   * - null      → usuario no autenticado → modal de login
+   */
+  const handleCheckout = (method) => {
+    if (!isAuthenticated) {
+      setShowLoginModal(true);
+      return;
+    }
+    if (method === 'tarjeta') {
+      navigate('/checkout', { state: { paymentMethod: 'tarjeta' } });
+    } else {
+      // 'otros': abre checkout normal sin preselección
+      navigate('/checkout');
+    }
   };
 
   const buildWhatsAppMessage = () => {
@@ -75,13 +90,9 @@ const Cart = () => {
       msg += `- ${item.product.name} x${item.quantity} = ${formatCurrency(price * item.quantity)}\n`;
     });
     msg += `\nSubtotal (sin IVA): ${formatCurrency(baseWithoutIva)}`;
-    if (appliedCoupon) {
-      msg += `\nCupón (${appliedCoupon.code}): -${formatCurrency(couponDiscount)}`;
-    }
+    if (appliedCoupon) msg += `\nCupón (${appliedCoupon.code}): -${formatCurrency(couponDiscount)}`;
     msg += `\nIVA (19%): ${formatCurrency(iva)}`;
-    if (includeShipping) {
-      msg += `\nEnvío: ${formatCurrency(shipping)}`;
-    }
+    if (includeShipping) msg += `\nEnvío: ${formatCurrency(shipping)}`;
     msg += `\n*Total: ${formatCurrency(total)}*`;
     return encodeURIComponent(msg);
   };
@@ -105,7 +116,6 @@ const Cart = () => {
         Volver al catálogo
       </Link>
 
-      {/* Title */}
       <div className="flex items-center gap-3 mb-8">
         <h1 className="text-2xl font-bold text-gray-800">Mi Carrito</h1>
         <Badge variant="primary" size="sm">
@@ -113,21 +123,18 @@ const Cart = () => {
         </Badge>
       </div>
 
-      {/* Grid Layout */}
       <div className="grid gap-8 lg:grid-cols-3">
-        {/* Left Column - Cart Items */}
+        {/* Columna izquierda */}
         <div className="lg:col-span-2">
-          {/* Items List */}
           <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
             {items.map((item) => (
               <CartItem key={item.product._id || item.product.id} item={item} />
             ))}
           </div>
 
-          {/* Coupon Section */}
+          {/* Cupón */}
           <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 mt-4">
             <h3 className="font-medium text-gray-700 mb-3">Cupón de descuento</h3>
-
             {appliedCoupon ? (
               <div className="flex items-center gap-2">
                 <Badge variant="success" size="md">
@@ -146,30 +153,37 @@ const Cart = () => {
                 <Input
                   placeholder="Ingresa tu cupón"
                   value={couponCode}
-                  onChange={(e) => {
-                    setCouponCode(e.target.value);
-                    setCouponError('');
-                  }}
+                  onChange={(e) => { setCouponCode(e.target.value); setCouponError(''); }}
                   error={couponError}
                   size="sm"
                   containerClassName="flex-1"
                   onKeyDown={(e) => e.key === 'Enter' && handleApplyCoupon()}
                 />
-                <Button
-                  variant="primary"
-                  size="sm"
-                  outline
-                  onClick={handleApplyCoupon}
-                  className="shrink-0"
-                >
+                <Button variant="primary" size="sm" outline onClick={handleApplyCoupon} className="shrink-0">
                   Aplicar
                 </Button>
               </div>
             )}
           </div>
+
+          {/* WhatsApp alternativo */}
+          <div className="bg-green-50 border border-green-200 rounded-lg p-4 mt-4 flex items-start gap-3">
+            <IoLogoWhatsapp size={22} className="text-green-600 flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="text-sm font-medium text-green-800">¿Prefieres pedir por WhatsApp?</p>
+              <a
+                href={`https://wa.me/${CONTACT_INFO.phone}?text=${buildWhatsAppMessage()}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm text-green-700 hover:underline"
+              >
+                Enviar pedido por WhatsApp →
+              </a>
+            </div>
+          </div>
         </div>
 
-        {/* Right Column - Order Summary */}
+        {/* Columna derecha - Resumen */}
         <div className="lg:col-span-1">
           <OrderSummary
             baseWithoutIva={baseWithoutIva}
@@ -180,67 +194,38 @@ const Cart = () => {
             shipping={shipping}
             iva={iva}
             total={total}
-            onCheckout={() => setShowCheckoutModal(true)}
+            onCheckout={handleCheckout}
+            isAuthenticated={isAuthenticated}
           />
         </div>
       </div>
 
-      {/* Checkout Modal */}
+      {/* Modal: sesión requerida */}
       <Modal
-        isOpen={showCheckoutModal}
-        onClose={() => setShowCheckoutModal(false)}
-        title="Confirmar Pedido"
+        isOpen={showLoginModal}
+        onClose={() => setShowLoginModal(false)}
+        title="Inicia sesión para continuar"
+        size="sm"
       >
         <div className="space-y-4">
-          <p className="text-gray-600">
-            El checkout completo estará disponible próximamente. Por ahora,
-            puedes realizar tu pedido a través de WhatsApp.
-          </p>
-
-          <div className="bg-gray-50 rounded-lg p-4 text-sm space-y-1">
-            <div className="flex justify-between">
-              <span>Subtotal (sin IVA)</span>
-              <span>{formatCurrency(baseWithoutIva)}</span>
-            </div>
-            {appliedCoupon && (
-              <div className="flex justify-between text-green-600">
-                <span>Descuento</span>
-                <span>-{formatCurrency(couponDiscount)}</span>
-              </div>
-            )}
-            <div className="flex justify-between">
-              <span>IVA (19%)</span>
-              <span>{formatCurrency(iva)}</span>
-            </div>
-            {includeShipping && (
-              <div className="flex justify-between">
-                <span>Envío</span>
-                <span>{formatCurrency(shipping)}</span>
-              </div>
-            )}
-            <div className="divider my-1"></div>
-            <div className="flex justify-between font-bold text-base">
-              <span>Total</span>
-              <span>{formatCurrency(total)}</span>
-            </div>
+          <div className="flex justify-center py-2">
+            <IoLockClosed size={48} className="text-brand-primary opacity-60" />
           </div>
-
+          <p className="text-gray-600 text-center text-sm">
+            Para proceder al pago necesitas tener una cuenta.
+            Tus productos del carrito se guardarán.
+          </p>
           <div className="flex flex-col gap-2 pt-2">
-            <a
-              href={`https://wa.me/${CONTACT_INFO.phone}?text=${buildWhatsAppMessage()}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn btn-success btn-block"
-            >
-              Pedir por WhatsApp
-            </a>
-            <Button
-              variant="ghost"
-              fullWidth
-              onClick={() => setShowCheckoutModal(false)}
-            >
-              Cerrar
-            </Button>
+            <Link to="/login" state={{ from: { pathname: '/checkout' } }}>
+              <Button variant="primary" fullWidth onClick={() => setShowLoginModal(false)}>
+                Iniciar sesión
+              </Button>
+            </Link>
+            <Link to="/registro" state={{ from: { pathname: '/checkout' } }}>
+              <Button variant="ghost" fullWidth onClick={() => setShowLoginModal(false)}>
+                Crear cuenta gratis
+              </Button>
+            </Link>
           </div>
         </div>
       </Modal>

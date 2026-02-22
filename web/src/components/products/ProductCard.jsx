@@ -36,7 +36,7 @@ const ProductCard = ({ product }) => {
 
       <div className="p-4">
         <Link to={`/producto/${getProductId(product)}`}>
-          <h3 className="font-serif font-bold text-text-primary hover:text-brand-primary transition-colors line-clamp-2 text-lg">
+          <h3 className="font-bold text-text-primary hover:text-brand-primary transition-colors line-clamp-2 text-lg">
             {product.name}
           </h3>
         </Link>

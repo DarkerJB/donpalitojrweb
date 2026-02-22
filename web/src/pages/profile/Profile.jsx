@@ -12,6 +12,16 @@ import Input from '../../components/common/Input';
 import Button from '../../components/common/Button';
 import Modal from '../../components/common/Modal';
 
+const noNumbers = (e) => {
+  if (/\d/.test(e.key)) e.preventDefault();
+};
+
+const onlyNumbers = (e) => {
+  if (!/[\d]/.test(e.key) && !['Backspace', 'Delete', 'Tab', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+    e.preventDefault();
+  }
+};
+
 const Profile = () => {
   const { user, updateProfile, logout } = useAuth();
   const [activeTab, setActiveTab] = useState('info');
@@ -119,6 +129,7 @@ const Profile = () => {
               label="Nombre"
               error={profileErrors.name?.message}
               required
+              onKeyDown={noNumbers}
               {...registerProfile('name')}
             />
             <Input
@@ -130,7 +141,10 @@ const Profile = () => {
             />
             <Input
               label="Teléfono"
+              type="tel"
               placeholder="3001234567"
+              maxLength={10}
+              onKeyDown={onlyNumbers}
               error={profileErrors.phone?.message}
               {...registerProfile('phone')}
             />

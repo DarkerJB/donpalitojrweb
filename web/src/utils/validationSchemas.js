@@ -1,5 +1,9 @@
 import * as yup from 'yup';
 
+// Regex reutilizables
+const SOLO_LETRAS = /^[a-zA-ZÀ-ÿ\s]+$/;
+const TELEFONO_CO = /^3\d{9}$/;
+
 // ============ SCHEMAS DE AUTENTICACIÓN ============
 
 export const loginSchema = yup.object({
@@ -16,7 +20,8 @@ export const registerSchema = yup.object({
   name: yup
     .string()
     .required('El nombre es obligatorio')
-    .min(3, 'El nombre debe tener al menos 3 caracteres'),
+    .min(3, 'El nombre debe tener al menos 3 caracteres')
+    .matches(SOLO_LETRAS, 'El nombre solo puede contener letras'),
   email: yup
     .string()
     .required('El email es obligatorio')
@@ -64,14 +69,15 @@ export const profileSchema = yup.object({
   name: yup
     .string()
     .required('El nombre es obligatorio')
-    .min(3, 'El nombre debe tener al menos 3 caracteres'),
+    .min(3, 'El nombre debe tener al menos 3 caracteres')
+    .matches(SOLO_LETRAS, 'El nombre solo puede contener letras'),
   email: yup
     .string()
     .required('El email es obligatorio')
     .email('Ingresa un email válido'),
   phone: yup
     .string()
-    .matches(/^3\d{9}$/, 'Ingresa un teléfono colombiano válido (10 dígitos)')
+    .matches(TELEFONO_CO, 'Ingresa un teléfono colombiano válido (10 dígitos, empieza por 3)')
     .nullable()
     .transform((value) => value || null),
 });
@@ -82,17 +88,19 @@ export const addressSchema = yup.object({
     .required('Selecciona un tipo de dirección'),
   fullName: yup
     .string()
-    .required('El nombre completo es obligatorio'),
+    .required('El nombre completo es obligatorio')
+    .matches(SOLO_LETRAS, 'El nombre solo puede contener letras'),
   streetAddress: yup
     .string()
     .required('La dirección es obligatoria'),
   city: yup
     .string()
-    .required('La ciudad es obligatoria'),
+    .required('La ciudad es obligatoria')
+    .matches(SOLO_LETRAS, 'La ciudad solo puede contener letras'),
   phoneNumber: yup
     .string()
     .required('El teléfono es obligatorio')
-    .matches(/^3\d{9}$/, 'Ingresa un teléfono colombiano válido'),
+    .matches(TELEFONO_CO, 'Teléfono colombiano válido (10 dígitos, empieza por 3)'),
   isDefault: yup.boolean(),
 });
 
@@ -118,7 +126,8 @@ export const changePasswordSchema = yup.object({
 export const contactSchema = yup.object({
   name: yup
     .string()
-    .required('El nombre es obligatorio'),
+    .required('El nombre es obligatorio')
+    .matches(SOLO_LETRAS, 'El nombre solo puede contener letras'),
   email: yup
     .string()
     .required('El email es obligatorio')

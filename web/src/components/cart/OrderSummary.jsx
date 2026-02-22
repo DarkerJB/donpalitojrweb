@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { IoCard, IoCash, IoLockClosed } from 'react-icons/io5';
 import { formatCurrency } from '../../utils/formatters';
 import Button from '../common/Button';
 import Card from '../common/Card';
@@ -13,6 +14,7 @@ const OrderSummary = ({
   iva,
   total,
   onCheckout,
+  isAuthenticated,
 }) => {
   return (
     <div className="sticky top-24">
@@ -39,7 +41,6 @@ const OrderSummary = ({
             <span className="font-medium">{formatCurrency(iva)}</span>
           </div>
 
-          {/* Envío opcional */}
           <div className="flex items-center justify-between">
             <label className="flex items-center gap-2 cursor-pointer">
               <input
@@ -64,9 +65,43 @@ const OrderSummary = ({
         </div>
 
         <div className="mt-6 space-y-3">
-          <Button variant="primary" fullWidth onClick={onCheckout}>
-            Proceder al Pago
-          </Button>
+          {isAuthenticated ? (
+            <>
+              {/* Pagar con tarjeta (Stripe) */}
+              <Button
+                variant="primary"
+                fullWidth
+                icon={<IoCard size={18} />}
+                onClick={() => onCheckout('tarjeta')}
+              >
+                Pagar con tarjeta
+              </Button>
+
+              {/* Otros métodos (transferencia, QR, efectivo) */}
+              <Button
+                variant="primary"
+                outline
+                fullWidth
+                icon={<IoCash size={18} />}
+                onClick={() => onCheckout('otros')}
+              >
+                Otros métodos de pago
+              </Button>
+            </>
+          ) : (
+            /* No autenticado */
+            <Button
+              variant="primary"
+              fullWidth
+              onClick={() => onCheckout(null)}
+            >
+              <span className="flex items-center justify-center gap-2">
+                <IoLockClosed size={16} />
+                Iniciar sesión para pagar
+              </span>
+            </Button>
+          )}
+
           <Link
             to="/catalogo"
             className="block text-center text-sm text-brand-primary hover:underline"

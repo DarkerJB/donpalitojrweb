@@ -22,7 +22,7 @@ api.interceptors.request.use(
   async (config) => {
     if (_getToken) {
       try {
-        const token = await _getToken({ template: 'web-app-token' });
+        const token = await _getToken();
         if (token) {
           config.headers.Authorization = `Bearer ${token}`;
         }

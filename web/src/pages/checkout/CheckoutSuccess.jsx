@@ -5,6 +5,7 @@ import Button from '../../components/common/Button';
 const CheckoutSuccess = () => {
   const location = useLocation();
   const orderId = location.state?.orderId;
+  const paymentIntentId = location.state?.paymentIntentId;
 
   return (
     <div className="min-h-[70vh] flex items-center justify-center px-4">
@@ -21,8 +22,19 @@ const CheckoutSuccess = () => {
 
           {orderId && (
             <p className="text-lg font-semibold text-brand-primary mb-6">
-              Número de pedido: {orderId}
+              Número de pedido: <span className="font-mono text-sm">{orderId}</span>
             </p>
+          )}
+
+          {paymentIntentId && !orderId && (
+            <div className="bg-green-50 border border-green-200 rounded-xl p-4 mb-6">
+              <p className="text-sm text-green-700 font-medium">
+                ✅ Pago con tarjeta procesado correctamente
+              </p>
+              <p className="text-xs text-green-600 mt-1">
+                Tu pedido quedará registrado en breve. Puedes verlo en "Mis Pedidos".
+              </p>
+            </div>
           )}
 
           <p className="text-sm text-gray-400 mb-8">
@@ -30,13 +42,11 @@ const CheckoutSuccess = () => {
           </p>
 
           <div className="space-y-3">
-            {orderId && (
-              <Link to={`/perfil/pedidos/${orderId}`}>
-                <Button variant="primary" fullWidth icon={<IoReceiptOutline size={18} />}>
-                  Ver mi pedido
-                </Button>
-              </Link>
-            )}
+            <Link to="/perfil/pedidos">
+              <Button variant="primary" fullWidth icon={<IoReceiptOutline size={18} />}>
+                Ver mis pedidos
+              </Button>
+            </Link>
             <Link to="/catalogo">
               <Button variant="ghost" fullWidth icon={<IoStorefront size={18} />}>
                 Seguir comprando

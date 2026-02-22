@@ -15,7 +15,7 @@
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Merriweather', Georgia, serif;
+    font-family: 'Inter', system-ui, sans-serif;
     @apply text-text-primary;
   }
 }
@@ -203,6 +203,22 @@ select:focus {
   @apply focus:border-brand-primary focus:ring-2 focus:ring-brand-primary focus:ring-opacity-20;
 }
 
+/* DaisyUI input-bordered: fondo blanco y borde brand */
+.input.input-bordered,
+.textarea.textarea-bordered,
+.select.select-bordered {
+  background-color: #FFFFFF;
+  border-color: rgba(91, 58, 41, 0.2);
+}
+
+.input.input-bordered:focus,
+.textarea.textarea-bordered:focus,
+.select.select-bordered:focus {
+  border-color: #B06A4A;
+  outline-color: #B06A4A;
+  box-shadow: 0 0 0 3px rgba(176, 106, 74, 0.1);
+}
+
 /* ========== BUTTONS ========== */
 
 .btn-primary {
@@ -223,6 +239,31 @@ select:focus {
 .btn-outline {
   @apply border-2 border-brand-primary text-brand-primary px-6 py-2 rounded-lg font-medium;
   @apply hover:bg-brand-primary hover:text-white transition-all duration-300;
+}
+
+/* DaisyUI btn-outline btn-primary: garantizar visibilidad del texto */
+.btn.btn-outline.btn-primary {
+  color: #B06A4A;
+  border-color: #B06A4A;
+  background-color: transparent;
+}
+
+.btn.btn-outline.btn-primary:hover {
+  background-color: #B06A4A;
+  color: #FFFFFF;
+  border-color: #B06A4A;
+}
+
+/* DaisyUI btn-outline btn-error: rojo visible */
+.btn.btn-outline.btn-error {
+  color: #F87272;
+  border-color: #F87272;
+  background-color: transparent;
+}
+
+.btn.btn-outline.btn-error:hover {
+  background-color: #F87272;
+  color: #FFFFFF;
 }
 
 /* ========== SKELETON LOADER ========== */
@@ -264,7 +305,7 @@ select:focus {
 /* ========== BACKDROP BLUR ========== */
 
 .backdrop-blur-nav {
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  background-color: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  background-color: rgba(255, 255, 255, 0.75);
 }

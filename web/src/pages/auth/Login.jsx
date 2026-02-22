@@ -120,8 +120,8 @@ const Login = () => {
           afterSignInUrl="/post-login"
           appearance={{
             elements: {
-              headerTitle: 'Iniciar Sesión',
-              headerSubtitle: 'Bienvenido de vuelta a Don Palito Jr.',
+              headerTitle: { display: 'none' },
+              headerSubtitle: { display: 'none' },
             },
           }}
         />

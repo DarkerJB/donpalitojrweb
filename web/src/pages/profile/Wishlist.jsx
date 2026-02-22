@@ -48,7 +48,7 @@ const Wishlist = () => {
             Volver al perfil
           </Button>
         </Link>
-        <h1 className="font-serif text-2xl font-bold text-text-primary">
+        <h1 className="text-2xl font-bold text-text-primary">
           Mis Favoritos
         </h1>
         {wishlistProducts.length > 0 && (

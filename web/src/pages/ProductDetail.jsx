@@ -108,7 +108,7 @@ const ProductDetail = () => {
             </Badge>
           )}
 
-          <h1 className="font-serif text-3xl font-bold text-text-primary">
+          <h1 className="text-3xl font-bold text-text-primary">
             {product.name}
           </h1>
 

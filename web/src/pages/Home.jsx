@@ -23,7 +23,7 @@ const Home = () => {
       <section className="relative overflow-hidden gradient-primary py-20 text-white lg:py-32">
         <div className="container relative z-10">
           <div className="max-w-2xl">
-            <h1 className="font-serif text-4xl font-black leading-tight lg:text-6xl">
+            <h1 className="font-sanstext-4xl font-black leading-tight lg:text-6xl">
               El sabor auténtico de{' '}
               <span className="text-ui-background">Colombia</span>
             </h1>
@@ -91,7 +91,7 @@ const Home = () => {
       <section className="py-16 bg-white">
         <div className="container">
           <div className="mb-10 text-center">
-            <h2 className="font-serif text-3xl font-bold text-text-primary">
+            <h2 className="font-sanstext-3xl font-bold text-text-primary">
               Nuestros Favoritos
             </h2>
             <p className="mt-2 text-text-secondary">
@@ -112,9 +112,9 @@ const Home = () => {
           <div className="mt-10 text-center">
             <Link to="/catalogo">
               <Button
-                variant="outline"
+                variant="primary"
+                outline
                 size="lg"
-                className="btn-outline"
               >
                 Ver Todo el Catálogo
                 <IoArrowForward className="ml-2 h-4 w-4" />
@@ -127,7 +127,7 @@ const Home = () => {
       {/* Google Maps */}
       <section className="py-16 bg-white">
         <div className="container text-center">
-          <h2 className="mb-6 font-serif text-3xl font-bold text-text-primary">
+          <h2 className="mb-6 font-sanstext-3xl font-bold text-text-primary">
             Encuéntranos
           </h2>
           <div className="mx-auto max-w-4xl overflow-hidden rounded-lg border-2 border-ui-border shadow-lg">

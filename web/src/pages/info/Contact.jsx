@@ -7,6 +7,10 @@ import { CONTACT_INFO } from '../../utils/constants';
 import Input from '../../components/common/Input';
 import Button from '../../components/common/Button';
 
+const noNumbers = (e) => {
+  if (/\d/.test(e.key)) e.preventDefault();
+};
+
 const Contact = () => {
   const {
     register,
@@ -55,6 +59,7 @@ const Contact = () => {
               placeholder="Tu nombre"
               error={errors.name?.message}
               required
+              onKeyDown={noNumbers}
               {...register('name')}
             />
             <Input
