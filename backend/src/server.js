@@ -32,10 +32,12 @@ const corsOptions = {
         }
         
         const allowedOrigins = [
-          'http://localhost:5173',           // Dashboard web
+          'http://localhost:5173',           // Admin / Dashboard web
+          'http://localhost:5174',           // Frontend web (puerto alternativo)
           'http://localhost:3000',           // Mismo servidor
           'http://localhost:8081',           // Expo metro bundler
           'http://127.0.0.1:5173',          // Alternativa localhost
+          'http://127.0.0.1:5174',          // Alternativa localhost
           'http://10.0.2.2:3000',           // Emulador Android
           'http://10.0.2.2:8081',           // Expo en emulador
         ];

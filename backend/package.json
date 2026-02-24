@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon src/server.js",
-    "inngest": "inngest dev -u http://localhost:3000/api/inngest",
+    "inngest": "npx inngest-cli@latest dev -u http://localhost:3000/api/inngest",
     "dev:all": "concurrently \"npm run dev\" \"npm run inngest\"",
     "seed:products": "node src/seeds/index.js"
   },
@@ -27,6 +27,7 @@
     "stripe": "^19.3.1"
   },
   "devDependencies": {
+    "concurrently": "^9.2.1",
     "nodemon": "^3.1.11"
   }
 }
