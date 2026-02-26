@@ -147,3 +147,119 @@ export async function getWishlist(req, res) {
         return res.status(500).json({ error: "Internal server error" });
     }
 }
+
+export async function getProfile(req, res) {
+    try {
+        const user = req.user;
+        return res.status(200).json({
+            name: user.name,
+            email: user.email,
+            imageUrl: user.imageUrl,
+            emailNotifications: user.emailNotifications,
+            marketingEmails: user.marketingEmails,
+            documentType: user.documentType,
+            documentNumber: user.documentNumber,
+            gender: user.gender,
+            dateOfBirth: user.dateOfBirth,
+        });
+    } catch (error) {
+        console.error("Error in getProfile controller:", error);
+        return res.status(500).json({ error: "Internal server error" });
+    }
+}
+
+export async function updateProfile(req, res) {
+    try {
+        const { documentType, documentNumber, gender, dateOfBirth } = req.body;
+
+        const VALID_DOCUMENT_TYPES = ["cedula_ciudadania", "cedula_extranjeria", "pasaporte"];
+        const VALID_GENDERS = ["masculino", "femenino", "otro"];
+
+        if (documentType && !VALID_DOCUMENT_TYPES.includes(documentType)) {
+            return res.status(400).json({ error: "Tipo de documento inválido" });
+        }
+
+        if (gender && !VALID_GENDERS.includes(gender)) {
+            return res.status(400).json({ error: "Género inválido" });
+        }
+
+        if (dateOfBirth) {
+            const parsed = new Date(dateOfBirth);
+            if (isNaN(parsed.getTime())) {
+                return res.status(400).json({ error: "Fecha de nacimiento inválida" });
+            }
+            if (parsed > new Date()) {
+                return res.status(400).json({ error: "La fecha de nacimiento no puede ser futura" });
+            }
+        }
+
+        const updateFields = {};
+        if (documentType !== undefined) updateFields.documentType = documentType;
+        if (documentNumber !== undefined) updateFields.documentNumber = documentNumber != null ? documentNumber.trim() : "";
+        if (gender !== undefined) updateFields.gender = gender;
+        if (dateOfBirth !== undefined) updateFields.dateOfBirth = dateOfBirth ? new Date(dateOfBirth) : null;
+
+        const user = await User.findByIdAndUpdate(
+            req.user._id,
+            { $set: updateFields },
+            { new: true }
+        );
+
+        if (!user) {
+            return res.status(404).json({ error: "Usuario no encontrado" });
+        }
+
+        return res.status(200).json({
+            message: "Perfil actualizado correctamente",
+            documentType: user.documentType,
+            documentNumber: user.documentNumber,
+            gender: user.gender,
+            dateOfBirth: user.dateOfBirth,
+        });
+    } catch (error) {
+        console.error("Error in updateProfile controller:", error);
+        return res.status(500).json({ error: "Internal server error" });
+    }
+}
+
+export async function updateNotificationPreferences(req, res) {
+    try {
+        const { emailNotifications, marketingEmails } = req.body;
+
+        const updateFields = {};
+        if (emailNotifications !== undefined) updateFields.emailNotifications = emailNotifications;
+        if (marketingEmails !== undefined) updateFields.marketingEmails = marketingEmails;
+
+        const user = await User.findByIdAndUpdate(
+            req.user._id,
+            { $set: updateFields },
+            { new: true }
+        );
+
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        return res.status(200).json({
+            message: "Notification preferences updated successfully",
+            emailNotifications: user.emailNotifications,
+            marketingEmails: user.marketingEmails,
+        });
+    } catch (error) {
+        console.error("Error updating notification preferences:", error);
+        return res.status(500).json({ error: "Internal server error" });
+    }
+}
+
+export async function deactivateAccount(req, res) {
+    try {
+        const user = req.user;
+
+        await User.findByIdAndUpdate(user._id, { $set: { isActive: false } });
+
+        return res.status(200).json({ message: "Account deactivated successfully" });
+    } catch (error) {
+        console.error("Error in deactivateAccount controller:", error);
+        return res.status(500).json({ error: "Internal server error" });
+    }
+}

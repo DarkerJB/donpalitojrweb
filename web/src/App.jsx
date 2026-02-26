@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ClerkProvider } from '@clerk/clerk-react';
+import { esES } from '@clerk/localizations';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -149,22 +150,7 @@ function App() {
   return (
     <ClerkProvider
       publishableKey={CLERK_KEY}
-      localization={{
-        signIn: {
-          start: {
-            subtitle: 'Inicia sesión para continuar',
-            actionText: '¿No tienes una cuenta?',
-            actionLink: 'Regístrate',
-          },
-        },
-        signUp: {
-          start: {
-            subtitle: 'Crea tu cuenta en Don Palito Jr.',
-            actionText: '¿Ya tienes una cuenta?',
-            actionLink: 'Inicia sesión',
-          },
-        },
-      }}
+      localization={esES}
     >
       <QueryClientProvider client={queryClient}>
         {/* Sincroniza el getter de token de Clerk con el interceptor de axios */}

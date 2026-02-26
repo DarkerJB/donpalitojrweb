@@ -261,8 +261,8 @@ const Profile = () => {
                 </label>
                 <select className="select select-bordered w-full" {...registerDemographic('documentType')}>
                   <option value="">Seleccionar...</option>
-                  <option value="cedula">Cédula de ciudadanía</option>
-                  <option value="extranjeria">Cédula de extranjería</option>
+                  <option value="cedula_ciudadania">Cédula de ciudadanía</option>
+                  <option value="cedula_extranjeria">Cédula de extranjería</option>
                   <option value="pasaporte">Pasaporte</option>
                 </select>
               </div>
@@ -281,7 +281,6 @@ const Profile = () => {
                   <option value="masculino">Masculino</option>
                   <option value="femenino">Femenino</option>
                   <option value="otro">Otro</option>
-                  <option value="prefiero_no_decir">Prefiero no decir</option>
                 </select>
               </div>
               <Input

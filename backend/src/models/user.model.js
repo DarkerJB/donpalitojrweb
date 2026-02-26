@@ -57,7 +57,38 @@ const userSchema = new mongoose.Schema(
                 type: mongoose.Schema.Types.ObjectId,
                 ref: "Product",
             },
-        ],    
+        ],
+        isActive: {
+            type: Boolean,
+            default: true,
+        },
+        emailNotifications: {
+            type: Boolean,
+            default: true,
+        },
+        marketingEmails: {
+            type: Boolean,
+            default: false,
+        },
+        documentType: {
+            type: String,
+            enum: ["cedula_ciudadania", "cedula_extranjeria", "pasaporte"],
+        },
+        documentNumber: {
+            type: String,
+            default: "",
+        },
+        gender: {
+            type: String,
+            enum: ["masculino", "femenino", "otro"],
+        },
+        dateOfBirth: {
+            type: Date,
+        },
+        phone: {
+            type: String,
+            default: "",
+        },
     },
     {
         timestamps: true,

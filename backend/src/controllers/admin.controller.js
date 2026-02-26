@@ -2,7 +2,17 @@ import cloudinary from "../config/cloudinary.js";
 import { Product } from "../models/product.model.js";
 import { Order } from "../models/order.model.js";
 import { User } from "../models/user.model.js";
+import { sendOrderUpdatedAdminEmail, sendOrderUpdatedClientEmail, sendInvoiceEmails } from "../services/email.service.js";
+import { generateInvoicePDF, generateInvoiceCSV } from "../services/invoice.service.js";
 
+const VALID_STATUSES = ["pending", "paid", "in_preparation", "ready", "delivered", "canceled", "rejected"];
+
+const inferPaymentMethod = (paymentResultId = "") => {
+    if (paymentResultId.startsWith("pi_"))       return "stripe";
+    if (paymentResultId.startsWith("transfer_")) return "transferencia";
+    if (paymentResultId) console.warn(`inferPaymentMethod: unrecognized paymentResultId prefix: ${paymentResultId}`);
+    return "transferencia";
+};
 
 export async function createProduct (req, res) {
     try {
@@ -10,7 +20,7 @@ export async function createProduct (req, res) {
         if (!name || !description || !price || !stock || !category) {
             return res.status(400).json({message: "All fields are required"});
         }
-        
+
         if (!req.files || req.files.length === 0) {
             return res.status(400).json({ message: "At least one image is required" });
         }
@@ -28,7 +38,7 @@ export async function createProduct (req, res) {
         const uploadResults = await Promise.all(uploadPromises);
 
         const imageUrls = uploadResults.map((result) => result.secure_url);
-        
+
         const product = await Product.create({
             name,
             description,
@@ -46,7 +56,6 @@ export async function createProduct (req, res) {
 
 export async function getAllProducts (_, res) {
     try {
-        //-1 means descending order: most recent products first
         const products = await Product.find().sort({createdAt: -1});
         return res.status(200).json(products);
     } catch (error) {
@@ -59,7 +68,7 @@ export async function updateProduct (req, res) {
     try {
         const {id} = req.params;
         const {name, description, price, stock, category} = req.body;
-        
+
         const product = await Product.findById(id);
 
         if (!product) {
@@ -71,8 +80,7 @@ export async function updateProduct (req, res) {
         if (price !== undefined) product.price = parseFloat(price);
         if (stock !== undefined) product.stock = parseInt(stock);
         if (category) product.category = category;
-        
-        // handle image updates if new images are uploaded
+
         if (req.files && req.files.length > 0) {
             if (req.files.length > 3) {
                 return res.status(400).json({ message: "Maximum three images allowed" });
@@ -90,7 +98,7 @@ export async function updateProduct (req, res) {
 
         await product.save();
         return res.status(200).json({message: "Product updated successfully", product});
-     
+
     } catch (error) {
         console.error("Error updating product", error);
         return res.status(500).json({message: "Internal server error"});
@@ -112,15 +120,17 @@ export async function updateOrderStatus (req, res) {
         const {orderId} = req.params;
         const {status} = req.body;
 
-        if (!["pending", "paid", "delivered"].includes(status)) {
+        if (!VALID_STATUSES.includes(status)) {
             return res.status(400).json({message: "Invalid status"});
         }
 
-        const order = await Order.findById(orderId);
+        const order = await Order.findById(orderId).populate('user').populate('orderItems.product', 'name price');
 
         if (!order) {
             return res.status(404).json({message: "Order not found"});
         }
+
+        const previousStatus = order.status;
 
         order.status = status;
 
@@ -134,8 +144,102 @@ export async function updateOrderStatus (req, res) {
 
         await order.save();
 
+        if (previousStatus !== status) {
+            try {
+                const user = order.user;
+
+                if (user) {
+                    const orderItems = order.orderItems.map((item) => ({
+                        name:     item.name || item.product?.name || "Producto",
+                        quantity: item.quantity,
+                        price:    item.price,
+                    }));
+
+                    const emailData = {
+                        orderId: order._id.toString(),
+                        status,
+                        userEmail: user.email,
+                        userName:  user.name,
+                        total:     order.totalPrice,
+                        discount:  order.discount || 0,
+                        items:     orderItems,
+                        shippingAddress:    order.shippingAddress,
+                        emailNotifications: user.emailNotifications,
+                    };
+
+                    if (status !== "paid") {
+                        Promise.allSettled([
+                            sendOrderUpdatedAdminEmail(emailData),
+                            sendOrderUpdatedClientEmail(emailData),
+                        ]).then((results) => {
+                            results.forEach((result, index) => {
+                                if (result.status === "fulfilled") {
+                                    console.log(`Email de estado enviado a ${index === 0 ? "Admin" : "Cliente"}`);
+                                } else {
+                                    console.error("Error enviando email de estado:", result.reason);
+                                }
+                            });
+                        });
+                    }
+
+                    if (status === "paid") {
+                        (async () => {
+                            try {
+                                const invoiceData = {
+                                    orderId:       order._id.toString(),
+                                    date:          order.paidAt || new Date(),
+                                    paymentMethod: inferPaymentMethod(order.paymentResult?.id),
+                                    items:         orderItems,
+                                    shipping:      10000,
+                                    discount:      order.discount || 0,
+                                    customer: {
+                                        name:           user.name,
+                                        documentType:   user.documentType  || null,
+                                        documentNumber: user.documentNumber || "—",
+                                        email:          user.email,
+                                        phone:          user.addresses?.[0]?.phoneNumber || "—",
+                                        address:        order.shippingAddress?.streetAddress || "—",
+                                        city:           order.shippingAddress?.city          || "—",
+                                    },
+                                };
+
+                                const year          = invoiceData.date.getFullYear();
+                                const suffix        = invoiceData.orderId.slice(-8).toUpperCase();
+                                const invoiceNumber = `FV-${year}-${suffix}`;
+
+                                const pdfBuffer  = await generateInvoicePDF(invoiceData);
+                                const csvContent = generateInvoiceCSV(invoiceData);
+
+                                const results = await sendInvoiceEmails({
+                                    userName:           user.name,
+                                    userEmail:          user.email,
+                                    orderId:            order._id.toString(),
+                                    invoiceNumber,
+                                    pdfBuffer,
+                                    csvContent,
+                                    emailNotifications: user.emailNotifications,
+                                });
+
+                                results.forEach((result, index) => {
+                                    if (result.status === "fulfilled") {
+                                        console.log(`Factura enviada a ${index === 0 ? "Cliente" : "Admin"} (${invoiceNumber})`);
+                                    } else {
+                                        console.error(`Error enviando factura a ${index === 0 ? "Cliente" : "Admin"}:`, result.reason);
+                                    }
+                                });
+                            } catch (invoiceError) {
+                                console.error("Error generando/enviando factura:", invoiceError.message, invoiceError.stack);
+                            }
+                        })();
+                    }
+                }
+            } catch (emailError) {
+                console.error('Error en proceso de emails:', emailError.message);
+            }
+        }
+
         return res.status(200).json({message: "Order status updated successfully", order});
-     
+
     } catch (error) {
         console.error("Error in updateStatus controller", error);
         return res.status(500).json({message: "Internal server error"});
@@ -144,14 +248,16 @@ export async function updateOrderStatus (req, res) {
 
 export async function getAllCustomers (_, res) {
     try {
-        const customers = await User.find().sort({createdAt: -1});
-        return res.status(200).json({ customers});
+        const customers = await User.find().select(
+                "name email imageUrl addresses isActive createdAt " +
+                "documentType documentNumber gender dateOfBirth"
+            ).sort({createdAt: -1});
+        return res.status(200).json({ customers });
     } catch (error) {
         console.error("Error in getAllCustomers controller", error);
         return res.status(500).json({message: "Internal server error"});
     }
 }
-
 
 export async function getDashboardStats (_, res) {
     try {
@@ -167,7 +273,7 @@ export async function getDashboardStats (_, res) {
         const totalRevenue = revenueResult[0]?.total || 0;
         const totalCustomers = await User.countDocuments();
         const totalProducts = await Product.countDocuments();
-        
+
         return res.status(200).json({
             totalRevenue,
             totalOrders,
@@ -190,10 +296,8 @@ export const deleteProduct = async (req, res) => {
             return res.status(404).json({ message: "Product not found" });
         }
 
-        // Delete images from Cloudinary
         if (product.images && product.images.length > 0) {
             const deletePromises = product.images.map((imageUrl) => {
-                // Extract public_id from URL (assumes format: .../products/publicId.ext)
                 const publicId = "products/" + imageUrl.split("/products/")[1]?.split(".")[0];
                 if (publicId) return cloudinary.uploader.destroy(publicId);
             });
@@ -208,3 +312,31 @@ export const deleteProduct = async (req, res) => {
     }
 };
 
+export async function updateCustomerStatus(req, res) {
+    try {
+        const { customerId } = req.params;
+        const { isActive } = req.body;
+
+        if (typeof isActive !== "boolean") {
+            return res.status(400).json({ message: "isActive must be a boolean" });
+        }
+
+        const user = await User.findByIdAndUpdate(
+            customerId,
+            { isActive },
+            { new: true }
+        );
+
+        if (!user) {
+            return res.status(404).json({ message: "Customer not found" });
+        }
+
+        return res.status(200).json({
+            message: `Customer ${isActive ? "activated" : "deactivated"} successfully`,
+            customer: { _id: user._id, name: user.name, email: user.email, isActive: user.isActive },
+        });
+    } catch (error) {
+        console.error("Error in updateCustomerStatus controller:", error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+}

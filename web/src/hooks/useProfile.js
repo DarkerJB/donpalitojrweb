@@ -24,7 +24,15 @@ const useProfile = () => {
       toast.success('Datos personales actualizados');
     },
     onError: (err) => {
-      toast.error(err?.response?.data?.error || 'Error al actualizar el perfil');
+      // api.js ya maneja 403 y 500 con toast — evitar duplicado
+      const status = err?.response?.status;
+      if (status === 400) {
+        toast.error(err.response.data?.error || 'Datos inválidos. Revisa los campos.');
+      } else if (status === 404) {
+        toast.error('Perfil no encontrado. Intenta recargar la página.');
+      } else if (!err?.response) {
+        toast.error('Sin conexión al servidor.');
+      }
     },
   });
 
@@ -35,7 +43,13 @@ const useProfile = () => {
       toast.success('Preferencias de notificaciones actualizadas');
     },
     onError: (err) => {
-      toast.error(err?.response?.data?.error || 'Error al actualizar las preferencias');
+      // api.js ya maneja 403 y 500 con toast — evitar duplicado
+      const status = err?.response?.status;
+      if (status === 404) {
+        toast.error('Perfil no encontrado. Intenta recargar la página.');
+      } else if (!err?.response) {
+        toast.error('Sin conexión al servidor.');
+      }
     },
   });
 

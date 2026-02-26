@@ -9,6 +9,7 @@ import { useCart } from '../../contexts/CartContext';
 import { addressService, couponService, paymentService } from '../../services/index';
 import { IVA_RATE } from '../../utils/constants';
 import { formatCurrency } from '../../utils/formatters';
+import { getProductImage } from '../../utils/productHelpers';
 import CheckoutStepper from '../../components/checkout/CheckoutStepper';
 import PaymentMethodSelector from '../../components/checkout/PaymentMethodSelector';
 import StripeCheckoutForm from '../../components/checkout/StripeCheckoutForm';
@@ -120,7 +121,9 @@ const Checkout = () => {
       if (err?.response?.status === 404 || !err?.response) {
         setCouponError('Cupones no disponibles por el momento');
       } else {
-        setCouponError(err?.response?.data?.error || 'Cupón inválido o expirado');
+        const msg = err?.response?.data?.error || 'Cupón inválido o expirado';
+        setCouponError(msg);
+        toast.error(msg);
       }
     } finally {
       setCouponLoading(false);
@@ -165,7 +168,7 @@ const Checkout = () => {
     navigate('/checkout/exito', { state: { paymentIntentId: paymentIntent.id, total, paymentMethod: 'tarjeta' } });
   };
 
-  // Métodos no-Stripe (transferencia/QR/efectivo): POST /payment/create-transfer-order
+  // Métodos no-Stripe (transferencia): POST /payment/create-transfer-order
   const handleConfirm = async () => {
     setProcessing(true);
     try {
@@ -205,9 +208,9 @@ const Checkout = () => {
               return (
                 <div key={item.product._id || item.product.id} className="flex items-center gap-3">
                   <img
-                    src={item.product.images?.[0] || item.product.image}
+                    src={getProductImage(item.product)}
                     alt={item.product.name}
-                    className="w-12 h-12 rounded-lg object-cover"
+                    className="w-12 h-12 rounded-lg object-contain bg-base-200"
                   />
                   <div className="flex-1">
                     <p className="font-medium text-sm">{item.product.name}</p>
@@ -419,7 +422,7 @@ const Checkout = () => {
               Atrás
             </Button>
 
-            {/* Transferencia / QR / Efectivo */}
+            {/* Transferencia bancaria */}
             {paymentMethod !== 'tarjeta' && (
               <Button
                 variant="primary"

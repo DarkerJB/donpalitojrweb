@@ -23,7 +23,9 @@
     "inngest": "^3.49.3",
     "mongoose": "^8.19.3",
     "multer": "^2.0.2",
+    "csv-writer": "^1.6.0",
     "nodemailer": "^8.0.1",
+    "pdfkit": "^0.17.2",
     "stripe": "^19.3.1"
   },
   "devDependencies": {

@@ -1,9 +1,10 @@
 import { Inngest } from "inngest";
 import { connectDB } from "./db.js";
 import { User } from "../models/user.model.js";
+import { sendWelcomeEmail } from "../services/email.service.js";
 
 export const inngest = new Inngest({
-    id: "ecommerce-app",   
+    id: "ecommerce-app",
 });
 
 const syncUser = inngest.createFunction(
@@ -12,7 +13,7 @@ const syncUser = inngest.createFunction(
     async ({event}) => {
 
         console.log("sync user function executed");
-        
+
         await connectDB();
         const {id, email_addresses, first_name, last_name, image_url}=event.data;
         const newUser = {
@@ -21,10 +22,15 @@ const syncUser = inngest.createFunction(
             name:`${first_name || ""} ${last_name || ""}` || "Usuario",
             imageUrl:image_url,
             address:[],
-            wishlist:[],       
+            wishlist:[],
         };
         await User.create(newUser);
         console.log("User created in DB");
+
+        sendWelcomeEmail({
+            userName:  `${first_name || ""} ${last_name || ""}`.trim() || "Usuario",
+            userEmail: email_addresses[0]?.email_address,
+        }).catch(err => console.error("Error enviando welcome email:", err.message));
     }
 );
 
@@ -34,7 +40,7 @@ const deleteUserFromDB = inngest.createFunction(
     async ({event}) => {
 
         console.log("delete user from DB function executed");
-        
+
         await connectDB();
         const {id}=event.data;
         await User.deleteOne({clerkId:id});

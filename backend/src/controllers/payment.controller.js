@@ -4,6 +4,7 @@ import { User } from "../models/user.model.js";
 import { Product } from "../models/product.model.js";
 import { Order } from "../models/order.model.js";
 import { Coupon } from "../models/coupon.model.js";
+import { sendOrderCreatedAdminEmail, sendOrderCreatedClientEmail } from "../services/email.service.js";
 
 const stripe = new Stripe(ENV.STRIPE_SECRET_KEY);
 
@@ -207,6 +208,37 @@ export async function handleWebhook(req, res) {
             }
 
             console.log("Order created successfully:", order._id);
+
+            const dbUser = await User.findById(userId);
+            if (dbUser) {
+                const emailData = {
+                    orderId:       order._id.toString(),
+                    userEmail:     dbUser.email,
+                    userName:      dbUser.name,
+                    items:         enrichedOrderItems.map(item => ({
+                        name:     item.name,
+                        quantity: item.quantity,
+                        price:    item.price,
+                    })),
+                    total:          parseFloat(totalPrice),
+                    discount:       0,
+                    shippingAddress: parsedShippingAddress,
+                    emailNotifications: dbUser.emailNotifications,
+                };
+
+                Promise.allSettled([
+                    sendOrderCreatedAdminEmail(emailData),
+                    sendOrderCreatedClientEmail(emailData),
+                ]).then((results) => {
+                    results.forEach((result, index) => {
+                        if (result.status === "fulfilled") {
+                            console.log(`Email de pedido Stripe enviado a ${index === 0 ? "Admin" : "Cliente"}`);
+                        } else {
+                            console.error(`Error enviando email Stripe a ${index === 0 ? "Admin" : "Cliente"}:`, result.reason);
+                        }
+                    });
+                });
+            }
         } catch (error) {
             console.error("Error processing webhook:", error);
             return res.status(500).json({ error: "Webhook processing failed" });
@@ -214,4 +246,118 @@ export async function handleWebhook(req, res) {
     }
 
     res.json({ received: true });
+}
+
+export async function createTransferOrder(req, res) {
+    try {
+        const { cartItems, shippingAddress, couponCode } = req.body;
+        const user = req.user;
+
+        if (!cartItems?.length) {
+            return res.status(400).json({ error: "Cart is empty" });
+        }
+        if (!shippingAddress?.fullName || !shippingAddress?.streetAddress) {
+            return res.status(400).json({ error: "Shipping address is required" });
+        }
+
+        let subtotal = 0;
+        const orderItems = [];
+
+        for (const item of cartItems) {
+            const product = await Product.findById(item.product._id);
+            if (!product) {
+                return res.status(404).json({ error: `Producto no encontrado` });
+            }
+            if (product.stock < item.quantity) {
+                return res.status(400).json({ error: `Stock insuficiente para ${product.name}` });
+            }
+            subtotal += product.price * item.quantity;
+            orderItems.push({
+                product: product._id,
+                name: product.name,
+                price: product.price,
+                quantity: item.quantity,
+            });
+        }
+
+        let discount = 0;
+        let appliedCoupon = null;
+
+        if (couponCode) {
+            const coupon = await Coupon.findOne({ code: couponCode.toUpperCase().trim() });
+            const isValid = coupon && coupon.isActive &&
+                (!coupon.expiresAt || new Date() < coupon.expiresAt);
+
+            if (!isValid) {
+                return res.status(400).json({ error: "El cupón no es válido o ha expirado." });
+            }
+
+            const alreadyUsed = coupon.usedBy.some(
+                (id) => id.toString() === user._id.toString()
+            );
+            if (alreadyUsed) {
+                return res.status(400).json({ error: "Ya usaste este cupón anteriormente." });
+            }
+
+            discount = coupon.discountType === "percentage"
+                ? Math.round((subtotal * coupon.discountValue) / 100)
+                : Math.min(coupon.discountValue, subtotal);
+
+            appliedCoupon = coupon;
+        }
+
+        const totalPrice = subtotal - discount;
+
+        const order = await Order.create({
+            user: user._id,
+            clerkId: user.clerkId,
+            orderItems,
+            shippingAddress,
+            paymentResult: { id: `transfer_${Date.now()}`, status: "pending" },
+            totalPrice,
+            status: "pending",
+        });
+
+        for (const item of orderItems) {
+            await Product.findByIdAndUpdate(item.product, {
+                $inc: { stock: -item.quantity },
+            });
+        }
+
+        if (appliedCoupon) {
+            await Coupon.findOneAndUpdate(
+                { code: appliedCoupon.code },
+                { $addToSet: { usedBy: user._id } }
+            );
+        }
+
+        const emailData = {
+            orderId: order._id.toString(),
+            userEmail: user.email,
+            userName: user.name,
+            items: orderItems.map((i) => ({ name: i.name, quantity: i.quantity, price: i.price })),
+            total: totalPrice,
+            discount,
+            shippingAddress,
+            emailNotifications: user.emailNotifications,
+        };
+
+        Promise.allSettled([
+            sendOrderCreatedAdminEmail(emailData),
+            sendOrderCreatedClientEmail(emailData),
+        ]).then((results) => {
+            results.forEach((result, index) => {
+                if (result.status === "fulfilled") {
+                    console.log(`Email de pedido por transferencia enviado a ${index === 0 ? "Admin" : "Cliente"}`);
+                } else {
+                    console.error(`Error email transferencia a ${index === 0 ? "Admin" : "Cliente"}:`, result.reason);
+                }
+            });
+        });
+
+        return res.status(201).json({ order });
+    } catch (error) {
+        console.error("Error in createTransferOrder:", error);
+        return res.status(500).json({ error: "Internal server error" });
+    }
 }

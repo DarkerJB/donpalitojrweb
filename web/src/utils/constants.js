@@ -80,8 +80,6 @@ export const PRICE_RANGES = [
 // Métodos de pago
 export const PAYMENT_METHODS = {
   TRANSFER: 'transferencia',
-  QR: 'qr',
-  CASH: 'efectivo',
 };
 
 // Datos bancarios (estos deberían venir del backend)

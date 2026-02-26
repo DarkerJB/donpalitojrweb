@@ -78,6 +78,10 @@ export const couponService = {
     const response = await api.post('/coupons/validate', { code, subtotal });
     return response.data;
   },
+  getActive: async () => {
+    const response = await api.get('/coupons/active');
+    return response.data;
+  },
 };
 
 // ============= DIRECCIONES (/api/users/addresses) =============
