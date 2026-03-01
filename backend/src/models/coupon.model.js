@@ -43,11 +43,6 @@ const couponSchema = new mongoose.Schema(
         ref: "User",
       },
     ],
-
-    firstOrderOnly: {
-      type: Boolean,
-      default: false,
-    },
   },
   { timestamps: true }
 );

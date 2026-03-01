@@ -1,0 +1,57 @@
+# Reporte de Análisis de Requisitos Funcionales vs Implementación (Full Stack)
+
+Al revisar el código tanto del **Backend** (`controllers`, `routes`, `models`) como del **Frontend** (`web`, [admin](file:///d:/1_donpalitojr/donpalitojrweb/backend/src/middleware/auth.middleware.js#39-93), y `mobile`), se ha realizado un mapeo entre los [Requisitos Funcionales](file:///d:/1_donpalitojr/donpalitojrweb/web/docs/REQUISITOS%20FUNCIONALES.txt) solicitados y la funcionalidad actualmente implementada.
+
+Aquí tienes el estado detallado:
+
+### 🟩 1. Gestión de Usuarios y Autenticación (Altamente Implementado)
+La autenticación se realiza principalmente a través de **Clerk**, lo cual cubre las necesidades en backend y frontend.
+* **RF-01 a RF-03 (Registro, Login, Recuperación contraseña para clientes):** **Implementado.** Delegado a Clerk, integrado mediante middlewares.
+* **RF-04 (Modificar perfil de cliente):** **Implementado.**
+* **RF-05 (Cerrar sesión segura):** **Implementado.** Manejado por Clerk en el frontend.
+* **RF-06 (Desactivar cuenta cliente):** **Implementado.**
+* **RF-25 a RF-28 (Auth Administradores):** **Implementado.** Auth por Clerk, autorización basada en roles (admin).
+* **RF-29 a RF-31 (Gestión de usuarios por Admin):** **Implementado.** El administrador puede activar o desactivar usuarios desde el panel Admin ([CustomersPage.jsx](file:///d:/1_donpalitojr/donpalitojrweb/admin/src/pages/CustomersPage.jsx)).
+
+### 🟨 2. Catálogo y Productos (Altamente Implementado)
+El inventario principal y los productos están completos en ambas partes.
+* **RF-07 y RF-08 (Ver catálogo y detalles):** **Implementado.** Listo en Web ([ProductDetail.jsx](file:///d:/1_donpalitojr/donpalitojrweb/web/src/pages/ProductDetail.jsx), [Catalog.jsx](file:///d:/1_donpalitojr/donpalitojrweb/web/src/pages/Catalog.jsx)).
+* **RF-09 y RF-10 (Búsqueda y Filtros):** **Implementado.** El Frontend web ([Catalog.jsx](file:///d:/1_donpalitojr/donpalitojrweb/web/src/pages/Catalog.jsx) y [Header.jsx](file:///d:/1_donpalitojr/donpalitojrweb/web/src/components/layout/Header.jsx)) maneja correctamente la búsqueda por texto, el filtrado por categorías y el ordenamiento de precios.
+* **RF-32 a RF-34 (CRUD de productos por Admin):** **Implementado.** Listo en el panel Admin ([ProductsPage.jsx](file:///d:/1_donpalitojr/donpalitojrweb/admin/src/pages/ProductsPage.jsx)).
+* **RF-35 a RF-37 (Categorías de productos):** **Implementado de forma simplificada.** Las categorías se escriben como strings libres y el Frontend web las agrupa dinámicamente. Falta un CRUD dedicado puro de categorías en Admin.
+* **RF-38 a RF-40 (Promociones/Descuentos):** **Implementado.** Integrado con cupones de descuento desde Admin ([CouponsPage.jsx](file:///d:/1_donpalitojr/donpalitojrweb/admin/src/pages/CouponsPage.jsx)).
+
+### 🟩 3. Carrito y Checkout (Altamente Implementado)
+Flujo muy completo con opciones de pago funcionales.
+* **RF-12 a RF-15 (Gestión de carrito):** **Implementado.** Operativo en web ([Cart.jsx](file:///d:/1_donpalitojr/donpalitojrweb/web/src/pages/Cart.jsx)).
+* **RF-16 (Checkout y pagos):** **Implementado.** Manejado mediante plataforma Stripe y Transferencias directamente listos en el front ([Checkout.jsx](file:///d:/1_donpalitojr/donpalitojrweb/web/src/pages/checkout/Checkout.jsx) y [PaymentMethodSelector.jsx](file:///d:/1_donpalitojr/donpalitojrweb/web/src/components/checkout/PaymentMethodSelector.jsx)).
+* **RF-17 (Aplicar códigos de descuento en checkout):** **Implementado.** El frontend valida usando el backend de [coupon.controller.js](file:///d:/1_donpalitojr/donpalitojrweb/backend/src/controllers/coupon.controller.js).
+
+### 🟨 4. Gestión de Pedidos y Post-Venta (Parcialmente Implementado)
+* **RF-18 (WhatsApp para comprobantes):** **Implementado.** Perfectamente integrado. En Web ([CheckoutSuccess.jsx](file:///d:/1_donpalitojr/donpalitojrweb/web/src/pages/checkout/CheckoutSuccess.jsx), [Cart.jsx](file:///d:/1_donpalitojr/donpalitojrweb/web/src/pages/Cart.jsx), y footers) y en Mobile ([PaymentMethod.tsx](file:///d:/1_donpalitojr/donpalitojrweb/mobile/components/PaymentMethod.tsx)), se genera el link dinámico de WhatsApp (ej: `wa.me/57314...`).
+* **RF-19 y RF-45 (Generar Invoice / Facturas):** **Implementado.** Se usa el servicio en backend para descargas PDF y envío a correo.
+* **RF-20 y RF-43 (Notificaciones de órdenes por email):** **Implementado.** 
+* **RF-21 y RF-44 (Historial clientes y panel admin):** **Implementado** ([OrdersPage.jsx](file:///d:/1_donpalitojr/donpalitojrweb/admin/src/pages/OrdersPage.jsx)).
+* **RF-41 y RF-42 (Cambios de estado por admin):** **Implementado.**
+* **RF-46 (Paginar las facturas admin):** **Faltante.** En el frontend Administrativo, la tabla de órdenes ([OrdersPage.jsx](file:///d:/1_donpalitojr/donpalitojrweb/admin/src/pages/OrdersPage.jsx)) carga todos los registros en una sola vista sin botones de paginación real.
+
+### 🟧 5. Características Adicionales y Reseñas (Con Faltantes)
+Varios apartados de la experiencia extendida y reportería administrativa faltan en Frontend.
+* **RF-22 (Reseñas de producto):** **Implementado.** El frontend muestra y crea reseñas asociándolas mediante [RatingModal.jsx](file:///d:/1_donpalitojr/donpalitojrweb/web/src/components/profile/RatingModal.jsx). 
+* **RF-23 (Personalización de empaques):** **Faltante.** Ni el frontend de cliente (carrito/checkout) ni el backend tienen en cuenta un campo para escribir y guardar "notas de personalización de empaque".
+* **RF-24 (Mapa interactivo):** **Implementado.** [Home.jsx](file:///d:/1_donpalitojr/donpalitojrweb/web/src/pages/Home.jsx) y [Contact.jsx](file:///d:/1_donpalitojr/donpalitojrweb/web/src/pages/info/Contact.jsx) tienen componentes `iframe` de Google Maps embebidos listos.
+* **RF-47 (Moderar comentarios por admin):** **Faltante.** No hay un gestor de "Reseñas" en toda la interfaz o ruteo del panel Administrador.
+* **RF-48 (Gestionar líneas de atención por admin):** **Parcialmente.** Hay datos de contacto y WhatsApp fijos o en [.env](file:///d:/1_donpalitojr/donpalitojrweb/backend/.env), pero no un gestor dinámico desde el panel Admin donde se puedan actualizar sin intervenir código.
+* **RF-49 a RF-51 (Dashboard Admin y Exportación CSV/PDF por períodos):** **Faltante en Frontend.** El backend tiene endpoints de estadísticas y CSV para Orders individuales, pero el Frontend Admin en la vista principal de Dashboard ([DashboardPage.jsx](file:///d:/1_donpalitojr/donpalitojrweb/admin/src/pages/DashboardPage.jsx)) carece de filtros por fechas/períodos, y faltan los botones para descargar/exportar reportes totalitarios de ventas a formato CSV o PDF.
+
+## 📝 Conclusión
+
+El proyecto es **muy robusto** y cumple el Documento de Requisitos en un muy alto porcentaje (aprox. 85%). Toda la lógica núcleo de E-Commerce (Catálogo, Búsqueda Local, Carrito, Checkout, Pagos con Stripe, Perfil y Pedidos, Email, links a WhatsApp y Mapas interactivos de Google Maps) está 100% implementada y unida con el Backend, Web, y Mobile.
+
+**Características puntuales que faltaría desarrollar para tener un 100%:**
+1. **(RF-23)** Construir el campo de UI de **"Personalización de empaque"** en el proceso de Checkout, y guardarlo/mostrarlo en la Orden del backend y frontend admin.
+2. **(RF-35 a 37)** Cambiar el sistema de 'strings' en productos por un auténtico CRUD enfocado puramente para **Categorías** en panel Admin y BD.
+3. **(RF-46)** Construir **Paginación** en las tablas del Panel Administrativo (especialmente en Órdenes).
+4. **(RF-47)** Desarrollar la vista Frontend Admin de **Moderar/Eliminar Reseñas** que hacen los usuarios.
+5. **(RF-48)** Un endpoint en Backend y Frontend para gestionar datos globales de tienda (Líneas de atención de soporte) dinámicamente por la BD y no hardcodeados en [.env](file:///d:/1_donpalitojr/donpalitojrweb/backend/.env).
+6. **(RF-50, RF-51)** Agregar una gráfica / selectores en el Dashhboard Admin para **Filtrar las estadísticas por fecha** y crear los botones de UI para **Exportar todos los datos a CSV/PDF**.

@@ -1,0 +1,233 @@
+PRESENTACIÓN: DON PALITO Jr.
+
+
+
+
+
+
+
+PROYECTO DON PALITO JR.
+ 
+introducción
+
+ 
+MISIÓN
+Desarrollar e implementar soluciones tecnológicas innovadoras y personalizadas que transformen la experiencia comercial de pequeños y medianos negocios del sector gastronómico, especialmente aquellos con identidad tradicional colombiana.
+ 
+VISIÓN
+
+Para el año 2030, aspiramos expandir nuestro portafolio de soluciones digitales, acompañando a múltiples emprendimientos locales en su proceso de digitalización, contribuyendo así al fortalecimiento del tejido empresarial regional y al desarrollo tecnológico del sector gastronómico colombiano, siempre bajo los principios de innovación, calidad, accesibilidad y sostenibilidad.
+ 
+ 
+¿QUÉ ES DON PALITO JR.?
+El Proyecto Don Palito Jr. es un sistema integral de comercio electrónico diseñado específicamente para la Cafetería Don Palito Junior, ubicada en Sabaneta, Antioquia.
+ 
+PROYECTO DON PALITO JR.
+
+Se trata de una solución tecnológica multiplataforma que comprende:
+
+ 	Plataforma	web	responsiva	accesible	desde	navegadores	en computadores, tablets y dispositivos móviles
+ 	Aplicación móvil nativa para Android con React
+ 	Panel administrativo completo para gestión del negocio
+ 
+¿PARA QUÉ FUE CREADO O QUÉ SOLUCIONA?
+El Sistema Don Palito Junior fue creado para resolver múltiples desafíos que enfrenta la cafetería en el contexto actual del mercado, solucionando:
+
+1.	Limitaciones de Alcance Comercial
+2.	Obsolescencia en Métodos de Publicidad 3. Deficiencias en la Gestión Operativa
+4.	Experiencia del Cliente Limitada
+5.	Falta de Competitividad Digital
+6.	Ausencia de Datos para Decisiones Estratégicas
+ 
+¿CÓMO FUNCIONA?
+Para los Clientes:
+Los clientes acceden al sistema a través del sitio web o la aplicación móvil Android. Pueden explorar el catálogo de productos, agregar artículos al carrito de compras, aplicar códigos de descuento y realizar pagos mediante código QR o transferencia bancaria. El sistema también les permite dejar reseñas, consultar la ubicación de la cafetería y participar en el programa de fidelización.
+
+
+Para los Administradores:
+Los administradores ingresan mediante un panel seguro con autenticación por token. Desde allí gestionan el inventario completo (agregar, editar, eliminar productos), controlan ventas y pedidos en tiempo real, crean promociones, responden reseñas de clientes y consultan estadísticas visuales mediante reportes exportables en CSV o PDF.
+ 
+¿CUÁL ES EL PÚBLICO OBJETIVO?
+
+Clientes Finales:
+Personas entre 18 y 65 años, residentes de Sabaneta y el sur del Valle de Aburrá (estratos 2, 3 y 4). Son consumidores que valoran productos tradicionales colombianos, utilizan smartphone con frecuencia y están familiarizados con compras en línea. Incluye clientes actuales de la cafetería y nuevos usuarios digitales que buscan comodidad en sus compras.
+
+Administradores:
+Propietarios (Rosiris Buelvas y Luis Eduardo Muñoz) y personal administrativo de confianza. Requieren herramientas digitales para optimizar la gestión del negocio, controlar inventarios y analizar ventas. Tienen conocimiento básico-intermedio de tecnología y disposición para aprender nuevas plataformas.
+
+Beneficiarios Indirectos:
+Proveedores y distribuidores mejoran su planificación. Otros emprendimientos locales pueden inspirarse en el modelo de transformación digital implementado.
+ 
+PROblemA
+¿Qué problema resolvemos?
+Pequeños negocios alimenticios no cuentan con:  	Presencia online efectiva.
+ 	Canales para vender más allá del mostrador.
+ 	Herramientas tecnológicas adaptadas a su realidad.  	Gestión de pedidos y ventas sistematizada.
+ 
+sOLUCIÓN
+Nuestra receta para el éxito digital:
+ 	Ofrecemos	soluciones	tecnológicas	integrales	y personalizadas.
+ 	Herramientas para la gestión eficiente de pedidos, inventario y pagos online.
+ 	Integración con redes sociales y Whatsapp.
+ 	Asesoría	y	acompañamiento	en	la	digitalización	de	los negocios, sin importar el nivel de experiencia tecnológica.
+ 
+propuesta  de  Valor
+ 	Enfoque  especializado:  enfocado  100%  en  panaderías  y reposterías colombianas.
+ 	Aumentamos	las	ventas:	llegando	a	nuevos	clientes	y facilitando la compra online.
+ 	Optimizamos	la	gestión:	simplificando	procesos	y reduciendo la carga administrativa.
+ 	Fortalecemos	la	marca:	creando	una	presencia	online profesional y atractiva.
+ 	Soporte local: capacitación en persona.
+ 
+análisis de mercado
+Tendencias:
+ 	+25,000 panaderías en Colombia generan más de $3 billones al año, que corresponde al 20.3% de la producción nacional de alimentos(Dane, 2023; Fenatron).
+ 	40% de aumento en compras online de alimentos después de la pandemia.  	Aumento en la demanda de opciones personalizadas.
+
+Competencia:
+ 	Emprendimientos digitales y agencias de desarrollo.
+ 
+Segmento  de  clientes
+ 	Pequeñas panaderías y reposterías tradicionales.  	Emprendedores del sector alimenticio.
+ 	Empresas que compran al por mayor.
+ 	Consumidores finales que buscan comprar online.
+ 	Aliados	estratégicos	como	proveedores	y	distribuidores locales.
+ 
+¿QUé PiensA y siente?
+
+Piensa que debe hacer crecer su negocio, avanzando a la era digital.
+
+
+ 
+¿QUé Oye?
+
+Escucha a sus clientes con la necesidad de tener acceso al catálogo de productos de Don Palito Junior en una web o redes sociales.
+ 
+
+
+
+
+
+
+
+
+¿QUé diCe y HACe?
+Se dedica a la comercialización de comestibles tradicionales colombianos como Palitos de Queso (de ahí el nombre), buñuelos, natilla, etc.
+ 
+¿QUé ve?
+
+Ve que, si bien su negocio tiene ingresos estables, no puede quedarse atrás con las tendecnias de sus clientes actuales y potenciales en lo referente a las tecnologías digitales.
+ 
+
+
+ 
+
+
+ 
+No poder atraer nuevos clientes por las limitaciones tecnológicas.
+No	darse	a	conocer	digitalmente (publicidad).
+ 
+Llevar su negocio a la era digital. Incrementar sus ingresos.
+Conocer la opinión de sus clientes para mejorar sus productos y servicios.
+ 
+Problema
+Solución
+Propuesta de Valor
+Ventaja Especial
+Segmento de Clientes
+Necesidad de modernizar la experiencia del cliente y adaptarse a las tendencias digitales.	Desarrollo de soluciones de e- commerce para la venta de productos de panadería.	Ofrecer una experiencia de compra en línea cómoda, personalizada y eficiente.	Enfoque	en	productos	tradicionales colombianos.	Clientes potenciales en Sabaneta y el sur del Área Metropolitana.
+
+Empresas	que	necesiten	impulsar sus productos alimenticios.
+
+Aliados (proveedores y distribuidores de Don Palito Junior).
+
+Dependencia de métodos de publicidad tradicional que son menos efectivos y generan gran impacto ambiental.
+
+Dificultad para alcanzar a clientes que no visitan físicamente pequeños negocios.	
+Plataforma accesible e intuitiva para clientes y administradores.
+
+Integración con pasarela de pagos, Google Maps, redes sociales y Whatsapp.	
+Facilitar el acceso a información detallada de los productos y el negocio.
+
+Optimizar la gestión operativa del negocio mediante herramientas digitales y reducción de costos publicitarios.	Integración de tecnologías modernas y prácticas sostenibles.	
+			Canales
+Página web y redes sociales.	
+	Métricas Clave
+		
+	Visitas mensuales a la web (+30% en 6 meses).		Alianzas	con	influencers	y	negocios locales.	
+	Tasa de conversión (40% ventas en línea en 1 año).		Publicidad digital.	
+	Satisfacción del cliente (>85%).			
+Estructura de Costes
+Costos Fijos:
+Diseño y desarrollo de la página web. Alojamiento web y dominio personalizado. Capacitación técnica al cliente.
+
+Costos Variables:
+Mantenimiento técnico mensual.
+Marketing digital (publicidad en redes sociales). Electricidad e internet (para el equipo de desarrollo).	Flujo de Ingresos
+Modelos de Monetización:
+Tarifa única por el diseño, desarrollo e implementación de la solución de e-commerce. Tarifa de mantenimiento mensual y actualizaciones periódicas.
+Comisiones del 5% sobre las ventas realizadas a través de la plataforma.
+
+Estrategias de Maximización de Ingresos:
+Ofrecer paquetes personalizados con integración de funcionalidades avanzadas como sistemas de fidelización o análisis de datos.
+Implementar campañas de marketing digital.
+Expandir el negocio a otros segmentos del mercado alimenticio.
+
+ 
+Métricas clave
+Crecimiento:
+ 	+30% visitas mensuales al sitio web (primeros 6 meses).  	40% de conversión en ventas online en el primer año.
+
+Retención:
+ 	85% satisfacción clientes (encuestas post-implementación).
+
+Financieras:
+ 	Punto de equilibrio: 200 clientes activos (tarifa premium).
+ 
+CAnAles
+ 	Aplicación web y/o de escritorio.  	App Store y Google Play.
+ 	Ferias sectoriales (Cámara de Comercio).
+ 	Alianzas con gremios de panaderos (Fenaltrón).
+ 
+modelo de negocio
+ 	Diseño, desarrollo e implementación de la solución de e- commerce.
+ 	Funcionalidades personalizadas: pagos en línea, conexión a WhatsApp y redes sociales.
+ 	Capacitaciones y soporte.
+ 	Mantenimiento y actualizaciones.
+ 
+
+
+
+
+
+120000000
+100000000
+80000000
+60000000
+40000000
+20000000
+0
+ 
+finAnzAs
+ 	UTILIDADES PROYECTADAS EN LOS PRIMEROS 5 AÑOS
+
+
+
+
+1º AñO	2º AñO	3º AñO	4º AñO	5º AñO
+ 
+Estrategia de marketing:
+ 	Marketing directo: visitas a negocios y ferias locales.
+ 	Voz a voz: programa de referidos con descuentos .
+ 	Marketing digital: enfocado en el sector alimenticio y redes de emprendedores.
+ 	Colaboraciones con asociaciones de panaderos y reposteros locales.
+ 	Contenido relevante destacando historias de éxito y beneficios de la digitalización.
+ 	Alianzas con proveedores de insumos panaderos.
+ 
+ 
+En MigaTech, no sólo vendemos tecnología...
+Vendemos  tradición.
+
+¡Hagámoslo realidad!
+
+Contacto:  ventas.migatech@gmail.com
+

@@ -161,9 +161,6 @@ const Home = () => {
                       <span className="font-mono font-bold tracking-widest text-brand-accent border border-dashed border-brand-accent/50 px-3 py-1 rounded text-base">
                         {promo.code}
                       </span>
-                      {promo.firstOrderOnly && (
-                        <p className="text-xs text-gray-400">Solo en tu primera compra</p>
-                      )}
                       {promo.expiresAt && (
                         <p className="text-xs text-gray-400">
                           Hasta {new Date(promo.expiresAt).toLocaleDateString('es-CO')}

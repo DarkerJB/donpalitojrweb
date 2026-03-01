@@ -1,0 +1,53 @@
+REQUISITOS FUNCIONALES
+
+RF-01 El sistema debe permitir a los usuarios registrarse como clientes
+RF-02 El sistema debe permitir a los clientes iniciar sesión en su cuenta con sus credenciales.
+RF-03 El sistema debe proporcionar un mecanismo para que los clientes recuperen su contraseña olvidada y puedan acceder de nuevo a su cuenta.
+RF-04 El sistema debe permitir al cliente modificar su perfil. 
+RF-05 El sistema debe permitir a los clientes cerrar su sesión de forma segura. 
+RF-06 El sistema debe permitir al cliente desactivar su cuenta.
+RF-25 El sistema debe permitir a los nuevos administradores registrarse en el sistema proporcionando sus credenciales y datos de contacto.
+RF-26 El sistema debe permitir a los administradores iniciar sesión de forma segura
+RF-27 El sistema debe permitir a los administradores cerrar su sesión de forma segura.
+RF-28 El sistema debe permitir a los administradores recuperar y cambiar su contraseña.
+RF-29 El sistema debe permitir a los administradores editar o modificar cuentas de usuario existentes.
+RF-30 El sistema debe permitir a los administradores desactivar o eliminar cuentas de usuario.
+RF-31 El sistema debe permitir a los administradores con sesión activa reactivar cuentas previamente desactivadas o eliminadas.
+RF-07 El sistema debe mostrar a los clientes un catálogo de los productos disponibles.
+RF-08 El sistema debe mostrar a los clientes los detalles de un producto (imagen, nombre, descripción, precio y disponibilidad).
+RF-09 El sistema debe permitir a los clientes aplicar un filtro de ordenamiento alfabéticamente  y por precio.
+RF-10 El sistema debe incluir una función de búsqueda rápida que permita a los clientes encontrar productos específicos.
+RF-11 El sistema debe mostrar claramente a los clientes las promociones vigentes en la página principal.
+RF-32 El sistema debe permitir a los administradores agregar productos al inventario.
+RF-33 El sistema debe permitir a los administradores modificar productos del inventario.
+RF-34 El sistema debe permitir a los administradores eliminar productos del inventario.
+RF-35 El sistema debe permitir a los administradores crear categorías de productos.
+RF-36 El sistema debe permitir a los administradores modificar categorías de productos.
+RF-37 El sistema debe permitir a los administradores eliminar categorías de productos.
+RF-38 El sistema debe permitir a los administradores crear promociones y descuentos.
+RF-39 El sistema debe permitir a los administradores modificar promociones y descuentos existentes.
+RF-40 El sistema debe permitir a los administradores eliminar o desactivar promociones y descuentos.
+RF-12 El sistema debe permitir a los clientes agregar productos al carrito de compras.
+RF-13 El sistema debe permitir a los clientes modificar o eliminar productos del carrito de compras.
+RF-14 El sistema debe permitir a los clientes cancelar la compra de los productos en su carrito.
+RF-15 El sistema debe permitir a los clientes finalizar la compra de los productos en su carrito.
+RF-16 El sistema debe permitir que, una vez el cliente decida finalizar la compra de los productos en su carrito, sea redirigido a una sección de check-out, donde se aprecien los detalles de la compra (productos, cantidades, subtotal, iva, descuentos, total), datos de facturación (nombre, documento de identidad, dirección y teléfono) y  QR de pago.
+RF-17 El sistema debe permitir a los clientes ingresar y aplicar códigos de descuento válidos durante el proceso de compra.
+RF-18 El sistema debe proporcionar a los clientes un enlace de WhatsApp para que estos puedan enviar sus comprobantes de pago. 
+RF-19 El sistema permitir a los clientes recibir una factura de su compra, una vez se confirme su pago.
+RF-20 El sistema debe permitir a los clientes recibir notificaciones vía correo electrónico sobre el estado de sus pedidos.
+RF-21 El sistema debe permitir a los clientes acceder en su perfil al historial de pedidos.
+RF-41  El sistema debe permitir al administrador registrar manualmente el estado del pedido (pendiente, pagado, rechazado, entregado).
+RF-42 El sistema debe actualizar el estado del pedido a "Pagado" o "Rechazado" según la validación del pago por parte del administrador.
+RF-43 El sistema debe permitir al administrador enviar correos electrónicos a los clientes notificando el estado de su pedido.
+RF-44 El sistema debe mostrar a los administradores una lista de todos los pedidos realizados.
+RF-45 El sistema debe permitir al administrador visualizar las facturas para cada compra realizada.
+RF-46 El sistema debe permitir al administrador paginar las facturas de cada compra realizada.
+RF-22 El sistema debe permitir a los clientes calificar y dejar reseñas de los productos que han comprado.
+RF-23 El sistema debe permitir a los clientes solicitar personalizaciones especificas en los empaques.
+RF-24 El sistema debe permitir a los clientes acceder a la ubicación de la cafetería en un mapa interactivo.
+RF-47 El sistema debe permitir a los administradores moderar los comentarios y calificaciones de los productos.
+RF-48 El sistema debe permitir a los administradores gestionar líneas de atención al cliente para brindar soporte.
+RF-49 El sistema debe permitir a los administradores ver estadísticas de los productos.
+RF-50 El sistema debe permitir a los administradores exportar datos de ventas, inventario y clientes en formatos comunes (CSV, PDF).
+RF-51 El sistema debe permitir a los administradores generar informes de ventas por período.

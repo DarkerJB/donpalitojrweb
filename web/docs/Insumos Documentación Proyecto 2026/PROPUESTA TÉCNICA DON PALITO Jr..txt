@@ -1,0 +1,268 @@
+PROPUESTA TÉCNICA DON PALITO Jr.
+
+Señores:
+
+Rosiris Buelvas Pedroza
+Luis Eduardo Muñoz
+Administradores y Propietarios Cafetería Don Palito Junior
+Cra 47 #76D Sur - 37, Sabaneta
+luchodonpalito@gmail.com 
+314 870 2078
+
+Asunto: Propuesta Técnica Sistema de Comercio Electrónico Don Palito Junior.
+
+Estimado señor Muñoz:
+
+Reciban un cordial saludo de parte del Equipo de Desarrollo Don Palito, conformado por Andrea Arcila Cano, Jair González Buelvas y Maicol Estiven Córdoba, aprendices del programa Tecnología en Análisis y Desarrollo de Software del SENA.
+
+Nos complace presentarles esta Propuesta Técnica para el desarrollo del Sistema de Comercio Electrónico “Don Palito Junior”, una solución digital diseñada especialmente para su cafetería, con el objetivo de modernizar la experiencia del cliente, optimizar la gestión interna y fortalecer la presencia digital del negocio.
+
+Cordialmente, 
+
+
+
+
+Equipo de Desarrollo Proyecto Don Palito Junior
+
+
+
+
+
+Presentación del Proyecto
+
+La presente propuesta tiene como propósito diseñar, desarrollar y validar un sistema de comercio electrónico personalizado para la Cafetería Don Palito Junior, ubicada en el municipio de Sabaneta, Antioquia.
+
+El proyecto busca transformar la forma en que el negocio se relaciona con sus clientes y administra sus operaciones internas, mediante una plataforma digital moderna, segura y adaptable a distintos dispositivos.
+La solución permitirá a los clientes acceder fácilmente a productos, precios, promociones, reseñas y métodos de pago digitales, y a los administradores gestionar inventarios, ventas, usuarios y estadísticas desde una interfaz sencilla e intuitiva.
+
+En un entorno donde la digitalización se ha vuelto esencial para la sostenibilidad de los pequeños negocios, esta propuesta representa una respuesta estratégica a la necesidad de Don Palito Junior de evolucionar sin perder su esencia tradicional.
+
+
+Justificación del Proyecto
+
+La Cafetería Don Palito Junior ha construido su reputación sobre la calidad de sus productos típicos colombianos (buñuelos, palitos de queso, cafetería y bebidas), pero el crecimiento actual del mercado exige un salto hacia la transformación digital.
+
+Los hábitos de consumo han cambiado: hoy los clientes esperan acceder a los productos desde su celular, pagar digitalmente y recibir una experiencia personalizada.
+
+El sistema propuesto permitirá a Don Palito Junior:
+
+-	Expandir su alcance más allá del público local, conectando con nuevos clientes del sur del Valle de Aburrá.
+-	Mejorar la experiencia de compra, gracias a un entorno web/móvil rápido, visualmente atractivo y seguro.
+-	Optimizar la gestión operativa, centralizando inventarios, precios, ventas y reseñas.
+-	Reducir costos y errores operativos, automatizando procesos actualmente manuales.
+-	Fomentar la fidelización, mediante promociones exclusivas, reseñas, calificaciones y notificaciones de descuentos.
+
+En suma, este proyecto no solo moderniza las operaciones de la cafetería, sino que la posiciona como un referente local de innovación gastronómica, sin perder su identidad artesanal ni su cercanía con los clientes.
+
+
+Alcance de la Propuesta
+
+La propuesta abarca el diseño, desarrollo, implementación y validación de un sistema integral dividido en los siguientes servicios:
+
+1. Sistema para Clientes
+-	Visualización de productos, precios y disponibilidad.
+-	Carrito de compras con opciones de agregar/eliminar.
+-	Pagos seguros mediante código QR.
+-	Promociones y descuentos activos.
+-	Sistema de reseñas y calificación.
+
+2. Sistema para Administradores
+-	Control de inventario, ventas y pedidos.
+-	Gestión de usuarios y cuentas administrativas.
+-	Actualización de precios, promociones y stock.
+-	Generación de reportes y estadísticas visuales.
+-	Validación de roles y permisos mediante token.
+
+3. Servicios de Seguridad
+-	Autenticación con token y roles diferenciados.
+-	Recuperación de cuenta mediante preguntas de seguridad.
+-	Registro de actividad y bloqueo automático por intentos fallidos.
+
+4. Sistema de Reportes
+-	Visualización gráfica de ventas, productos más vendidos y reseñas.
+-	Descarga de reportes en formatos CSV o PDF.
+
+5. Módulo Cloud y API
+-	Integración con servicios en la nube para almacenamiento y despliegue.
+-	API REST documentada con Swagger para pruebas y mantenimiento.
+
+El sistema será multiplataforma (web y móvil), de uso intuitivo y adaptable a distintas resoluciones de pantalla.
+
+
+Metodologías
+
+Enfoque de Desarrollo – Metodología Ágil (Scrum): El proyecto se desarrollará utilizando Scrum, marco ágil que permite organizar el trabajo en iteraciones cortas denominadas sprints, asegurando entregas funcionales frecuentes y retroalimentación continua con el cliente. Cada sprint incluirá planificación, desarrollo, pruebas, revisión y retroalimentación directa de los señores propietarios.
+
+Metodología de Diseño
+-	Herramienta: Figma
+-	Objetivo: Diseñar prototipos de alta fidelidad que definan una experiencia moderna, ordenada y coherente con la identidad visual de Don Palito Junior.
+-	El diseño seguirá los principios de usabilidad, coherencia visual y accesibilidad.
+
+Metodología de Análisis
+-	Herramientas: PlantUML y Markdown
+-	Se elaborarán diagramas de casos de uso, clases, secuencia, componentes y arquitectura, garantizando la trazabilidad entre los requisitos funcionales y la estructura técnica.
+
+Metodología de Desarrollo Frontend
+-	Web: HTML, CSS y JavaScript
+-	Mobile: React y Android
+-	La interfaz estará centrada en la experiencia del usuario (UX), priorizando velocidad, claridad visual y compatibilidad con múltiples dispositivos.
+
+Metodología de Desarrollo Backend
+-	Lenguaje: Python
+-	Base de datos: PostgreSQL
+-	Se implementará una arquitectura basada en controladores y servicios, con rutas seguras, validación de datos y control de sesiones mediante tokens.
+-	La API se documentará con Swagger para garantizar mantenibilidad y transparencia técnica.
+
+Metodología de Testing
+-	Herramientas: Postman y Swagger.
+-	Se realizarán pruebas funcionales, de integración, de seguridad y validación de endpoints.
+-	Cada sprint cerrará con una revisión de calidad y pruebas manuales de interfaz y flujo.
+
+Metodología de Control de Versiones y Despliegue
+-	Plataforma: GitHub (repositorio privado)
+-	Se mantendrá control de versiones mediante ramas separadas (main, dev, feature).
+-	El despliegue y la documentación técnica de la API se alojarán en un entorno cloud con integración REST.
+
+
+Cotización de Costos
+
+La estimación de costos se ha realizado considerando el tiempo de desarrollo, los recursos tecnológicos empleados y el nivel de personalización del sistema. Los valores reflejan el trabajo integral del Equipo de Desarrollo Don Palito, así como los recursos de software y pruebas asociados.
+
+ÁREA DE DESARROLLO	DESCRIPCIÓN DE ACTIVIDADES	COSTO ESTIMADO 
+Diseño UX/UI	Creación de prototipos en Figma, definición de paleta visual, experiencia de usuario y diseño responsivo.	$1.000.000
+Frontend Web	Implementación de interfaz en HTML, CSS y JavaScript; conexión con API REST y validaciones visuales.	$2.000.000
+Frontend Mobile	Adaptación e implementación en React y Android; integración con la base de datos y diseño responsivo móvil.	$1.500.000
+Backend y Base de Datos	Desarrollo del servidor en Python, integración con PostgreSQL, validación de roles y autenticación por token.	$3.000.000
+Testing y Documentación	Pruebas en Postman y Swagger, validación de seguridad y rendimiento, elaboración de documentación técnica.	$800.000
+Infraestructura y Licencias	Dominio web, hosting y herramientas de control de versiones (GitHub privado).	$400.000
+Total Estimado del Proyecto	$8.700.000
+
+
+Nota: El presupuesto no contempla mantenimiento evolutivo o nuevas funcionalidades fuera del alcance inicial. Cualquier cambio adicional será presupuestado de manera independiente y acordado con el cliente.
+
+
+Formas de Pago
+
+Se propone un esquema de pago dividido en tres fases, asociado al cumplimiento de hitos verificables:
+
+-	50% al inicio del proyecto, tras la aprobación del cronograma y firma del contrato.
+-	30% a la entrega de los módulos funcionales (cliente y administrador).
+-	20% al finalizar la entrega total, incluyendo documentación técnica, pruebas finales y validación del cliente.
+
+Métodos de pago aceptados: Transferencia bancaria, consignación o pago electrónico autorizado.
+
+
+Anexo No. 1 - Contrato y Aspectos Legales
+
+1. Partes Contratantes
+El presente contrato se celebra entre los señores Rosiris Buelvas Pedroza y Luis Eduardo Muñoz, en calidad de Contratantes, propietarios de la Cafetería Don Palito Junior, y el Equipo de Desarrollo Don Palito Jr (conformado por los desarrolladores antes referidos), en calidad de Desarrolladores.
+
+2. Objeto del Contrato
+El objeto del contrato consiste en el diseño, desarrollo, implementación y validación de un sistema de comercio electrónico para la Cafetería Don Palito Junior, conforme a los términos establecidos en esta propuesta técnica.
+
+3. Alcance del Servicio
+El Desarrollador se compromete a entregar:
+-	Un sitio web funcional para administración y atención al cliente.
+-	Aplicación móvil integrada para uso complementario.
+-	API REST documentada con Swagger.
+-	Manual técnico y de usuario.
+-	Acompañamiento en el despliegue inicial y capacitación básica al administrador.
+
+4. Plazo de Ejecución
+El tiempo estimado de desarrollo será de dieciocho (18) semanas, contadas a partir de la firma del contrato y el primer pago acordado.
+
+5. Obligaciones de los Desarrolladores
+-	Cumplir con los requerimientos establecidos.
+-	Garantizar el correcto funcionamiento del sistema en el entorno acordado.
+-	Mantener confidencialidad sobre los datos de la empresa.
+-	Entregar los manuales y la documentación final al contratante.
+
+6. Obligaciones de los Contratantes
+-	Proporcionar información veraz y completa sobre los procesos internos de la cafetería.
+-	Designar un responsable para revisión y aprobación de avances.
+-	Realizar los pagos acordados según las fases establecidas.
+
+7. Propiedad Intelectual
+La documentación final, base de datos y materiales de diseño desarrollados dentro del alcance del proyecto serán propiedad del contratante una vez se realice el pago total.
+El Desarrollador conservará únicamente derechos morales de autoría y el código fuente del proyecto.
+
+8. Confidencialidad
+Ambas partes se comprometen a no divulgar información técnica, operativa o comercial obtenida durante la ejecución del proyecto. Esta cláusula tendrá vigencia indefinida, incluso después de finalizado el contrato.
+
+9. Garantía y Soporte
+Se ofrece un periodo de garantía de 30 días calendario posteriores a la entrega final, para la corrección de errores o inconsistencias detectadas en producción. No incluye actualizaciones o mejoras fuera del alcance inicial.
+
+10. Terminación Anticipada
+El contrato podrá ser terminado por cualquiera de las partes en caso de:
+-	Incumplimiento de obligaciones contractuales.
+-	Retrasos superiores a 20 días sin justificación técnica.
+-	Falta de pago de más de 15 días respecto a la fecha acordada.
+En dichos casos, se liquidarán los trabajos efectivamente realizados.
+
+11. Resolución de Controversias
+Las partes acuerdan resolver cualquier diferencia mediante conciliación directa. Si no se logra acuerdo, el caso podrá remitirse a un Centro de Conciliación autorizado en Medellín o Sabaneta, conforme a las leyes colombianas.
+
+12. Jurisdicción Aplicable
+El presente contrato se rige por las leyes de la República de Colombia.
+
+
+Propuesta Económica: Presupuesto General
+
+El desarrollo del sistema de comercio electrónico para Don Palito Junior representa una inversión estratégica orientada al crecimiento y la modernización del negocio. Más que un gasto tecnológico, se trata de una apuesta por la eficiencia, la visibilidad digital y la sostenibilidad comercial de la cafetería en un entorno altamente competitivo.
+
+El proyecto contempla tres grandes componentes de inversión:
+
+-	En primer lugar, los costos de personal —que incluyen el diseño, la programación, la integración de los módulos y la documentación técnica— constituyen el núcleo de la propuesta. Este componente asciende a $6.500.000 COP, valor que refleja el trabajo especializado de un equipo multidisciplinario comprometido con la calidad del producto final. La inversión en talento garantiza que cada etapa del proyecto, desde la interfaz gráfica hasta la lógica del sistema, se ejecute bajo estándares profesionales de desarrollo y seguridad.
+
+-	En segundo lugar, se consideran los costos de infraestructura tecnológica, estimados en $1.000.000 COP. Este rubro abarca el registro del dominio, el alojamiento en la nube, el mantenimiento del servidor, el control de versiones y las herramientas que aseguran la disponibilidad del sistema las 24 horas del día. Este componente no solo garantiza estabilidad técnica, sino también una experiencia fluida y confiable para los usuarios finales.
+
+-	Finalmente, se incluye una reserva para imprevistos de $500.000 COP, destinada a cubrir ajustes menores, revisiones adicionales o pruebas extendidas que puedan surgir durante la fase final de implementación. Este margen permite mantener la flexibilidad del proyecto sin afectar el cronograma ni la calidad del resultado.
+
+En conjunto, el presupuesto total del proyecto asciende a $8.000.000, una cifra razonable y competitiva frente al valor que el sistema aportará a la operación y posicionamiento de la cafetería.
+
+La inversión permitirá a Don Palito Junior contar con una plataforma moderna, segura y escalable, capaz de proyectar su marca al mundo digital, optimizar procesos internos y fortalecer la relación con sus clientes.
+
+Más allá del aspecto económico, este proyecto es una oportunidad tangible para transformar la tradición en innovación, manteniendo la esencia artesanal del negocio mientras se abren las puertas hacia nuevas formas de venta, fidelización y crecimiento sostenible.
+
+
+Anexo No. 2 - Diagrama de Arquitectura Tecnológica
+
+ 
+
+Descripción general: El sistema Don Palito Junior se basa en una arquitectura multicapa con separación de responsabilidades:
+
+-	Capa de presentación: Frontend web y móvil (JS, React).
+-	Capa lógica: Backend.
+-	Capa de datos: MongoDB.
+-	Capa de servicios externos: GitHub (control de versiones) y Cloud (hosting).
+
+
+Anexo No. 3 - Diagrama de Paquetes
+
+ 
+
+Estructura general:
+
+-	Módulo Autenticación
+-	Módulo Inventario - Productos
+-	Módulo Ventas
+-	Módulo Comunidad y Servicios
+-	Módulo reportes
+
+
+
+
+El Equipo de Desarrollo Don Palito Jr. agradece la oportunidad de presentar esta propuesta.
+
+Nuestro compromiso es ofrecer una solución moderna, escalable y funcional, que potencie la identidad de Don Palito Junior y refuerce su competitividad en el entorno digital.
+
+Quedamos atentos a sus observaciones y aprobación para proceder con la ejecución del contrato y la programación del primer sprint de desarrollo.
+
+Atentamente,
+
+
+
+Equipo de Desarrollo Don Palito Jr.
+Andrea Arcila Cano
+Jair González Buelvas
+Maicol Estiven Córdoba

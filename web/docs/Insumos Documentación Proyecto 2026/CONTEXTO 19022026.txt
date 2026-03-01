@@ -1,0 +1,175 @@
+CONTEXTO 19022026
+
+Hola de nuevo, tengo mi proyecto web desarrollado para alcanzar los avances de mis compañeros, en ese orden de ideas, mi compañera líder de proyecto creó el repositorio en https://github.com/andreaac777/ecommerce_app.git, el cual yo cloné en D:\1_donpalitojr\donpalitojrweb y deposité en https://github.com/DarkerJB/donpalitojrweb.git, en el cual hice mis avances, igualmente, ella me creó una rama en su repositorio llamada web, para que yo pueda subir mis avances, entonces necesito por favor subir lo que hice del proyecto al repositorio de mi compañera, obviamente en mi rama web, teniendo en cuenta que además de crear especialmente D:\1_donpalitojr\donpalitojrweb\web, agregué algunas cosas como los puertos de web al backend, te doy el contexto del proyecto por si lo necesitas.
+
+
+ESPECIFICACIÓN DE REQUISITOS DE SOFTWARE (ERS)
+Sistema de Comercio Electrónico – Don Palito Junior
+Versión 2026
+
+1. Introducción
+1.1 Propósito del documento
+El presente documento tiene como propósito definir de manera formal y estructurada los requisitos funcionales y no funcionales del sistema de comercio electrónico Don Palito Junior. Este documento sirve como referencia oficial para validación con el cliente, desarrollo, mantenimiento, evaluación académica y control de alcance.
+1.2 Alcance del sistema
+El sistema Don Palito Junior es una solución digital de comercio electrónico orientada a la gestión de ventas, inventario y atención al cliente para una cafetería. Permite registro y autenticación de usuarios, gestión de productos, carrito de compras, proceso de checkout, generación de pedidos, administración de inventario, gestión de promociones, facturación, notificaciones por correo electrónico y generación de reportes.
+El sistema está compuesto por una aplicación web, una aplicación móvil desarrollada en React Native y un panel administrativo. El backend oficial está desarrollado en Node.js con base de datos MongoDB.
+1.3 Definiciones y Acrónimos
+ERS: Especificación de Requisitos de Software.
+RF: Requisito Funcional.
+RNF: Requisito No Funcional.
+API: Interfaz de Programación de Aplicaciones.
+Backend: Lógica del servidor y acceso a base de datos.
+Frontend: Interfaz visual del usuario.
+Checkout: Proceso de finalización de compra.
+2. Descripción General del Sistema
+2.1 Perspectiva del Producto
+El sistema sigue una arquitectura cliente-servidor basada en una API REST. Las aplicaciones web y móvil consumen la misma API, garantizando coherencia funcional entre plataformas. Actualmente el sistema se encuentra desplegado en entorno local, con proyección de migración a infraestructura en la nube.
+2.2 Funciones Generales del Sistema
+Funciones para Clientes:
+- Registro, autenticación y gestión de perfil.
+- Visualización de catálogo y productos.
+- Carrito de compras y aplicación de descuentos.
+- Proceso de checkout con generación de pedido.
+- Consulta de historial de pedidos.
+- Calificación y reseñas de productos.
+Funciones para Administradores:
+- Gestión de cuentas de usuario.
+- Gestión de inventario y categorías.
+- Gestión de promociones.
+- Gestión de pedidos y estados.
+- Generación de reportes y estadísticas.
+- Exportación de datos.
+
+
+3. Requisitos Funcionales
+3.1 Gestión de Clientes
+RF-01: El sistema debe permitir a los usuarios registrarse como clientes.
+RF-02: El sistema debe permitir a los clientes iniciar sesión con sus credenciales.
+RF-03: El sistema debe permitir a los clientes recuperar su contraseña mediante validación de identidad.
+RF-04: El sistema debe permitir a los clientes modificar su perfil.
+RF-05: El sistema debe permitir a los clientes cerrar sesión de forma segura.
+RF-06: El sistema debe permitir a los clientes desactivar su cuenta.
+RF-21: El sistema debe permitir a los clientes acceder a su historial de pedidos.
+3.2 Gestión de Administradores
+RF-25: El sistema debe permitir el registro de nuevos administradores.
+RF-26: El sistema debe permitir a los administradores iniciar sesión de forma segura.
+RF-27: El sistema debe permitir a los administradores cerrar sesión de forma segura.
+RF-28: El sistema debe permitir a los administradores recuperar y cambiar su contraseña.
+RF-29: El sistema debe permitir a los administradores editar cuentas de usuario existentes.
+RF-30: El sistema debe permitir a los administradores desactivar o eliminar cuentas de usuario.
+RF-31: El sistema debe permitir reactivar cuentas previamente desactivadas.
+3.3 Catálogo e Inventario
+RF-07: El sistema debe mostrar a los clientes un catálogo de productos disponibles.
+RF-08: El sistema debe mostrar los detalles de cada producto.
+RF-09: El sistema debe permitir ordenar productos alfabéticamente y por precio.
+RF-10: El sistema debe incluir función de búsqueda rápida.
+RF-11: El sistema debe mostrar promociones vigentes.
+RF-32: El sistema debe permitir agregar productos al inventario.
+RF-33: El sistema debe permitir modificar productos del inventario.
+RF-34: El sistema debe permitir eliminar productos del inventario.
+RF-35: El sistema debe permitir crear categorías de productos.
+RF-36: El sistema debe permitir modificar categorías.
+RF-37: El sistema debe permitir eliminar categorías.
+RF-38: El sistema debe permitir crear promociones y descuentos.
+RF-39: El sistema debe permitir modificar promociones.
+RF-40: El sistema debe permitir eliminar o desactivar promociones.
+3.4 Carrito y Checkout
+RF-12: El sistema debe permitir agregar productos al carrito.
+RF-13: El sistema debe permitir modificar o eliminar productos del carrito.
+RF-14: El sistema debe permitir cancelar la compra.
+RF-15: El sistema debe permitir finalizar la compra.
+RF-16: El sistema debe mostrar detalles de compra en el checkout (productos, subtotal, IVA, descuentos, total y QR de pago).
+RF-17: El sistema debe permitir aplicar códigos de descuento.
+RF-18: El sistema debe proporcionar enlace de WhatsApp para envío de comprobantes.
+3.5 Gestión de Pedidos y Facturación
+RF-19: El sistema debe generar factura una vez confirmado el pago.
+RF-20: El sistema debe enviar notificaciones por correo sobre el estado del pedido.
+RF-41: El sistema debe permitir registrar manualmente el estado del pedido.
+RF-42: El sistema debe actualizar el estado del pedido según validación del pago.
+RF-43: El sistema debe permitir enviar correos notificando el estado del pedido.
+RF-44: El sistema debe mostrar lista de pedidos realizados.
+RF-45: El sistema debe permitir visualizar facturas.
+RF-46: El sistema debe permitir paginar facturas.
+3.6 Reseñas y Personalización
+RF-22: El sistema debe permitir calificar y dejar reseñas.
+RF-23: El sistema debe permitir solicitar personalizaciones en empaques.
+RF-24: El sistema debe permitir acceder a ubicación en mapa interactivo.
+RF-47: El sistema debe permitir moderar comentarios y calificaciones.
+RF-48: El sistema debe permitir gestionar líneas de atención al cliente.
+3.7 Reportes y Estadísticas
+RF-49: El sistema debe permitir visualizar estadísticas de productos.
+RF-50: El sistema debe permitir exportar datos en formatos CSV y PDF.
+RF-51: El sistema debe permitir generar informes de ventas por período.
+
+
+4. Requisitos No Funcionales
+4.1 Seguridad
+RNF-01: El sistema debe implementar mecanismos de autenticación y autorización para prevenir accesos no autorizados, incluyendo control de roles y sesiones seguras.
+4.2 Rendimiento
+RNF-02: El sistema debe cargar en menos de 3 segundos bajo condiciones normales de red.
+RNF-10: El sistema debe mantener un rendimiento óptimo bajo carga máxima esperada.
+RNF-16: Los recursos de la aplicación deben cargarse en menos de 1 segundo en conexiones de banda ancha.
+4.3 Disponibilidad
+RNF-03: El sistema debe estar disponible 24/7 con tiempo de inactividad mínimo.
+4.4 Compatibilidad y Responsividad
+RNF-04: La aplicación web debe ser compatible con los principales navegadores modernos.
+RNF-05: La interfaz debe ser completamente responsiva y adaptarse a dispositivos móviles, tablets y escritorio.
+RNF-17: Las actualizaciones del sistema no deben afectar la funcionalidad de versiones previas de la API utilizadas por aplicaciones externas.
+4.5 Escalabilidad
+RNF-06: El sistema debe ser escalable para soportar incremento en tráfico de usuarios sin degradar el rendimiento.
+4.6 Cumplimiento Legal
+RNF-07: El sistema debe cumplir con la normativa local vigente en materia de protección de datos y privacidad.
+4.7 Usabilidad
+RNF-08: La interfaz debe ser intuitiva y facilitar la navegación del usuario.
+4.8 Mantenibilidad
+RNF-09: El código debe seguir estándares de desarrollo y estar documentado para facilitar mantenimiento.
+RNF-14: El sistema debe permitir actualizaciones y aplicación de parches de forma controlada.
+4.9 Recuperación y Respaldo
+RNF-11: El sistema debe permitir recuperación rápida ante fallos críticos.
+RNF-19: El sistema debe realizar copias de seguridad automáticas.
+4.10 Integraciones
+RNF-12: El sistema debe integrarse con APIs externas como servicios de mapas y sistemas de pago.
+4.11 Auditoría
+RNF-13: El sistema debe mantener registros de auditoría sobre transacciones financieras y cambios en inventario.
+4.12 Gestión de Caché
+RNF-18: El sistema debe implementar mecanismos de caché para mejorar tiempos de respuesta.
+4.13 Accesibilidad y Eficiencia
+RNF-15: La aplicación debe considerar pautas de accesibilidad web.
+RNF-20: El sistema debe optimizar el consumo de recursos para eficiencia energética.
+
+Versión 2026
+
+5. Arquitectura del Sistema
+5.1 Arquitectura General
+El sistema adopta una arquitectura cliente-servidor basada en una API REST. El backend está desarrollado en Node.js y utiliza MongoDB como sistema de base de datos NoSQL. Las aplicaciones cliente (Web y Mobile), así como el panel de administración consumen la misma API, garantizando coherencia funcional.
+5.2 Componentes del Sistema
+Backend: Implementado en Node.js, gestiona la lógica de negocio, autenticación, control de roles, procesamiento de pedidos, gestión de inventario y generación de reportes.
+Base de Datos: MongoDB almacena información de usuarios, productos, pedidos, facturas, promociones, categorías y registros de auditoría, entre otros.
+Aplicación Web: Interfaz accesible desde navegadores modernos para clientes y administradores.
+Aplicación Mobile: Desarrollada en React Native, ofrece las mismas funcionalidades que la versión web orientada a clientes.
+Panel Administrativo: Interfaz especializada para la gestión interna del negocio.
+5.3 Seguridad Arquitectónica
+El sistema implementa autenticación basada en credenciales, control de sesiones y validación de roles. Se aplican mecanismos de protección de rutas y validaciones en el backend para prevenir accesos no autorizados.
+6. Reglas de Negocio
+RN-01: Un usuario debe estar autenticado para realizar compras.
+RN-02: Solo los administradores pueden modificar inventario y promociones.
+RN-03: Un pedido solo puede cambiar a estado 'Pagado' tras validación manual del administrador.
+RN-04: Un producto no puede venderse si su inventario es igual a cero.
+RN-05: Un cliente solo puede calificar productos que haya comprado.
+RN-06: Las promociones deben tener fecha de vigencia definida.
+RN-07: Las facturas solo se generan cuando el pago es confirmado.
+7. Modelo de Datos - Descripción Conceptual
+El modelo de datos está basado en una estructura NoSQL utilizando MongoDB. Las principales entidades del sistema incluyen:
+- Usuario (Cliente / Administrador).
+- Producto.
+- Categoría.
+- Promoción.
+- Pedido.
+- Factura.
+- Reseña.
+- Registro de Auditoría.
+Las relaciones se gestionan mediante referencias entre documentos y estructuras embebidas según la necesidad del módulo correspondiente.
+8. Consideraciones de Despliegue
+Actualmente el sistema se encuentra desplegado en entorno local para pruebas y desarrollo.
+Se proyecta migración a infraestructura en la nube utilizando servicios como Hostinger o Digital Ocean, lo cual permitirá mayor disponibilidad y escalabilidad.
+El despliegue futuro deberá contemplar configuración de servidor, base de datos en la nube, certificados de seguridad (HTTPS) y configuración de dominios.

@@ -1,0 +1,157 @@
+REQUISITOS NO FUNCIONALES
+
+Requisitos No Funcionales (RNF) Específicos.
+
+RNF: Prioridad Alta.
+
+Número del Requisito	RNF-01
+Nombre del Requisito	Seguridad
+Tipo	Requisito
+Fuente del Requisito	Cliente
+Prioridad del Requisito	Alta/Esencial
+Descripción	El sistema debe implementar medidas de seguridad para proteger contra ataques y accesos no autorizados.
+
+Número del Requisito	RNF-02
+Nombre del Requisito	Tiempo de Carga
+Tipo	Requisito
+Fuente del Requisito	Cliente
+Prioridad del Requisito	Alta/Esencial
+Descripción	El sistema debe cargar en menos de 3 segundos en una conexión de red estándar.
+
+Número del Requisito	RNF-03
+Nombre del Requisito	Disponibilidad
+Tipo	Requisito
+Fuente del Requisito	Cliente
+Prioridad del Requisito	Alta/Esencial
+Descripción	El sistema debe estar disponible 24/7 con un tiempo de inactividad mínimo.
+
+Número del Requisito	RNF-04
+Nombre del Requisito	Compatibilidad de Navegadores
+Tipo	Requisito
+Fuente del Requisito	Cliente
+Prioridad del Requisito	Alta/Esencial
+Descripción	La página web debe ser compatible con los principales navegadores (Chrome, Firefox, Safari, Edge).
+
+Número del Requisito	RNF-05
+Nombre del Requisito	Responsividad
+Tipo	Requisito
+Fuente del Requisito	Cliente
+Prioridad del Requisito	Alta/Esencial
+Descripción	La interfaz de usuario debe ser completamente responsiva, adaptándose a dispositivos móviles, tablets y escritorio.
+
+
+Número del Requisito	RNF-06
+Nombre del Requisito	Escalabilidad
+Tipo	Requisito
+Fuente del Requisito	Cliente
+Prioridad del Requisito	Alta/Esencial
+Descripción	El sistema debe ser escalable para manejar un aumento en el tráfico de usuarios sin afectar el rendimiento.
+
+
+Número del Requisito	RNF-07
+Nombre del Requisito	Cumplimiento Legal
+Tipo	Requisito
+Fuente del Requisito	Cliente
+Prioridad del Requisito	Alta/Esencial
+Descripción	La página web debe cumplir con todas las leyes y regulaciones locales sobre privacidad y protección de datos.
+
+
+RNF: Prioridad Media.
+
+Número del Requisito	RNF-08
+Nombre del Requisito	Usabilidad
+Tipo	Requisito
+Fuente del Requisito	Cliente
+Prioridad del Requisito	Media/Deseado
+Descripción	La interfaz de usuario debe ser intuitiva y fácil de usar.
+
+Número del Requisito	RNF-09
+Nombre del Requisito	Mantenibilidad
+Tipo	Requisito
+Fuente del Requisito	Cliente
+Prioridad del Requisito	Media/Deseado
+Descripción	El código debe estar bien documentado y seguir estándares de codificación para facilitar su mantenimiento.
+
+Número del Requisito	RNF-10
+Nombre del Requisito	Rendimiento
+Tipo	Requisito
+Fuente del Requisito	Cliente
+Prioridad del Requisito	Media/Deseado
+Descripción	El sistema debe mantener un rendimiento óptimo bajo carga máxima esperada.
+
+Número del Requisito	RNF-11
+Nombre del Requisito	Recuperación
+Tipo	Requisito
+Fuente del Requisito	Cliente
+Prioridad del Requisito	Media/Deseado
+Descripción	El sistema debe permitir una rápida recuperación en caso de fallo grave.
+
+
+
+
+Número del Requisito	RNF-12
+Nombre del Requisito	Integración de API
+Tipo	Requisito
+Fuente del Requisito	Cliente
+Prioridad del Requisito	Media/Deseado
+Descripción	El sistema debe integrarse de manera efectiva APIs de mapas y pagos.
+
+Número del Requisito	RNF-13
+Nombre del Requisito	Auditoría
+Tipo	Requisito
+Fuente del Requisito	Cliente
+Prioridad del Requisito	Media/Deseado
+Descripción	El sistema debe mantener registros de auditoría para todas las transacciones financieras y cambios en el inventario. 
+
+Número del Requisito	RNF-14
+Nombre del Requisito	Actualizaciones y Parcheo
+Tipo	Requisito
+Fuente del Requisito	Cliente
+Prioridad del Requisito	Media/Deseado
+Descripción	El sistema debe permitir la instalación de actualizaciones y parches de manera fácil.
+
+
+RNF: Prioridad Baja.
+
+Número del Requisito	RNF-15
+Nombre del Requisito	Accesibilidad
+Tipo	Requisito
+Fuente del Requisito	Cliente
+Prioridad del Requisito	Baja/Opcional
+Descripción	La página web debe cumplir con pautas de accesibilidad.
+
+Número del Requisito	RNF-16
+Nombre del Requisito	Carga de Recursos
+Tipo	Requisito
+Fuente del Requisito	Cliente
+Prioridad del Requisito	Baja/Opcional
+Descripción	Los recursos de la página web deben cargarse en menos de 1 segundo en conexiones de banda ancha.
+
+Número del Requisito	RNF-17
+Nombre del Requisito	Compatibilidad con versiones anteriores
+Tipo	Requisito
+Fuente del Requisito	Cliente
+Prioridad del Requisito	Baja/Opcional
+Descripción	Las actualizaciones del sistema no deben afectar la funcionalidad de las versiones de la API utilizadas por aplicaciones de tercero
+
+
+Número del Requisito	RNF-18
+Nombre del Requisito	Gestión de caché
+Tipo	Requisito
+Fuente del Requisito	Cliente
+Prioridad del Requisito	Baja/Opcional
+Descripción	Implementar un sistema de caché para reducir la carga del servidor y mejorar los tiempos de respuesta.
+
+Número del Requisito	RNF-19
+Nombre del Requisito	Soporte de copias de seguridad
+Tipo	Requisito
+Fuente del Requisito	Cliente
+Prioridad del Requisito	Baja/Opcional
+Descripción	El sistema debe realizar copias de seguridad automáticas.
+
+Número del Requisito	RNF-20
+Nombre del Requisito	Eficiencia Energética
+Tipo	Requisito
+Fuente del Requisito	Cliente
+Prioridad del Requisito	Baja/Opcional
+Descripción	El sistema debe estar diseñado para ser eficiente en términos de consumo de recursos.
