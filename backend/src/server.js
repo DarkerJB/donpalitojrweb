@@ -1,5 +1,6 @@
 import express from "express";
 import path from "path";
+import os from "os";
 import { clerkMiddleware } from '@clerk/express';
 import { serve } from "inngest/express";
 import cors from "cors";
@@ -17,6 +18,7 @@ import productRoutes from "./routes/product.routes.js";
 import cartRoutes from "./routes/cart.routes.js";
 import paymentRoutes from "./routes/payment.routes.js"
 import couponRoutes from "./routes/coupon.routes.js";
+import "./services/email.service.js";
 
 
 const app = express();
@@ -24,31 +26,26 @@ const app = express();
 const __dirname = path.resolve();
 
 const corsOptions = {
-  origin: ENV.NODE_ENV === "production"
-    ? [ENV.CLIENT_URL, ENV.ADMIN_URL].filter(Boolean)
+  origin: ENV.NODE_ENV === "production" 
+    ? ENV.CLIENT_URL  
     : function (origin, callback) {
         if (!origin) {
           return callback(null, true);
         }
         
-        const allowedOrigins = [
-          'http://localhost:5173',           // Frontend web (Vite default)
-          'http://localhost:5174',           // Admin / Dashboard (puerto alternativo)
-          'http://localhost:3000',           // Mismo servidor
-          'http://localhost:8081',           // Expo metro bundler
-          'http://127.0.0.1:5173',          // Alternativa localhost
-          'http://127.0.0.1:5174',          // Alternativa localhost
-          'http://10.0.2.2:3000',           // Emulador Android
-          'http://10.0.2.2:8081',           // Expo en emulador
+        const localPatterns = [
+          /^http:\/\/localhost(:\d+)?$/,
+          /^http:\/\/127\.0\.0\.1(:\d+)?$/,
+          /^http:\/\/10\.0\.2\.2(:\d+)?$/,       // Emulador Android
+          /^http:\/\/192\.168\.\d+\.\d+(:\d+)?$/, // Red local WiFi
+          /^http:\/\/172\.\d+\.\d+\.\d+(:\d+)?$/, // Docker / otras redes locales
+          /^exp:\/\//,                             // Expo Go
         ];
         
-        if (origin.startsWith('exp://')) {
+        if (localPatterns.some((pattern) => pattern.test(origin))) {
           return callback(null, true);
         }
-        
-        if (allowedOrigins.includes(origin)) {
-          return callback(null, true);
-        }
+
         callback(new Error('Not allowed by CORS'));
       },
   credentials: true,
@@ -113,15 +110,43 @@ app.get("/api/health", (req, res) => {
     res.status(200).json({ message: "Success" });
 });
 
+// Make app ready for deployment
+if (ENV.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "../admin/dist")));
+  app.get("/{*any}", (req, res) => {
+      res.sendFile(path.join(__dirname, "../admin", "dist", "index.html"));
+  });
+
+  app.use(express.static(path.join(__dirname, "../web/dist")));
+  app.get("/{*any}", (req, res) => {
+      res.sendFile(path.join(__dirname, "../web", "dist", "index.html"));
+  });
+}
+
+const getNetworkIPs = () => {
+  const interfaces = os.networkInterfaces();
+  const ips = [];
+  for (const iface of Object.values(interfaces)) {
+    for (const config of iface) {
+      if (config.family === "IPv4" && !config.internal) {
+        ips.push(config.address);
+      }
+    }
+  }
+  return ips;
+};
 
 const startServer = async () => {
     await connectDB();
     const HOST = '0.0.0.0';
     const PORT = ENV.PORT || 3000;
     app.listen(PORT, HOST, () => {
+      const networkIPs = getNetworkIPs();
       console.log('🚀 Server is up and running!');
       console.log(`💻 Local:        http://localhost:${PORT}`);
-      console.log(`📱 Network:      http://192.168.40.137:${PORT}`);
+      networkIPs.forEach(ip => {
+        console.log(`📱 Network:      http://${ip}:${PORT}`);
+      });
       console.log(`🌍 Environment:  ${ENV.NODE_ENV || 'development'}`);
     });
 };
