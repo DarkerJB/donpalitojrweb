@@ -21,6 +21,7 @@ const AddressForm = ({ address, onSubmit, onCancel }) => {
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: yupResolver(addressSchema),
+    mode: 'onBlur',
     defaultValues: address || {
       label: 'Casa',
       fullName: '',
@@ -55,6 +56,7 @@ const AddressForm = ({ address, onSubmit, onCancel }) => {
       <Input
         label="Nombre completo"
         placeholder="Nombre del destinatario"
+        helperText="Solo letras y espacios"
         error={errors.fullName?.message}
         required
         onKeyDown={noNumbers}
@@ -72,6 +74,7 @@ const AddressForm = ({ address, onSubmit, onCancel }) => {
       <Input
         label="Ciudad"
         placeholder="Ciudad"
+        helperText="Solo letras y espacios"
         error={errors.city?.message}
         required
         onKeyDown={noNumbers}
@@ -82,6 +85,7 @@ const AddressForm = ({ address, onSubmit, onCancel }) => {
         label="Teléfono"
         type="tel"
         placeholder="3001234567"
+        helperText="10 dígitos, empieza por 3. Ej: 3001234567"
         maxLength={10}
         onKeyDown={onlyNumbers}
         error={errors.phoneNumber?.message}
@@ -96,7 +100,7 @@ const AddressForm = ({ address, onSubmit, onCancel }) => {
             className="checkbox checkbox-primary checkbox-sm"
             {...register('isDefault')}
           />
-          <span className="label-text">Establecer como dirección principal</span>
+          <span className="label-text">Establecer como dirección predeterminada</span>
         </label>
       </div>
 

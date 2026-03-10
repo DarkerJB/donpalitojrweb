@@ -254,7 +254,7 @@ export const sendOrderCreatedAdminEmail = async (orderData) => {
 };
 
 export const sendOrderCreatedClientEmail = async (orderData) => {
-    if (!orderData.emailNotifications) return { success: true, skipped: true };
+    if (orderData.emailNotifications === false) return { success: true, skipped: true };
 
     const orderId = orderData.orderId.slice(-8).toUpperCase();
     const subject = `Pedido recibido #${orderId} - ${ENV.APP_NAME}`;
@@ -296,7 +296,7 @@ export const sendOrderUpdatedAdminEmail = async (orderData) => {
 };
 
 export const sendOrderUpdatedClientEmail = async (orderData) => {
-    if (!orderData.emailNotifications) return { success: true, skipped: true };
+    if (orderData.emailNotifications === false) return { success: true, skipped: true };
 
     const orderId = orderData.orderId.slice(-8).toUpperCase();
     const statusConfig = {
@@ -378,7 +378,7 @@ export const sendMarketingSubscriptionEmail = async ({ userName, userEmail }) =>
 export const sendInvoiceEmails = async ({ userName, userEmail, orderId, invoiceNumber, pdfBuffer, csvContent, emailNotifications }) => {
     const orderIdShort = orderId.toString().slice(-8).toUpperCase();
 
-    const clientPromise = emailNotifications ? sendEmail({
+    const clientPromise = emailNotifications !== false ? sendEmail({
         to: userEmail,
         subject: `¡Pedido Confirmado! #${orderIdShort} - ${ENV.APP_NAME}`,
         html: buildEmailWithOrderRef(orderIdShort, `

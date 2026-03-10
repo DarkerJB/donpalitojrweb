@@ -1,4 +1,5 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { useEffect, useRef } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ClerkProvider } from '@clerk/clerk-react';
 import { esES } from '@clerk/localizations';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -6,7 +7,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 // Providers
-import { AuthProvider } from './contexts/AuthContext';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { CartProvider } from './contexts/CartContext';
 import ClerkTokenSync from './components/providers/ClerkTokenSync';
 
@@ -32,9 +33,6 @@ import NotFound from './pages/NotFound';
 // Auth pages
 import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
-import ForgotPassword from './pages/auth/ForgotPassword';
-import ResetPassword from './pages/auth/ResetPassword';
-import PostLogin from './pages/auth/PostLogin';
 
 // Account inactive
 import AccountInactive from './pages/AccountInactive';
@@ -67,9 +65,24 @@ const queryClient = new QueryClient({
   },
 });
 
-// Redirige al panel admin externo
+// Redirige al panel admin externo (cuando se navega a /admin/*)
 const AdminRedirect = () => {
   window.location.href = ADMIN_URL;
+  return null;
+};
+
+// Redirige automáticamente al admin panel tras iniciar sesión como admin
+const AdminAutoRedirect = () => {
+  const { isAdmin, isAuthenticated, loading } = useAuth();
+  const hasRedirected = useRef(false);
+
+  useEffect(() => {
+    if (!loading && isAuthenticated && isAdmin && !hasRedirected.current) {
+      hasRedirected.current = true;
+      window.location.href = ADMIN_URL;
+    }
+  }, [isAdmin, isAuthenticated, loading]);
+
   return null;
 };
 
@@ -79,6 +92,7 @@ function AppRoutes() {
       <CartProvider>
         <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
           <ScrollToTop />
+          <AdminAutoRedirect />
           <Routes>
             <Route path="/" element={<Layout />}>
               {/* Públicas */}
@@ -89,10 +103,7 @@ function AppRoutes() {
 
               {/* Auth */}
               <Route path="login" element={<Login />} />
-              <Route path="post-login" element={<PostLogin />} />
               <Route path="registro" element={<Register />} />
-              <Route path="recuperar-password" element={<ForgotPassword />} />
-              <Route path="restablecer-password/:token" element={<ResetPassword />} />
 
               {/* Cuenta inactiva */}
               <Route path="cuenta-inactiva" element={<AccountInactive />} />
@@ -125,10 +136,11 @@ function AppRoutes() {
 
           <ToastContainer
             position="top-right"
-            autoClose={3000}
-            hideProgressBar={false}
+            autoClose={500}
+            hideProgressBar={true}
             newestOnTop
             closeOnClick
+            limit={3}
             theme="light"
           />
         </Router>

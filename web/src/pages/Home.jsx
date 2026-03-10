@@ -187,7 +187,7 @@ const Home = () => {
               <div className="flex justify-center gap-2 mt-6">
                 {activePromos.map((_, i) => (
                   <button
-                    key={i}
+                    key={`dot-${i}`}
                     onClick={() => setCurrentIdx(i)}
                     className={`w-2 h-2 rounded-full transition-colors ${
                       i === currentIdx ? 'bg-white' : 'bg-white/30'

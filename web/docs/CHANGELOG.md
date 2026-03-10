@@ -5,6 +5,32 @@ Formato: **fecha · archivo(s) · tipo · descripción**
 
 ---
 
+## [04-03-2026] — Sesión 11
+
+### 🐛 Fix — Eliminación de direcciones no funcionaba
+
+#### Causa raíz
+`AddressCard.jsx` pasaba `address.id` al handler de delete. El campo `id` es un virtual de Mongoose que no se serializa en JSON; el API retorna `_id`. El frontend enviaba `DELETE /users/addresses/undefined`, el guard del backend lo rechazaba con 400, y el `$pull` nunca se ejecutaba. El toast de éxito aparecía de todas formas porque se disparaba sincrónicamente antes de que la mutación terminara.
+
+| Archivo | Cambio |
+|---|---|
+| `components/profile/AddressCard.jsx` | `address.id` → `address._id` en el `onClick` del botón eliminar (línea 31) |
+| `hooks/useAddresses.js` | Añadido `deleteAddressAsync` al return del hook (para poder awaitearlo en Profile) |
+| `pages/profile/Profile.jsx` | `handleDeleteAddress` convertido a `async`/`await` con try/catch — toast solo aparece si la mutación tiene éxito, error toast si falla |
+| `pages/profile/Profile.jsx` | `key={addr.id}` → `key={addr._id}` en el `.map()` de AddressCard (eliminaba React warning de key única) |
+
+---
+
+### 🐛 Fix — Login/Register: formulario email/password de Clerk visible cuando debía estar oculto
+
+| Archivo | Cambio |
+|---|---|
+| `pages/auth/Login.jsx` | `appearance.elements`: añadidos `formFieldRow`, `formButtonPrimary`, `dividerRow`, `identifierInputOptionalLabel`, `alternativeMethodsBlockButton`, `footer` con `display: 'none'` |
+| `pages/auth/Register.jsx` | Mismos elementos ocultos para `<SignUp>` |
+| `pages/auth/PostLogin.jsx` | Comentario corregido: redirige al perfil (sin verificar roles) |
+
+---
+
 ## [25-02-2026] — Sesión 10
 
 ### ✨ Home — Rediseño completo de la sección de Promociones activas
@@ -13,27 +39,10 @@ Formato: **fecha · archivo(s) · tipo · descripción**
 |---|---|
 | `pages/Home.jsx` | Sección de promos movida: antes de "Nuestros Favoritos" → ahora entre "Nuestros Favoritos" y "Encuéntranos" |
 | `pages/Home.jsx` | Scroll carousel reemplazado por navegación con flechas (una promo a la vez): `useState(currentIdx)`, botones `IoChevronBack / IoChevronForward`, dot indicators circulares |
-| `pages/Home.jsx` | Tarjetas rediseñadas estilo cupón: header `bg-brand-accent` con descuento en `text-6xl font-black`, separador dashed, badge `font-mono` con código, nota `firstOrderOnly` y fecha de expiración |
+| `pages/Home.jsx` | Tarjetas rediseñadas estilo cupón: header `bg-brand-accent` con descuento en `text-6xl font-black`, separador dashed, badge `font-mono` con código y fecha de expiración |
 | `pages/Home.jsx` | Fondo de sección: imagen Cloudinary con overlay `bg-brand-primary/80` (en lugar de fondo plano) |
 | `pages/Home.jsx` | Auto-descripción redundante eliminada del header (backend ya no la incluye en `getActiveCoupons`) |
 | `pages/Home.jsx` | `border-y border-brand-accent/20` removido (causaba líneas pixeladas/antialias visible); `pb-16` → `py-16` en sección Encuéntranos para separación correcta |
-
----
-
-### 🆕 Backend + Frontend — Campo `firstOrderOnly` en cupones
-
-| Archivo | Cambio |
-|---|---|
-| `backend/src/models/coupon.model.js` | Nuevo campo `firstOrderOnly: { type: Boolean, default: false }` |
-| `backend/src/controllers/coupon.controller.js` | `validateCoupon`: si `coupon.firstOrderOnly`, consulta `Order.countDocuments` por `clerkId`; si tiene pedidos previos en estados `paid/delivered/in_preparation/ready`, retorna 400 "Este cupón es válido solo para tu primera compra." |
-| `backend/src/controllers/coupon.controller.js` | `getActiveCoupons`: eliminado campo auto-generado `description`; añadido `firstOrderOnly` al resultado; `.select()` actualizado |
-| `pages/Home.jsx` | Card de promo muestra `"Solo en tu primera compra"` cuando `promo.firstOrderOnly === true` |
-
-#### Migración de datos
-```js
-// Ejecutado en MongoDB Compass — cupón BIENVENIDO10 marcado como primera compra
-db.coupons.updateOne({ code: "BIENVENIDO10" }, { $set: { firstOrderOnly: true } })
-```
 
 ---
 
@@ -461,4 +470,4 @@ Usuario se registra en frontend
 ---
 
 *Mantenido por: Jair González Buelvas — DarkerJB*
-*Última actualización: 25 de febrero de 2026 — Sesión 10*
+*Última actualización: 4 de marzo de 2026 — Sesión 11*

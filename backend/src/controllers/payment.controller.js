@@ -4,13 +4,14 @@ import { User } from "../models/user.model.js";
 import { Product } from "../models/product.model.js";
 import { Order } from "../models/order.model.js";
 import { Coupon } from "../models/coupon.model.js";
-import { sendOrderCreatedAdminEmail, sendOrderCreatedClientEmail } from "../services/email.service.js";
+import { sendOrderCreatedAdminEmail, sendOrderCreatedClientEmail, sendInvoiceEmails } from "../services/email.service.js";
+import { generateInvoicePDF, generateInvoiceCSV } from "../services/invoice.service.js";
 
 const stripe = new Stripe(ENV.STRIPE_SECRET_KEY);
 
 export async function createPaymentIntent(req, res) {
     try {
-        const { cartItems, shippingAddress, couponCode } = req.body;
+        const { cartItems, shippingAddress, couponCode, includeShipping } = req.body;
         const user = req.user;
 
         if (!cartItems || cartItems.length === 0) {
@@ -73,7 +74,7 @@ export async function createPaymentIntent(req, res) {
             appliedCoupon = coupon;
         }
 
-        const shipping = 10000;
+        const shipping = includeShipping ? 10000 : 0;
         const total = subtotal + shipping - discount;
 
         if (total <= 0) {
@@ -126,6 +127,7 @@ export async function createPaymentIntent(req, res) {
                 shippingAddress: JSON.stringify(shippingAddress),
                 couponCode: appliedCoupon ? appliedCoupon.code : "",
                 totalPrice: total.toString(),
+                includeShipping: includeShipping ? 'true' : 'false',
             },
         });
 
@@ -157,7 +159,8 @@ export async function handleWebhook(req, res) {
         const paymentIntent = event.data.object;
 
         try {
-            const { userId, clerkId, orderItems, shippingAddress, couponCode, totalPrice } = paymentIntent.metadata;
+            const { userId, clerkId, orderItems, shippingAddress, couponCode, totalPrice, includeShipping } = paymentIntent.metadata;
+            const shippingCost = includeShipping === 'true' ? 10000 : 0;
 
             const existingOrder = await Order.findOne({ "paymentResult.id": paymentIntent.id });
 
@@ -182,6 +185,7 @@ export async function handleWebhook(req, res) {
                 });
             }
 
+            const paidAt = new Date();
             const order = await Order.create({
                 user: userId,
                 clerkId,
@@ -192,6 +196,9 @@ export async function handleWebhook(req, res) {
                     status: "succeeded",
                 },
                 totalPrice,
+                shippingCost,
+                status: "paid",
+                paidAt,
             });
 
             for (const item of items) {
@@ -238,6 +245,57 @@ export async function handleWebhook(req, res) {
                         }
                     });
                 });
+
+                // Generar y enviar factura automáticamente (pago confirmado por Stripe)
+                (async () => {
+                    try {
+                        const orderItems = enrichedOrderItems.map(item => ({
+                            name:     item.name,
+                            quantity: item.quantity,
+                            price:    item.price,
+                        }));
+                        const invoiceData = {
+                            orderId:       order._id.toString(),
+                            date:          paidAt,
+                            paymentMethod: "stripe",
+                            items:         orderItems,
+                            shipping:      shippingCost,
+                            discount:      0,
+                            customer: {
+                                name:           dbUser.name,
+                                documentType:   dbUser.documentType   || null,
+                                documentNumber: dbUser.documentNumber || "—",
+                                email:          dbUser.email,
+                                phone:          dbUser.addresses?.[0]?.phoneNumber || "—",
+                                address:        parsedShippingAddress?.streetAddress || "—",
+                                city:           parsedShippingAddress?.city          || "—",
+                            },
+                        };
+                        const year          = paidAt.getFullYear();
+                        const suffix        = order._id.toString().slice(-8).toUpperCase();
+                        const invoiceNumber = `FV-${year}-${suffix}`;
+                        const pdfBuffer     = await generateInvoicePDF(invoiceData);
+                        const csvContent    = generateInvoiceCSV(invoiceData);
+                        const results = await sendInvoiceEmails({
+                            userName:           dbUser.name,
+                            userEmail:          dbUser.email,
+                            orderId:            order._id.toString(),
+                            invoiceNumber,
+                            pdfBuffer,
+                            csvContent,
+                            emailNotifications: dbUser.emailNotifications,
+                        });
+                        results.forEach((result, index) => {
+                            if (result.status === "fulfilled") {
+                                console.log(`Factura Stripe enviada a ${index === 0 ? "Cliente" : "Admin"} (${invoiceNumber})`);
+                            } else {
+                                console.error(`Error enviando factura Stripe a ${index === 0 ? "Cliente" : "Admin"}:`, result.reason);
+                            }
+                        });
+                    } catch (invoiceError) {
+                        console.error("Error generando/enviando factura Stripe:", invoiceError.message);
+                    }
+                })();
             }
         } catch (error) {
             console.error("Error processing webhook:", error);
@@ -250,7 +308,7 @@ export async function handleWebhook(req, res) {
 
 export async function createTransferOrder(req, res) {
     try {
-        const { cartItems, shippingAddress, couponCode } = req.body;
+        const { cartItems, shippingAddress, couponCode, includeShipping } = req.body;
         const user = req.user;
 
         if (!cartItems?.length) {
@@ -306,7 +364,8 @@ export async function createTransferOrder(req, res) {
             appliedCoupon = coupon;
         }
 
-        const totalPrice = subtotal - discount;
+        const shippingCost = includeShipping ? 10000 : 0;
+        const totalPrice = subtotal + shippingCost - discount;
 
         const order = await Order.create({
             user: user._id,
@@ -315,6 +374,7 @@ export async function createTransferOrder(req, res) {
             shippingAddress,
             paymentResult: { id: `transfer_${Date.now()}`, status: "pending" },
             totalPrice,
+            shippingCost,
             status: "pending",
         });
 

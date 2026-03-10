@@ -111,7 +111,7 @@ const OrderDetail = () => {
                 };
                 const unitPrice = item.unitPrice || item.price || 0;
                 return (
-                  <div key={i} className="flex items-center gap-4">
+                  <div key={item._id || item.productId || i} className="flex items-center gap-4">
                     <img
                       src={getProductImage(product)}
                       alt={product.name || item.name}

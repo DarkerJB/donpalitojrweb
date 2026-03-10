@@ -89,6 +89,7 @@ export const addressSchema = yup.object({
   fullName: yup
     .string()
     .required('El nombre completo es obligatorio')
+    .min(3, 'El nombre debe tener al menos 3 caracteres')
     .matches(SOLO_LETRAS, 'El nombre solo puede contener letras'),
   streetAddress: yup
     .string()

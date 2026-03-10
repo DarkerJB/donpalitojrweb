@@ -43,6 +43,7 @@ const useAddresses = () => {
     updateAddress: ({ id, data }) => updateMutation.mutate({ id, data }),
     updateAddressAsync: ({ id, data }) => updateMutation.mutateAsync({ id, data }),
     deleteAddress: (id) => deleteMutation.mutate(id),
+    deleteAddressAsync: (id) => deleteMutation.mutateAsync(id),
     isCreating: createMutation.isPending,
     isUpdating: updateMutation.isPending,
     isDeleting: deleteMutation.isPending,

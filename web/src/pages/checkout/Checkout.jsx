@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 import { IoArrowBack, IoArrowForward } from 'react-icons/io5';
 import { loadStripe } from '@stripe/stripe-js';
@@ -26,6 +27,7 @@ const Checkout = () => {
   const { items, subtotal, clearCart } = useCart();
   const navigate = useNavigate();
   const location = useLocation();
+  const queryClient = useQueryClient();
 
   // El método de pago puede venir pre-seleccionado desde el carrito
   const preselectedMethod = location.state?.paymentMethod || '';
@@ -150,7 +152,8 @@ const Checkout = () => {
       const data = await paymentService.createPaymentIntent(
         buildCartItems(),
         getSelectedAddress(),
-        couponData ? couponCode : undefined
+        couponData ? couponCode : undefined,
+        includeShipping
       );
       setClientSecret(data.clientSecret);
     } catch (err) {
@@ -160,11 +163,10 @@ const Checkout = () => {
     }
   };
 
-  // Stripe exitoso: el webhook ya creó la orden — solo limpiar y navegar
+  // Stripe exitoso: el webhook ya creó la orden — limpiar, invalidar cache y navegar
   const handleStripeSuccess = (paymentIntent) => {
     clearCart();
-    // Pasamos el paymentIntentId; cuando el usuario vea la confirmación,
-    // la orden ya existe en MongoDB creada por el webhook.
+    queryClient.invalidateQueries({ queryKey: ['orders'] });
     navigate('/checkout/exito', { state: { paymentIntentId: paymentIntent.id, total, paymentMethod: 'tarjeta' } });
   };
 
@@ -175,10 +177,12 @@ const Checkout = () => {
       const res = await paymentService.createTransferOrder(
         buildCartItems(),
         getSelectedAddress(),
-        couponData ? couponCode : undefined
+        couponData ? couponCode : undefined,
+        includeShipping
       );
       const orderId = res?.order?._id || res?.order?.id || res?._id;
       clearCart();
+      queryClient.invalidateQueries({ queryKey: ['orders'] });
       navigate('/checkout/exito', { state: { orderId, total, paymentMethod } });
     } catch (err) {
       toast.error(err?.response?.data?.error || 'Error al crear el pedido. Intenta de nuevo.');
@@ -308,7 +312,16 @@ const Checkout = () => {
       {/* ── Step 1: Dirección ── */}
       {step === 1 && (
         <div className="bg-white rounded-xl shadow-md p-6">
-          <h2 className="text-xl font-semibold mb-4">Dirección de envío</h2>
+          <h2 className="text-xl font-semibold mb-4">
+            {includeShipping ? 'Dirección de envío' : 'Datos de contacto'}
+          </h2>
+
+          {!includeShipping && (
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4 text-sm text-blue-700">
+              📍 <strong>Retiro en tienda:</strong> Tu pedido estará listo para recoger en nuestra cafetería.
+              Nos contactaremos al número registrado para confirmar la hora de recogida.
+            </div>
+          )}
 
           {addressLoading ? (
             <div className="flex items-center gap-2 text-gray-500 py-4">

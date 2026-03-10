@@ -59,19 +59,6 @@ export const orderService = {
   },
 };
 
-// ============= RESEÑAS =============
-export const reviewService = {
-  createReview: async (reviewData) => {
-    const response = await api.post('/reviews', reviewData);
-    return response.data;
-  },
-
-  deleteReview: async (reviewId) => {
-    const response = await api.delete(`/reviews/${reviewId}`);
-    return response.data;
-  },
-};
-
 // ============= CUPONES =============
 export const couponService = {
   validate: async (code, subtotal) => {
@@ -150,20 +137,22 @@ export const wishlistService = {
 
 // ============= PAGOS =============
 export const paymentService = {
-  createPaymentIntent: async (cartItems, shippingAddress, couponCode) => {
+  createPaymentIntent: async (cartItems, shippingAddress, couponCode, includeShipping) => {
     const response = await api.post('/payment/create-intent', {
       cartItems,
       shippingAddress,
       couponCode,
+      includeShipping,
     });
     return response.data;
   },
 
-  createTransferOrder: async (cartItems, shippingAddress, couponCode) => {
+  createTransferOrder: async (cartItems, shippingAddress, couponCode, includeShipping) => {
     const response = await api.post('/payment/create-transfer-order', {
       cartItems,
       shippingAddress,
       couponCode,
+      includeShipping,
     });
     return response.data;
   },

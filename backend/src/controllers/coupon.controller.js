@@ -31,18 +31,6 @@ export const validateCoupon = async (req, res) => {
             return res.status(400).json({ error: "Ya usaste este cupón anteriormente." });
         }
 
-        if (coupon.firstOrderOnly) {
-            const orderCount = await Order.countDocuments({
-                clerkId: req.user.clerkId,
-                status: { $in: ["paid", "delivered", "in_preparation", "ready"] },
-            });
-            if (orderCount > 0) {
-                return res.status(400).json({
-                    error: "Este cupón es válido solo para tu primera compra.",
-                });
-            }
-        }
-
         let discountAmount = 0;
         if (coupon.discountType === "percentage") {
             discountAmount = Math.min(
@@ -172,13 +160,12 @@ export const getActiveCoupons = async (req, res) => {
         const coupons = await Coupon.find({
             isActive: true,
             $or: [{ expiresAt: null }, { expiresAt: { $gt: now } }],
-        }).select("code discountType discountValue expiresAt firstOrderOnly").lean();
+        }).select("code discountType discountValue expiresAt").lean();
 
         const result = coupons.map((c) => ({
             code: c.code,
             discountType: c.discountType,
             discountValue: c.discountValue,
-            firstOrderOnly: c.firstOrderOnly ?? false,
             expiresAt: c.expiresAt,
         }));
 

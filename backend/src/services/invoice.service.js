@@ -67,7 +67,7 @@ export async function generateInvoicePDF(invoiceData) {
                     const client = SELLER.logoUrl.startsWith("https") ? https : http;
 
                     const logoBuffer = await new Promise((res2, rej2) => {
-                        const req = client.default.get(SELLER.logoUrl, response => {
+                        const req = client.get(SELLER.logoUrl, response => {
                             const imgChunks = [];
                             response.on("data",  c  => imgChunks.push(c));
                             response.on("end",   ()  => res2(Buffer.concat(imgChunks)));

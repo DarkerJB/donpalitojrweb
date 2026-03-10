@@ -82,7 +82,7 @@ const FAQ = () => {
             <h2 className="text-xl font-semibold text-brand-primary mb-3">{section.category}</h2>
             <div className="space-y-2">
               {section.questions.map((item, i) => (
-                <div key={i} className="collapse collapse-arrow bg-white rounded-xl shadow-sm border">
+                <div key={item.q} className="collapse collapse-arrow bg-white rounded-xl shadow-sm border">
                   <input type="checkbox" />
                   <div className="collapse-title font-medium">{item.q}</div>
                   <div className="collapse-content">

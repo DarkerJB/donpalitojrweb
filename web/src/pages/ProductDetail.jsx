@@ -96,7 +96,7 @@ const ProductDetail = () => {
             <div className="flex gap-2 overflow-x-auto">
               {images.map((img, idx) => (
                 <button
-                  key={idx}
+                  key={img}
                   onClick={() => setActiveImage(idx)}
                   className={`flex-shrink-0 w-16 h-16 rounded-md border-2 overflow-hidden ${
                     activeImage === idx ? 'border-brand-primary' : 'border-gray-200'

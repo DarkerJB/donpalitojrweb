@@ -86,10 +86,18 @@ export async function deleteAddress(req, res) {
         const { addressId } = req.params;
         const user = req.user;
 
-        user.addresses.pull(addressId);
-        await user.save();
+        if (!addressId || !/^[a-fA-F0-9]{24}$/.test(addressId)) {
+            return res.status(400).json({ error: "Invalid address ID" });
+        }
 
-        return res.status(200).json({ message: "Address deleted successfully", addresses: user.addresses });
+        await User.updateOne(
+            { _id: user._id },
+            { $pull: { addresses: { _id: addressId } } }
+        );
+
+        const updatedUser = await User.findById(user._id).select("addresses");
+
+        return res.status(200).json({ message: "Address deleted successfully", addresses: updatedUser.addresses });
     } catch (error) {
         console.error("Error in deleteAddress controller:", error);
         return res.status(500).json({ error: "Internal server error" });

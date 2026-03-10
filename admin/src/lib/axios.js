@@ -19,10 +19,7 @@ axiosInstance.interceptors.request.use(
         try {
             const skipCache = config.headers['X-Retry-Request'] === 'true';
 
-            const token = await getTokenFunction({
-                template: "mobile-app-token",
-                skipCache,
-            });
+            const token = await getTokenFunction({ skipCache });
 
             if (token) {
                 config.headers.Authorization = `Bearer ${token}`;

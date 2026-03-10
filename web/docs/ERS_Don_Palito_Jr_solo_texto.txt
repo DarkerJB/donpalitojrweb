@@ -1,0 +1,2500 @@
+ERS_Don_Palito_Jr_solo_texto
+
+Sistema de Comercio Electrónico
+
+
+
+
+
+
+
+ESPECIFICACIÓN DE REQUISITOS DE SOFTWARE
+
+Versión 3.0 — marzo 2026
+Estándar IEEE 830-1998
+
+
+
+
+
+ 
+Tecnología en Análisis y Desarrollo de Software
+Centro del Diseño y Manufactura del Cuero — CDMC
+Servicio Nacional de Aprendizaje — SENA
+Regional Antioquia
+ 
+FICHA DEL DOCUMENTO
+
+Fecha	Revisión	Autor	Verificado dep. calidad
+14/02/2025	2.3	Andrea Arcila Cano	No Aplica
+14/02/2025	2.3	Jair González Buelvas	No Aplica
+14/02/2025	2.3	Maicol Estiven Córdoba	No Aplica
+Marzo 2026	3.0	Andrea Arcila Cano	No Aplica
+Marzo 2026	3.0	Jair González Buelvas	No Aplica
+Marzo 2026	3.0	Maicol Estiven Córdoba	No Aplica
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Documento validado por las partes en fecha: marzo 2026
+
+
+
+
+
+Por el cliente	Por el instructor líder de ficha
+Luis Eduardo Muñoz	Darwin Yusef González
+ 
+Tabla de Contenido
+FICHA DEL DOCUMENTO	2
+1. INTRODUCCIÓN	5
+1.1 Propósito	5
+1.2 Alcance	5
+1.3 Personal Involucrado	5
+1.4 Definiciones, Acrónimos y Abreviaturas	6
+1.5 Referencias	7
+1.6 Resumen	8
+2. DESCRIPCIÓN GENERAL	9
+2.1 Perspectiva del Producto	9
+2.2 Funcionalidad del Producto	9
+2.3 Características de los Usuarios	9
+2.4 Restricciones	10
+2.5 Suposiciones y Dependencias	10
+2.6 Evolución Previsible del Sistema	10
+3. REQUISITOS ESPECÍFICOS	12
+3.1 Requisitos Funcionales (RF) Específicos, Modelos de Casos de Uso, Historias de Usuario y Diagramas.	12
+Cliente - Módulo Autenticación	12
+Cliente - Módulo Productos / Inventario	23
+Cliente - Módulo Ventas	31
+Cliente - Módulo Comunidad y Servicios	49
+Administrador - Módulo Autenticación	54
+Administrador - Módulo Productos / Inventario	66
+Administrador - Módulo Ventas	82
+Administrador - Módulo Comunidad y Servicios	92
+Administrador - Módulo Reportes	96
+3.2 Requisitos No Funcionales (RNF) Específicos	101
+Seguridad	101
+Rendimiento	101
+Disponibilidad	102
+Portabilidad	102
+Escalabilidad	103
+Usabilidad	103
+Mantenibilidad	104
+3.3 Requisitos Comunes de Interfaces	104
+3.3.1 Interfaces de Usuario	104
+3.3.2 Interfaces de Hardware	104
+3.3.3 Interfaces de Software	104
+3.3.4 Interfaces de Comunicación	104
+4. APÉNDICES	105
+4.1 Glosario	105
+4.2 Referencias Técnicas	107
+
+
+ 
+1. INTRODUCCIÓN
+1.1 Propósito
+El presente documento constituye la Especificación de Requisitos de Software (ERS) del Sistema de Comercio Electrónico "Don Palito Junior", elaborado bajo el estándar IEEE 830-1998. Su propósito es definir de manera formal y detallada los requisitos funcionales y no funcionales del sistema, sirviendo como base contractual y técnica entre el equipo de desarrollo y los propietarios del negocio.
+El sistema comprende cuatro componentes interconectados: la tienda web (React + Vite), la aplicación móvil (React Native + Expo SDK 52), el panel de administración (React + Vite) y el backend compartido (Node.js + Express 5 + MongoDB Atlas). Este documento abarca los tres roles del sistema: Cliente, Administrador y Sistema (procesos automáticos).
+Este documento está dirigido a: el equipo de desarrollo del proyecto, los propietarios de la Cafetería Don Palito Junior, y los instructores evaluadores del programa Tecnología en Análisis y Desarrollo de Software del SENA.
+
+1.2 Alcance
+El Sistema de Comercio Electrónico Don Palito Junior es una plataforma digital multiplataforma destinada a digitalizar y modernizar las operaciones de la Cafetería Don Palito Junior, ubicada en la Cra 47 #76D Sur-37, Sabaneta, Antioquia.
+El sistema permite a los clientes explorar el catálogo de productos, gestionar su carrito de compras, realizar pagos con tarjeta (Stripe) o por transferencia bancaria, recibir facturas en formato PDF, consultar el historial de pedidos y calificar productos. A los administradores les permite gestionar el inventario, procesar pedidos, crear cupones de descuento, visualizar estadísticas de ventas y exportar datos en CSV y PDF.
+El sistema no abarca: gestión de empleados ni control de horarios, integración con sistemas de punto de venta físico, ni procesamiento de pagos en efectivo.
+
+1.3 Personal Involucrado
+
+Nombre	Jair González Buelvas
+Rol	Project Owner — Desarrollo Frontend Web
+Categoría profesional	Aprendiz SENA
+Responsabilidades	Desarrollo del componente web del sistema (tienda web + integración de servicios).
+Información de contacto	CDMC — Ambiente 200
+Aprobación	Instructor líder: Darwin Yusef González
+
+Nombre	Andrea Arcila Cano
+Rol	Scrum Master — Desarrolladora Admin Dashboard / Mobile
+Categoría profesional	Aprendiz SENA
+Responsabilidades	Desarrollo del pánel de administración y la aplicación móvil (React Native + Expo).
+Información de contacto	CDMC — Ambiente 200
+Aprobación	Instructor líder: Darwin Yusef González
+
+Nombre	Maicol Estiven Córdoba Londoño
+Rol	Developer — Desarrollador Backend
+Categoría profesional	Aprendiz SENA
+Responsabilidades	Desarrollo del backend (Node.js + Express + MongoDB).
+Información de contacto	CDMC — Ambiente 200
+Aprobación	Instructor líder: Darwin Yusef González
+
+1.4 Definiciones, Acrónimos y Abreviaturas
+
+Término	Definición
+RF-XX (Requisito Funcional)	Lo que el sistema debe hacer para satisfacer las necesidades del usuario. Son las características que el usuario detecta directamente.
+RNF-XX (Requisito No Funcional)	Restricciones sobre cómo funciona internamente el sistema: rendimiento, seguridad, escalabilidad, etc.
+CU-XX (Caso de Uso)	Descripción de la interacción entre un actor y el sistema para lograr un objetivo específico.
+HU-XX (Historia de Usuario)	Descripción breve en lenguaje natural de una funcionalidad desde la perspectiva del usuario (Rol: COMO… QUIERO… PARA…).
+API (Application Programming Interface)	Conjunto de reglas y protocolos que permite a las aplicaciones comunicarse entre sí para intercambiar datos y funcionalidades.
+JWT (JSON Web Token)	Estándar abierto (RFC 7519) para transmitir información de forma segura entre partes como un objeto JSON firmado digitalmente.
+Clerk	Servicio de autenticación como plataforma (Auth-as-a-Service) que gestiona el registro, login, OAuth y emisión de JWT en el sistema.
+OAuth	Protocolo de autorización estándar que permite el inicio de sesión con cuentas de terceros (Google) sin compartir contraseñas.
+Stripe	Plataforma de pagos en línea que procesa transacciones con tarjeta mediante la API PaymentIntent y webhooks HTTPS.
+MongoDB Atlas	Servicio cloud de base de datos NoSQL documental. Aloja las 6 colecciones del sistema: Users, Products, Carts, Orders, Coupons, Reviews.
+Mongoose	Librería ODM (Object Document Mapper) para Node.js que facilita la interacción con MongoDB mediante esquemas y modelos.
+Inngest	Plataforma de background jobs que ejecuta funciones asíncronas en respuesta a eventos, como la sincronización de usuarios Clerk → MongoDB.
+Cloudinary	Servicio CDN de gestión y almacenamiento de imágenes en la nube. Almacena y sirve las imágenes de los productos del sistema.
+Nodemailer	Librería de Node.js para el envío de correos electrónicos. Gestiona las notificaciones de estado de pedido y el envío de facturas PDF.
+PDFKit	Librería de Node.js para generación de documentos PDF. Se usa para generar las facturas de compra del sistema.
+Webhook	Mecanismo HTTP mediante el cual un servicio externo notifica al backend de un evento (ej: pago confirmado, usuario creado).
+ngrok	Herramienta que crea un túnel HTTPS público hacia el servidor local. Usada para exponer el backend durante el desarrollo y la presentación académica.
+CORS (Cross-Origin Resource Sharing)	Mecanismo de seguridad del navegador que controla qué dominios pueden hacer peticiones a la API del backend.
+Código QR (Quick Responsive code)	Código de barras bidimensional que en el sistema representa los datos de transferencia bancaria para el método de pago alternativo.
+CSV (Comma-separated values)	Formato de archivo de texto plano para representar datos tabulares. Usado para la exportación de datos de ventas e inventario.
+WCAG (Web Content Accessibility Guidelines)	Directrices del W3C para mejorar la accesibilidad del contenido web. El sistema sigue pautas básicas de WCAG 2.1.
+Carrito híbrido	Implementación del carrito de compras que opera en localStorage para usuarios no autenticados y se sincroniza con el servidor al iniciar sesión.
+Estado de pedido	Valor del ciclo de vida de un pedido en el sistema. Los 7 estados posibles son: pending, paid, in_preparation, ready, delivered, canceled, rejected.
+Rol de usuario	Atributo que determina los permisos de acceso en el sistema. Los roles son: "user" (cliente) y "admin" (administrador). Asignado y verificado por Clerk.
+Panel Admin	Aplicación web independiente (puerto 5174) que provee las herramientas de gestión para usuarios con rol admin.
+Tienda Web	Aplicación web principal (puerto 5173) orientada a los clientes para navegación, compra y gestión de perfil.
+
+1.5 Referencias
+
+Referencia	Título	Fuente / URL	Fecha
+IEEE 830-1998	Standard for Software Requirements Specifications	standards.ieee.org/ieee/830/1222/	20/10/1998
+Clerk Docs	Clerk Authentication — Documentación oficial	clerk.com/docs	2025
+Stripe Docs	Stripe Payments API — Documentación oficial	stripe.com/docs	2025
+MongoDB Atlas	MongoDB Atlas — Documentación oficial del servicio	mongodb.com/docs/atlas	2025
+Express 5	Express.js Framework — Documentación oficial v5	expressjs.com	2025
+React 18	React — Documentación oficial	react.dev	2025
+Expo SDK 52	Expo — Documentación oficial SDK 52	docs.expo.dev	2025
+Inngest Docs	Inngest Background Jobs — Documentación oficial	inngest.com/docs	2025
+Ley 1581 de 2012	Protección de datos personales en Colombia	funcionpublica.gov.co	2012
+WCAG 2.1	Web Content Accessibility Guidelines 2.1	w3.org/TR/WCAG21/	2018
+
+
+
+1.6 Resumen
+
+Este documento especifica los requisitos del Sistema de Comercio Electrónico Don Palito Junior en su versión 3.0. La versión 3.0 actualiza la ERS original (v2.3, febrero 2025) para reflejar el sistema tal como fue construido y entregado: una plataforma multiplataforma con tienda web, aplicación móvil, panel de administración y backend API REST, integrados con servicios cloud de autenticación (Clerk), pagos (Stripe), almacenamiento de imágenes (Cloudinary), background jobs (Inngest) y email transaccional (Nodemailer).
+
+El documento contiene 51 requisitos funcionales (RF-01 a RF-51), 20 requisitos no funcionales (RNF-01 a RNF-20), 51 casos de uso (CU-01 a CU-51), 51 historias de usuario (HU-01 a HU-51), diagramas de actividades para los 51 RF, diagramas de estados para los RF con ciclos de vida (pedidos, cuenta de usuario, cupones) y diagramas de secuencias para los flujos principales del sistema.
+
+ 
+2. DESCRIPCIÓN GENERAL
+2.1 Perspectiva del Producto
+El Sistema de Comercio Electrónico Don Palito Junior es una plataforma digital nueva, desarrollada desde cero para la cafetería, que no sustituye ningún sistema previo. Opera como un sistema distribuido con tres clientes independientes que consumen una única API REST compartida.
+La tienda web es accesible desde cualquier navegador moderno en dispositivos de escritorio, tablet y móvil. La aplicación móvil está disponible para Android e iOS mediante React Native + Expo. El panel de administración es una aplicación web de acceso restringido, disponible únicamente para usuarios con rol "admin".
+El sistema se integra con los siguientes servicios externos: Clerk para autenticación y gestión de identidad, Stripe para procesamiento de pagos con tarjeta, MongoDB Atlas como base de datos cloud, Cloudinary para almacenamiento y servicio de imágenes, Inngest para ejecución de background jobs, y Nodemailer + Gmail para envío de correos electrónicos transaccionales.
+El backend es stateless: no almacena estado de sesión. Toda la autenticación se delega a Clerk mediante tokens JWT verificados en cada petición. Esto garantiza escalabilidad horizontal y compatibilidad con despliegues cloud.
+
+2.2 Funcionalidad del Producto
+El sistema ofrece las siguientes funcionalidades principales organizadas por componente:
+
+Componente	Funcionalidades Principales
+Tienda Web (React + Vite)	Catálogo con filtros y búsqueda. Detalle de producto con imágenes, precio y calificaciones. Carrito híbrido (local/servidor). Checkout en 3 pasos con Stripe y transferencia. Cupones de descuento. Factura PDF por email. Historial de pedidos. Perfil con direcciones y wishlist. Mapa interactivo de la cafetería.
+App Móvil (React Native + Expo)	Catálogo, búsqueda y detalle de producto. Carrito sincronizado con servidor. Login con email, contraseña y Google. Historial de pedidos. Perfil extendido con direcciones y wishlist. Sección Visítanos con mapa y horario.
+Panel Admin (React + Vite)	Dashboard con estadísticas de ventas y pedidos. CRUD de productos con subida de imágenes a Cloudinary. Gestión de pedidos con cambio de estado. Gestión de clientes (activar/desactivar). CRUD de cupones de descuento. Exportación de datos en CSV y PDF.
+Backend API REST (Node.js + Express 5)	API con 40+ endpoints organizados en 9 módulos. Autenticación Clerk JWT. Control de roles (user/admin). Procesamiento de pagos Stripe con webhooks. Sincronización de usuarios con Inngest. Generación de facturas PDF con PDFKit. Envío de emails con Nodemailer. Almacenamiento de imágenes con Cloudinary.
+
+2.3 Características de los Usuarios
+
+Tipo de Usuario	Descripción y Actividades
+Cliente (Rol: "user")	Usuario final de la cafetería. Puede ser invitado (no autenticado) o cliente registrado. Navega el catálogo, agrega productos al carrito, realiza compras, aplica cupones, recibe facturas por email, consulta el historial de pedidos y califica los productos que ha comprado. Accede a la tienda web y a la app móvil. Se registra mediante email/contraseña o Google OAuth a través de Clerk.
+Administrador (Rol: "admin")	Personal de gestión de la cafetería (propietarios o encargados). Gestiona el inventario de productos, procesa y actualiza el estado de los pedidos, crea y administra cupones de descuento, visualiza estadísticas del negocio y exporta datos. Accede exclusivamente al panel de administración con rol admin asignado en Clerk Dashboard.
+Sistema (Actor técnico)	Procesos automáticos del sistema sin intervención humana directa. Incluye: sincronización automática de usuarios Clerk → MongoDB mediante Inngest, envío automático de emails de notificación al cambiar el estado de un pedido, generación automática de facturas PDF al confirmar un pago, y procesamiento automático de pagos mediante webhooks de Stripe.
+
+2.4 Restricciones
+•	El sistema no gestiona inventario físico en tiempo real (no hay integración con escáneres de código de barras ni sistemas de punto de venta físico).
+•	Los pagos en efectivo no están contemplados en la plataforma digital; el sistema solo soporta pago con tarjeta (Stripe) y transferencia bancaria con QR.
+•	La administración de roles de usuario (asignar o revocar el rol "admin") requiere acceso directo al Clerk Dashboard; no se realiza desde el panel de administración.
+•	Las categorías de productos están definidas como un enum fijo en el modelo de datos del backend: Palitos Premium, Cocteleros, Dulces, Especiales, Nuevos. Modificar el catálogo de categorías requiere una actualización del esquema del backend.
+•	El sistema requiere conexión a internet para operar, ya que depende de servicios cloud externos (Clerk, Stripe, MongoDB Atlas, Cloudinary).
+•	Las reseñas de productos son solo calificaciones numéricas (1 a 5 estrellas), sin texto de comentario libre.
+•	La aplicación móvil no soporta pagos con tarjeta integrados directamente; el flujo de pago se completa a través de la tienda web o por transferencia.
+2.5 Suposiciones y Dependencias
+•	Se asume que los propietarios disponen de acceso a internet estable durante la operación del sistema.
+•	Se asume que el equipo de administración accederá al panel desde dispositivos con navegador moderno (Chrome, Firefox o Edge versión 2023 o superior).
+•	El sistema depende de la disponibilidad de los servicios externos: MongoDB Atlas (SLA 99.95%), Clerk, Stripe y Cloudinary. Una caída de cualquiera de estos servicios afectará la funcionalidad correspondiente.
+•	Se asume que los clientes que realizan transferencia bancaria enviarán el comprobante de pago al número de WhatsApp del negocio dentro de las 24 horas posteriores al pedido.
+•	La presentación académica del sistema se realiza con el backend corriendo localmente y expuesto mediante un túnel HTTPS de ngrok.
+•	Para la publicación de la app móvil en tiendas (Google Play / App Store), se requiere contar con cuentas de desarrollador activas, lo cual no está incluido en el alcance del proyecto académico.
+2.6 Evolución Previsible del Sistema
+•	Implementación de módulo de gestión de categorías independiente en el panel de administración, sin necesidad de modificar el esquema del backend.
+•	Integración de informes de ventas por período con filtros de fecha en el dashboard del administrador.
+•	Auditoría formal de accesibilidad WCAG 2.1 con herramientas automatizadas (axe, Lighthouse) y corrección de hallazgos.
+•	Implementación de paginación server-side en la API de pedidos para soporte de grandes volúmenes de transacciones.
+•	Soporte de pagos móviles integrados en la app (Stripe Mobile SDK) para completar el flujo de compra directamente desde la aplicación.
+•	Integración con plataformas de domicilios (Rappi, iFood) mediante API para ampliar el canal de ventas.
+•	Sistema de notificaciones push en la app móvil para actualizaciones de estado de pedido en tiempo real.
+ 
+3. REQUISITOS ESPECÍFICOS
+3.1 Requisitos Funcionales (RF) Específicos, Modelos de Casos de Uso, Historias de Usuario y Diagramas.
+Esta sección presenta, para cada uno de los 51 requisitos funcionales del sistema, la tabla de requisito funcional (RF), el modelo y diagrama de caso de uso (CU), la historia de usuario (HU) con criterios de aceptación, el diagrama de actividades, y cuando aplica por su naturaleza, el diagrama de estados y el diagrama de secuencias.
+Cliente - Módulo Autenticación
+RF-01: REGISTRO DE CLIENTES.
+
+ID del Requisito	RF-01
+Nombre Requisito	Registro de Clientes
+Detalle del Requisito	El sistema debe permitir a los usuarios registrarse como clientes.
+Descripción	El sistema debe permitir a los usuarios registrarse como clientes mediante email y contraseña, o con su cuenta de Google (OAuth), a través del servicio de autenticación Clerk.
+
+CU-01: REGISTRO DE CLIENTES.
+
+Código RF	RF-01
+Caso de Uso	CU-01: Registro de Clientes
+Descripción	Este caso de uso permite a un nuevo usuario crear una cuenta de cliente en Don Palito Junior mediante email/contraseña o Google OAuth, usando Clerk como proveedor de autenticación.
+Precondiciones	1.	El usuario no debe estar registrado previamente en el sistema.
+2.	El usuario debe tener acceso a internet y un navegador compatible o la app móvil.
+3.	El usuario debe disponer de un correo electrónico válido o una cuenta de Google activa.
+Secuencia Normal	Pasos - Acciones	Resultados Esperados
+	1.	El usuario accede a la tienda web o app y da clic en "Registrarse" o en el ícono de usuario.	El sistema muestra la pantalla de registro de Clerk con opciones: email/contraseña o Continuar con Google.
+	2.	El usuario elige el método de registro: email/contraseña o Google OAuth.	Si elige email/contraseña, el sistema muestra campos de nombre, email y contraseña. Si elige Google, se abre el selector de cuenta.
+	3.	El usuario completa el formulario y acepta los términos y condiciones.	El sistema valida los campos. Si el email ya existe o los datos no son válidos, muestra mensaje de error.
+	4.	El usuario confirma el registro.	Clerk crea la cuenta. Inngest dispara el evento "clerk/user.created" y sincroniza automáticamente el usuario en MongoDB con rol "user".
+	5.	El sistema envía un email de bienvenida al usuario.	El usuario recibe el correo (Nodemailer) y queda autenticado en el sistema.
+Postcondiciones	1.	El usuario tiene una cuenta activa con rol "user", sincronizada entre Clerk y MongoDB.
+2.	Puede iniciar sesión y acceder a todas las funcionalidades del cliente.
+Alternativas	1.	Si el correo ya está registrado, Clerk muestra que la cuenta ya existe.
+2.	Si la contraseña no cumple los requisitos mínimos, el sistema muestra las validaciones requeridas.
+3.	Si el usuario no acepta los términos, el sistema no permite completar el registro.
+4.	Si ocurre un error de conexión con Clerk, el sistema muestra un mensaje de error y sugiere intentar nuevamente.
+
+DIAGRAMA DE CU-01: REGISTRO DE CLIENTES.
+[ Insertar imagen PlantUML – Diagrama de Caso de Uso – CU-01 ]
+HU-01: REGISTRO DE CLIENTES
+
+ID	HU-01
+Título	Registro de Clientes
+Descripción	Como nuevo usuario, Quiero registrarme en el sistema de Don Palito Junior, Para poder realizar compras y acceder a las funcionalidades de la tienda.
+Criterios de Aceptación	1.	El sistema debe mostrar una pantalla de registro con los campos: nombre, correo electrónico y contraseña.
+2.	Debe ofrecerse también la opción de registro con Google OAuth.
+3.	El campo correo debe tener formato válido.
+4.	La contraseña debe tener mínimo 8 caracteres, al menos una mayúscula, una minúscula, un número y un carácter especial.
+5.	El sistema debe validar que el correo no esté previamente registrado.
+6.	Al completar el registro, Clerk crea la cuenta y Inngest sincroniza el usuario en MongoDB con rol "user".
+7.	El sistema debe enviar un email de bienvenida.
+8.	Si los datos son inválidos, el sistema debe mostrar mensajes de error específicos por campo.
+
+DIAGRAMA DE ACTIVIDADES – HU-01: REGISTRO DE CLIENTES.
+[ Insertar imagen PlantUML – Diagrama de Actividades – HU-01 ]
+DIAGRAMA DE ESTADOS – HU-01: REGISTRO DE CLIENTES.
+[ Insertar imagen PlantUML – Diagrama de Estados – HU-01 ]
+DIAGRAMA DE SECUENCIAS – HU-01: REGISTRO DE CLIENTES.
+[ Insertar imagen PlantUML – Diagrama de Secuencias – HU-01 ]
+
+RF-02: INICIO DE SESIÓN DEL CLIENTE.
+
+ID del Requisito	RF-02
+Nombre del Requisito	Inicio de Sesión del Cliente
+Detalle del Requisito	El sistema debe permitir a los clientes iniciar sesión en su cuenta con sus credenciales.
+Descripción	El sistema debe permitir a los clientes iniciar sesión en su cuenta con sus credenciales de email/contraseña o con Google OAuth, usando Clerk como proveedor de autenticación.
+
+CU-02: INICIO DE SESIÓN DEL CLIENTE.
+
+Código RF	RF-02
+Caso de Uso	CU-02: Inicio de Sesión del Cliente
+Descripción	Este caso de uso permite a los clientes registrados iniciar sesión en la tienda web o app móvil mediante email/contraseña o Google OAuth.
+Precondiciones	1.	El cliente debe estar registrado con una cuenta activa (isActive: true).
+2.	El cliente debe conocer sus credenciales o tener acceso a su cuenta de Google.
+Secuencia Normal	Pasos - Acciones	Resultados Esperados
+	1.	El cliente accede a la tienda web o app y da clic en "Iniciar sesión".	El sistema muestra la pantalla de login de Clerk con opciones: email/contraseña o Continuar con Google.
+	2.	El cliente ingresa sus credenciales o selecciona Continuar con Google.	El sistema valida el formato del email. Si es Google OAuth, se abre el selector de cuenta.
+	3.	El cliente confirma el inicio de sesión.	Clerk valida las credenciales y emite un JWT con el rol del usuario (publicMetadata.role).
+	4.	El sistema detecta el rol mediante PostLogin.jsx y redirige según corresponda.	Si el rol es "user" redirige a la tienda. Si es "admin" redirige al panel de administración.
+Postcondiciones	1.	El cliente ha iniciado sesión.
+2.	El carrito de invitado (localStorage) se sincroniza con el servidor.
+3.	Puede acceder a historial, perfil y proceso de checkout.
+Alternativas	1.	Si el correo no está registrado, Clerk muestra un mensaje de error.
+2.	Si la contraseña es incorrecta, Clerk permite reintentar y ofrece la opción de recuperar contraseña.
+3.	Con múltiples intentos fallidos, Clerk puede bloquear temporalmente el acceso por seguridad.
+4.	Si la cuenta está desactivada (isActive: false), el backend retorna 403 y el sistema muestra una página de cuenta inactiva.
+
+DIAGRAMA DE CU-02: INICIO DE SESIÓN DEL CLIENTE.
+[ Insertar imagen PlantUML – Diagrama de Caso de Uso – CU-02 ]
+HU-02: INICIO DE SESIÓN DEL CLIENTE
+
+ID	HU-02
+Título	Inicio de Sesión del Cliente
+Descripción	Como cliente registrado, Quiero iniciar sesión en la plataforma, Para acceder a mi cuenta, historial de pedidos y realizar compras.
+Criterios de Aceptación	1.	El sistema debe mostrar una pantalla de login con campo de email y contraseña.
+2.	Debe ofrecerse la opción de inicio de sesión con Google OAuth.
+3.	Si las credenciales son correctas, Clerk emite un JWT y el sistema redirige según el rol.
+4.	El carrito local (localStorage) se fusiona automáticamente con el del servidor al iniciar sesión.
+5.	Si el usuario tiene rol "admin", el sistema redirige al panel de administración.
+6.	Si la cuenta está desactivada, el sistema muestra una página informativa con opción de contactar soporte.
+
+DIAGRAMA DE ACTIVIDADES – HU-02: INICIO DE SESIÓN DEL CLIENTE.
+[ Insertar imagen PlantUML – Diagrama de Actividades – HU-02 ]
+DIAGRAMA DE ESTADOS – HU-02: INICIO DE SESIÓN DEL CLIENTE.
+[ Insertar imagen PlantUML – Diagrama de Estados – HU-02 ]
+DIAGRAMA DE SECUENCIAS – HU-02: INICIO DE SESIÓN DEL CLIENTE.
+[ Insertar imagen PlantUML – Diagrama de Secuencias – HU-02 ]
+
+RF-03: RECUPERACIÓN DE CONTRASEÑA DEL CLIENTE.
+
+ID del Requisito	RF-03
+Nombre del Requisito	Recuperación de Contraseña del Cliente
+Detalle del Requisito	El sistema debe proporcionar un mecanismo para que los clientes recuperen su contraseña olvidada y puedan acceder de nuevo a su cuenta.
+Descripción	El sistema debe proporcionar un mecanismo gestionado por Clerk para que los clientes recuperen su contraseña olvidada mediante el envío de un enlace de recuperación a su correo electrónico.
+
+CU-03: RECUPERACIÓN DE CONTRASEÑA DEL CLIENTE.
+
+Código RF	RF-03
+Caso de Uso	CU-03: Recuperación de Contraseña del Cliente
+Descripción	Este caso de uso permite a un cliente recuperar el acceso a su cuenta mediante el flujo de recuperación de contraseña de Clerk.
+Precondiciones	1.	El cliente debe estar registrado con email y contraseña (no aplica para cuentas Google OAuth).
+2.	El cliente debe tener acceso a su correo electrónico para recibir el enlace de recuperación.
+Secuencia Normal	Pasos - Acciones	Resultados Esperados
+	1.	El cliente accede al login y hace clic en "¿Olvidaste tu contraseña?".	Clerk muestra un campo para ingresar el correo electrónico de la cuenta.
+	2.	El cliente ingresa su correo y confirma.	Clerk verifica que el correo esté registrado y envía un email con el enlace de recuperación.
+	3.	El cliente accede a su correo y hace clic en el enlace de recuperación.	El sistema abre la pantalla de Clerk para establecer una nueva contraseña.
+	4.	El cliente ingresa y confirma su nueva contraseña.	Clerk valida los requisitos de seguridad y actualiza las credenciales en el sistema.
+Postcondiciones	1.	La contraseña ha sido actualizada exitosamente.
+2.	El cliente puede iniciar sesión con la nueva contraseña.
+Alternativas	1.	Si el correo no está registrado, Clerk muestra un mensaje de error.
+2.	Si el enlace de recuperación ha expirado (24 horas), el cliente debe solicitar uno nuevo.
+3.	Si la nueva contraseña no cumple los requisitos mínimos de seguridad, el sistema muestra las validaciones requeridas.
+
+DIAGRAMA DE CU-03: RECUPERACIÓN DE CONTRASEÑA DEL CLIENTE.
+[ Insertar imagen PlantUML – Diagrama de Caso de Uso – CU-03 ]
+HU-03: RECUPERACIÓN DE CONTRASEÑA DEL CLIENTE
+
+ID	HU-03
+Título	Recuperación de Contraseña del Cliente
+Descripción	Como cliente, Quiero recuperar mi contraseña olvidada, Para volver a acceder a mi cuenta sin necesidad de crear una nueva.
+Criterios de Aceptación	1.	El sistema debe mostrar la opción "¿Olvidaste tu contraseña?" en la pantalla de login.
+2.	Al ingresar el correo, Clerk debe enviar un enlace de recuperación en menos de 2 minutos.
+3.	El enlace debe expirar en 24 horas.
+4.	Al acceder al enlace, el sistema debe solicitar una nueva contraseña con sus requisitos de seguridad.
+5.	Si la nueva contraseña es válida, el sistema debe actualizarla y permitir el inicio de sesión.
+6.	Esta funcionalidad no aplica para cuentas creadas con Google OAuth.
+
+DIAGRAMA DE ACTIVIDADES – HU-03: RECUPERACIÓN DE CONTRASEÑA DEL CLIENTE.
+[ Insertar imagen PlantUML – Diagrama de Actividades – HU-03 ]
+DIAGRAMA DE SECUENCIAS – HU-03: RECUPERACIÓN DE CONTRASEÑA DEL CLIENTE.
+[ Insertar imagen PlantUML – Diagrama de Secuencias – HU-03 ]
+
+RF-04: MODIFICACIÓN DE PERFIL DEL CLIENTE.
+
+ID del Requisito	RF-04
+Nombre del Requisito	Modificación de Perfil del Cliente
+Detalle del Requisito	El sistema debe permitir al cliente modificar su perfil.
+Descripción	El sistema debe permitir al cliente modificar su perfil: nombre, teléfono, tipo y número de documento, preferencias de notificaciones email y marketing.
+
+CU-04: MODIFICACIÓN DE PERFIL DEL CLIENTE.
+
+Código RF	RF-04
+Caso de Uso	CU-04: Modificación de Perfil del Cliente
+Descripción	Este caso de uso permite a un cliente autenticado actualizar su información de perfil personal desde la sección "Mi Perfil".
+Precondiciones	1.	El cliente debe estar autenticado en el sistema.
+2.	El cliente debe acceder a la sección "Mi Perfil" o "Configuración de cuenta".
+Secuencia Normal	Pasos - Acciones	Resultados Esperados
+	1.	El cliente navega a la sección de perfil desde el menú de usuario.	El sistema carga la información actual del perfil desde el backend (GET /api/users/profile).
+	2.	El cliente modifica los campos deseados: nombre, teléfono, tipo y número de documento, preferencias de notificaciones.	El sistema muestra los cambios pendientes de guardar en el formulario.
+	3.	El cliente guarda los cambios.	El backend actualiza el documento del usuario en MongoDB (PATCH /api/users/profile) y retorna los datos actualizados.
+Postcondiciones	1.	El perfil del cliente ha sido actualizado en MongoDB.
+2.	Los cambios se reflejan inmediatamente en la interfaz.
+Alternativas	1.	Si los campos tienen formato inválido o están vacíos, el sistema muestra mensajes de validación por campo.
+2.	Si ocurre un error de red al guardar, el sistema muestra un mensaje de error y conserva los datos originales.
+
+DIAGRAMA DE CU-04: MODIFICACIÓN DE PERFIL DEL CLIENTE.
+[ Insertar imagen PlantUML – Diagrama de Caso de Uso – CU-04 ]
+HU-04: MODIFICACIÓN DE PERFIL DEL CLIENTE
+
+ID	HU-04
+Título	Modificación de Perfil del Cliente
+Descripción	Como cliente, Quiero actualizar mi información de perfil, Para mantener mis datos de contacto y preferencias actualizados en la plataforma.
+Criterios de Aceptación	1.	El sistema debe mostrar los campos editables del perfil: nombre, teléfono, tipo de documento, número de documento y preferencias de notificación.
+2.	Los campos deben tener validaciones de formato (teléfono solo números, documento con longitud mínima y máxima).
+3.	Al guardar, el sistema debe actualizar los datos vía PATCH /api/users/profile.
+4.	Los cambios deben reflejarse inmediatamente sin recargar la página.
+5.	Si hay errores de validación, el sistema debe mostrarlos por campo específico.
+
+DIAGRAMA DE ACTIVIDADES – HU-04: MODIFICACIÓN DE PERFIL DEL CLIENTE.
+[ Insertar imagen PlantUML – Diagrama de Actividades – HU-04 ]
+DIAGRAMA DE SECUENCIAS – HU-04: MODIFICACIÓN DE PERFIL DEL CLIENTE.
+[ Insertar imagen PlantUML – Diagrama de Secuencias – HU-04 ]
+
+RF-05: CIERRE DE SESIÓN DEL CLIENTE.
+
+ID del Requisito	RF-05
+Nombre del Requisito	Cierre de Sesión del Cliente
+Detalle del Requisito	El sistema debe permitir a los clientes cerrar su sesión de forma segura.
+Descripción	El sistema debe permitir a los clientes cerrar su sesión de forma segura desde cualquier pantalla, invalidando el token JWT activo mediante Clerk.
+
+CU-05: CIERRE DE SESIÓN DEL CLIENTE.
+
+Código RF	RF-05
+Caso de Uso	CU-05: Cierre de Sesión del Cliente
+Descripción	Este caso de uso permite a un cliente autenticado cerrar su sesión de forma segura desde cualquier pantalla de la tienda web o la app móvil.
+Precondiciones	1.	El cliente debe estar autenticado en el sistema.
+Secuencia Normal	Pasos - Acciones	Resultados Esperados
+	1.	El cliente hace clic en "Cerrar sesión" desde el menú de usuario.	El sistema solicita confirmación de cierre de sesión.
+	2.	El cliente confirma el cierre de sesión.	Clerk invalida la sesión activa y elimina el JWT del cliente.
+	3.	El sistema redirige al cliente a la página principal de la tienda.	El cliente queda como usuario invitado. El carrito en localStorage se preserva para la próxima sesión.
+Postcondiciones	1.	La sesión del cliente ha sido cerrada.
+2.	No puede acceder a funcionalidades protegidas hasta que vuelva a iniciar sesión.
+Alternativas	1.	Si el cliente cancela la confirmación, la sesión permanece activa y el sistema no realiza ningún cambio.
+2.	Si ocurre un error de red durante el cierre de sesión, el sistema muestra un mensaje e intenta nuevamente.
+
+DIAGRAMA DE CU-05: CIERRE DE SESIÓN DEL CLIENTE.
+[ Insertar imagen PlantUML – Diagrama de Caso de Uso – CU-05 ]
+HU-05: CIERRE DE SESIÓN DEL CLIENTE
+
+ID	HU-05
+Título	Cierre de Sesión del Cliente
+Descripción	Como cliente, Quiero cerrar mi sesión de forma segura, Para proteger mi cuenta cuando termino de usar la plataforma.
+Criterios de Aceptación	1.	El sistema debe mostrar una opción de "Cerrar sesión" accesible desde el menú de usuario en todas las pantallas.
+2.	Al confirmar, Clerk debe invalidar la sesión activa inmediatamente.
+3.	El sistema debe redirigir al usuario a la página principal como invitado.
+4.	El carrito de compras en localStorage debe conservarse para la próxima sesión.
+5.	La opción de cierre de sesión debe estar disponible tanto en la tienda web como en la app móvil.
+
+DIAGRAMA DE ACTIVIDADES – HU-05: CIERRE DE SESIÓN DEL CLIENTE.
+[ Insertar imagen PlantUML – Diagrama de Actividades – HU-05 ]
+
+RF-06: DESACTIVACIÓN DE CUENTA DEL CLIENTE.
+
+ID del Requisito	RF-06
+Nombre del Requisito	Desactivación de Cuenta del Cliente
+Detalle del Requisito	El sistema debe permitir al cliente desactivar su cuenta.
+Descripción	El sistema debe permitir al cliente desactivar su cuenta desde la sección de perfil, marcando isActive: false en MongoDB y redirigiendo al cliente a una página de cuenta inactiva.
+
+CU-06: DESACTIVACIÓN DE CUENTA DEL CLIENTE.
+
+Código RF	RF-06
+Caso de Uso	CU-06: Desactivación de Cuenta del Cliente
+Descripción	Este caso de uso permite a un cliente desactivar su propia cuenta desde la configuración de perfil.
+Precondiciones	1.	El cliente debe estar autenticado en el sistema.
+2.	El cliente debe acceder a la sección de configuración de cuenta en su perfil.
+Secuencia Normal	Pasos - Acciones	Resultados Esperados
+	1.	El cliente accede a su perfil y selecciona "Desactivar cuenta".	El sistema muestra un mensaje de advertencia explicando las consecuencias de desactivar la cuenta.
+	2.	El cliente confirma la desactivación.	El backend actualiza isActive: false en MongoDB (PATCH /api/users/status).
+	3.	El sistema cierra la sesión del cliente automáticamente.	Clerk invalida la sesión activa y el cliente es redirigido a la página principal.
+Postcondiciones	1.	La cuenta del cliente está desactivada (isActive: false).
+2.	En el próximo intento de login el backend retorna 403 y el sistema muestra la página de cuenta inactiva.
+Alternativas	1.	Si el cliente cancela la confirmación, la cuenta permanece activa sin cambios.
+2.	Si el cliente tiene pedidos en proceso (pending o in_preparation), el sistema le notifica antes de permitir la desactivación.
+
+DIAGRAMA DE CU-06: DESACTIVACIÓN DE CUENTA DEL CLIENTE.
+[ Insertar imagen PlantUML – Diagrama de Caso de Uso – CU-06 ]
+HU-06: DESACTIVACIÓN DE CUENTA DEL CLIENTE
+
+ID	HU-06
+Título	Desactivación de Cuenta del Cliente
+Descripción	Como cliente, Quiero poder desactivar mi cuenta, Para dejar de recibir comunicaciones y suspender mi acceso a la plataforma cuando lo decida.
+Criterios de Aceptación	1.	El sistema debe mostrar la opción "Desactivar cuenta" en la sección de configuración del perfil.
+2.	Antes de desactivar, el sistema debe mostrar una advertencia clara sobre las consecuencias.
+3.	Si el cliente tiene pedidos activos, el sistema debe notificarlo antes de proceder.
+4.	Al confirmar, el backend actualiza isActive: false y Clerk cierra la sesión inmediatamente.
+5.	Un administrador puede reactivar la cuenta desde el panel de administración.
+6.	Al intentar iniciar sesión con cuenta inactiva, el sistema debe mostrar una página informativa.
+
+DIAGRAMA DE ACTIVIDADES – HU-06: DESACTIVACIÓN DE CUENTA DEL CLIENTE.
+[ Insertar imagen PlantUML – Diagrama de Actividades – HU-06 ]
+DIAGRAMA DE ESTADOS – HU-06: DESACTIVACIÓN DE CUENTA DEL CLIENTE.
+[ Insertar imagen PlantUML – Diagrama de Estados – HU-06 ]
+
+
+ 
+Cliente - Módulo Productos / Inventario
+RF-07: CATÁLOGO DE PRODUCTOS.
+
+ID del Requisito	RF-07
+Nombre del Requisito	Catálogo de Productos
+Detalle del Requisito	El sistema debe mostrar a los clientes un catálogo de los productos disponibles.
+Descripción	El sistema debe mostrar a los clientes un catálogo completo de los productos disponibles, con imagen, nombre, precio y disponibilidad. Solo se muestran productos con isActive: true.
+
+CU-07: CATÁLOGO DE PRODUCTOS.
+
+Código RF	RF-07
+Caso de Uso	CU-07: Catálogo de Productos
+Descripción	Este caso de uso permite a los clientes (invitados o autenticados) visualizar el catálogo completo de productos disponibles en la tienda web y la app móvil.
+Precondiciones	1.	La tienda web o la app móvil debe estar en línea y accesible.
+2.	El catálogo debe tener al menos un producto activo (isActive: true) en el backend.
+Secuencia Normal	Pasos - Acciones	Resultados Esperados
+	1.	El usuario accede a la tienda o app y navega a la sección "Catálogo".	El sistema realiza GET /api/products y carga todos los productos activos.
+	2.	El sistema muestra los productos en cuadrícula con imagen (Cloudinary CDN), nombre, precio y disponibilidad.	Cada producto se muestra con su información correcta y el botón "Agregar al carrito".
+	3.	El usuario navega por el catálogo.	El catálogo se renderiza correctamente en móvil (375px), tablet (768px) y escritorio (1280px+).
+Postcondiciones	1.	El usuario puede ver la lista completa de productos activos con toda su información asociada.
+Alternativas	1.	Si no hay productos activos, el sistema muestra un mensaje "No hay productos disponibles".
+2.	Si ocurre un error al cargar, el sistema muestra un mensaje de error con opción de reintentar.
+3.	Si las imágenes no cargan (error en Cloudinary), el sistema muestra una imagen predeterminada.
+
+DIAGRAMA DE CU-07: CATÁLOGO DE PRODUCTOS.
+[ Insertar imagen PlantUML – Diagrama de Caso de Uso – CU-07 ]
+HU-07: CATÁLOGO DE PRODUCTOS
+
+ID	HU-07
+Título	Catálogo de Productos
+Descripción	Como cliente, Quiero ver el catálogo completo de productos, Para explorar la oferta de Don Palito Junior y elegir los que deseo comprar.
+Criterios de Aceptación	1.	El sistema debe mostrar todos los productos con isActive: true.
+2.	Cada producto debe mostrar imagen (Cloudinary CDN), nombre, precio y disponibilidad (en stock / sin stock).
+3.	El catálogo debe ser responsivo para móvil, tablet y escritorio.
+4.	El botón "Agregar al carrito" debe estar disponible para productos con stock > 0.
+5.	Los productos sin stock deben mostrar "Sin stock" y tener el botón deshabilitado.
+6.	Si no hay productos disponibles, el sistema muestra un mensaje informativo.
+
+DIAGRAMA DE ACTIVIDADES – HU-07: CATÁLOGO DE PRODUCTOS.
+[ Insertar imagen PlantUML – Diagrama de Actividades – HU-07 ]
+
+RF-08: DETALLE DEL PRODUCTO.
+
+ID del Requisito	RF-08
+Nombre del Requisito	Detalle del Producto
+Detalle del Requisito	El sistema debe mostrar a los clientes los detalles de un producto (imagen, nombre, descripción, precio y disponibilidad).
+Descripción	El sistema debe mostrar a los clientes los detalles completos de un producto: imagen (Cloudinary CDN), nombre, descripción, precio, disponibilidad de stock y calificación promedio.
+
+CU-08: DETALLE DEL PRODUCTO.
+
+Código RF	RF-08
+Caso de Uso	CU-08: Detalle del Producto
+Descripción	Este caso de uso permite a los clientes ver todos los detalles de un producto específico seleccionado desde el catálogo.
+Precondiciones	1.	El producto debe existir en el sistema y estar activo (isActive: true).
+2.	El usuario debe acceder desde el catálogo haciendo clic en un producto.
+Secuencia Normal	Pasos - Acciones	Resultados Esperados
+	1.	El usuario hace clic en un producto del catálogo.	El sistema navega a la página de detalle y realiza GET /api/products/:id.
+	2.	El sistema muestra imagen (Cloudinary CDN), nombre, descripción, precio, stock y calificación promedio.	El detalle del producto se carga correctamente con toda la información disponible.
+	3.	El usuario puede ver las calificaciones del producto y agregar el producto al carrito.	El sistema muestra las estrellas promedio y el botón "Agregar al carrito" activo si stock > 0.
+Postcondiciones	1.	El usuario tiene acceso completo a la información del producto y puede agregarlo al carrito si lo desea.
+Alternativas	1.	Si el producto no existe o fue eliminado, el sistema muestra un mensaje de error y redirige al catálogo.
+2.	Si el producto está agotado (stock: 0), el botón "Agregar al carrito" se deshabilita con el mensaje "Sin stock".
+
+DIAGRAMA DE CU-08: DETALLE DEL PRODUCTO.
+[ Insertar imagen PlantUML – Diagrama de Caso de Uso – CU-08 ]
+HU-08: DETALLE DEL PRODUCTO
+
+ID	HU-08
+Título	Detalle del Producto
+Descripción	Como cliente, Quiero ver los detalles completos de un producto, Para tomar una decisión informada antes de agregarlo al carrito.
+Criterios de Aceptación	1.	La página de detalle debe mostrar: imagen ampliada del producto (Cloudinary CDN), nombre, descripción completa, precio, indicador de stock y calificación promedio en estrellas (1-5).
+2.	El botón "Agregar al carrito" debe estar activo solo si el producto tiene stock > 0.
+3.	Si el producto está agotado, el botón debe estar deshabilitado y mostrar "Sin stock".
+4.	La página debe ser responsiva.
+5.	Si el producto no existe, el sistema redirige al catálogo con un mensaje de error.
+
+DIAGRAMA DE ACTIVIDADES – HU-08: DETALLE DEL PRODUCTO.
+[ Insertar imagen PlantUML – Diagrama de Actividades – HU-08 ]
+
+RF-09: FILTRADO Y ORDENAMIENTO DE PRODUCTOS.
+
+ID del Requisito	RF-09
+Nombre del Requisito	Filtrado y Ordenamiento de Productos
+Detalle del Requisito	El sistema debe permitir a los clientes aplicar un filtro de ordenamiento alfabéticamente y por precio.
+Descripción	El sistema debe permitir a los clientes filtrar productos por categoría (Palitos Premium, Cocteleros, Dulces, Especiales, Nuevos) y aplicar ordenamiento alfabético y por precio en el catálogo.
+
+CU-09: FILTRADO Y ORDENAMIENTO DE PRODUCTOS.
+
+Código RF	RF-09
+Caso de Uso	CU-09: Filtrado y Ordenamiento de Productos
+Descripción	Este caso de uso permite a los clientes filtrar el catálogo por categoría y aplicar criterios de ordenamiento.
+Precondiciones	1.	El catálogo debe estar cargado con productos disponibles.
+2.	Las categorías disponibles son: Palitos Premium, Cocteleros, Dulces, Especiales, Nuevos.
+Secuencia Normal	Pasos - Acciones	Resultados Esperados
+	1.	El usuario selecciona una categoría del menú de filtros en el catálogo.	El sistema filtra los productos y muestra únicamente los de la categoría seleccionada.
+	2.	El usuario selecciona una opción de ordenamiento: A-Z, Z-A, precio ascendente o descendente.	El sistema reordena los productos en el frontend según el criterio seleccionado.
+	3.	El usuario combina filtro de categoría y ordenamiento simultáneamente.	El sistema aplica ambos criterios y muestra los resultados filtrados y ordenados.
+Postcondiciones	1.	El catálogo muestra únicamente los productos que cumplen con los criterios de filtro y ordenamiento seleccionados.
+Alternativas	1.	Si no hay productos en la categoría seleccionada, el sistema muestra un mensaje "No hay resultados para esta categoría".
+2.	Si el usuario elimina todos los filtros, el catálogo vuelve a mostrar todos los productos activos.
+
+DIAGRAMA DE CU-09: FILTRADO Y ORDENAMIENTO DE PRODUCTOS.
+[ Insertar imagen PlantUML – Diagrama de Caso de Uso – CU-09 ]
+HU-09: FILTRADO Y ORDENAMIENTO DE PRODUCTOS
+
+ID	HU-09
+Título	Filtrado y Ordenamiento de Productos
+Descripción	Como cliente, Quiero filtrar y ordenar los productos del catálogo, Para encontrar más fácilmente los productos que me interesan.
+Criterios de Aceptación	1.	El sistema debe mostrar un menú de filtro con las categorías disponibles: Palitos Premium, Cocteleros, Dulces, Especiales, Nuevos.
+2.	El usuario debe poder seleccionar una categoría para filtrar.
+3.	El sistema debe ofrecer ordenamiento: A-Z, Z-A, precio menor a mayor, precio mayor a menor.
+4.	Los filtros y el ordenamiento deben poder combinarse.
+5.	Si no hay resultados para el filtro seleccionado, el sistema debe mostrarlo con un mensaje informativo.
+6.	Debe existir una opción para limpiar todos los filtros y restaurar el catálogo completo.
+
+DIAGRAMA DE ACTIVIDADES – HU-09: FILTRADO Y ORDENAMIENTO DE PRODUCTOS.
+[ Insertar imagen PlantUML – Diagrama de Actividades – HU-09 ]
+
+RF-10: BÚSQUEDA RÁPIDA DE PRODUCTOS.
+
+ID del Requisito	RF-10
+Nombre del Requisito	Búsqueda Rápida de Productos
+Detalle del Requisito	El sistema debe incluir una función de búsqueda rápida que permita a los clientes encontrar productos específicos.
+Descripción	El sistema debe incluir una función de búsqueda rápida que permita a los clientes encontrar productos específicos por nombre. Debe mostrar un mensaje cuando no se encuentren resultados.
+
+CU-10: BÚSQUEDA RÁPIDA DE PRODUCTOS.
+
+Código RF	RF-10
+Caso de Uso	CU-10: Búsqueda Rápida de Productos
+Descripción	Este caso de uso permite a los clientes buscar productos por nombre usando la barra de búsqueda de la tienda web o la app móvil.
+Precondiciones	1.	El catálogo debe tener productos disponibles.
+2.	El usuario debe acceder a la barra de búsqueda del sistema.
+Secuencia Normal	Pasos - Acciones	Resultados Esperados
+	1.	El usuario escribe el nombre o parte del nombre del producto en la barra de búsqueda.	El sistema filtra usando GET /api/products?search=término y muestra los productos coincidentes.
+	2.	El sistema muestra los productos que coinciden con el término de búsqueda.	Los resultados se muestran con imagen, nombre y precio.
+	3.	El usuario selecciona un producto de los resultados.	El sistema navega a la página de detalle del producto seleccionado.
+Postcondiciones	1.	El usuario encontró los productos que buscaba y puede ver el detalle o agregarlos al carrito.
+Alternativas	1.	Si ningún producto coincide con el término, el sistema muestra "No se encontraron resultados para tu búsqueda".
+2.	Si el campo de búsqueda se vacía, el sistema restaura el catálogo completo.
+
+DIAGRAMA DE CU-10: BÚSQUEDA RÁPIDA DE PRODUCTOS.
+[ Insertar imagen PlantUML – Diagrama de Caso de Uso – CU-10 ]
+HU-10: BÚSQUEDA RÁPIDA DE PRODUCTOS
+
+ID	HU-10
+Título	Búsqueda Rápida de Productos
+Descripción	Como cliente, Quiero buscar productos por nombre, Para encontrar rápidamente lo que necesito sin navegar por todo el catálogo.
+Criterios de Aceptación	1.	El sistema debe mostrar una barra de búsqueda visible en el catálogo y en la navegación principal.
+2.	La búsqueda debe realizarse contra el nombre del producto usando GET /api/products?search=.
+3.	Los resultados deben mostrarse con imagen, nombre y precio.
+4.	Si no hay resultados, el sistema debe mostrar un mensaje claro.
+5.	Al hacer clic en un resultado, el sistema debe navegar al detalle del producto.
+6.	Vaciar la barra de búsqueda debe restaurar el catálogo completo.
+
+DIAGRAMA DE ACTIVIDADES – HU-10: BÚSQUEDA RÁPIDA DE PRODUCTOS.
+[ Insertar imagen PlantUML – Diagrama de Actividades – HU-10 ]
+DIAGRAMA DE SECUENCIAS – HU-10: BÚSQUEDA RÁPIDA DE PRODUCTOS.
+[ Insertar imagen PlantUML – Diagrama de Secuencias – HU-10 ]
+
+RF-11: VISUALIZACIÓN DE PROMOCIONES VIGENTES.
+
+ID del Requisito	RF-11
+Nombre del Requisito	Visualización de Promociones Vigentes
+Detalle del Requisito	El sistema debe mostrar claramente a los clientes las promociones vigentes en la página principal.
+Descripción	El sistema debe mostrar claramente a los clientes las promociones (cupones) vigentes en la página principal de la tienda web, consumiendo el endpoint público GET /api/coupons/active.
+
+CU-11: VISUALIZACIÓN DE PROMOCIONES VIGENTES.
+
+Código RF	RF-11
+Caso de Uso	CU-11: Visualización de Promociones Vigentes
+Descripción	Este caso de uso permite a los clientes visualizar los cupones y promociones activos en la página principal de la tienda web.
+Precondiciones	1.	Debe existir al menos un cupón activo (isActive: true) con fecha de expiración futura en el sistema.
+Secuencia Normal	Pasos - Acciones	Resultados Esperados
+	1.	El usuario accede a la página principal de la tienda web.	El sistema realiza GET /api/coupons/active y obtiene los cupones activos y vigentes.
+	2.	El sistema muestra los cupones en una sección destacada de la página principal con código, tipo de descuento, valor y fecha de expiración.	El usuario puede ver las promociones disponibles y copiar los códigos para usarlos en el checkout.
+Postcondiciones	1.	El usuario puede ver los cupones disponibles y usar el código en el proceso de checkout.
+Alternativas	1.	Si no hay cupones activos, la sección de promociones no se muestra o indica que no hay promociones vigentes en este momento.
+
+DIAGRAMA DE CU-11: VISUALIZACIÓN DE PROMOCIONES VIGENTES.
+[ Insertar imagen PlantUML – Diagrama de Caso de Uso – CU-11 ]
+HU-11: VISUALIZACIÓN DE PROMOCIONES VIGENTES
+
+ID	HU-11
+Título	Visualización de Promociones Vigentes
+Descripción	Como cliente, Quiero ver las promociones y descuentos vigentes, Para aprovecharlos en mi próxima compra en la tienda.
+Criterios de Aceptación	1.	El sistema debe mostrar en la página principal una sección de promociones con los cupones activos y vigentes (isActive: true y fecha de expiración futura).
+2.	Cada promoción debe mostrar el código del cupón, el tipo de descuento (porcentaje o monto fijo), el valor del descuento y la fecha de expiración.
+3.	Debe existir una forma fácil de copiar el código.
+4.	Si no hay cupones activos, la sección no debe mostrarse o debe indicar que no hay promociones vigentes.
+
+DIAGRAMA DE ACTIVIDADES – HU-11: VISUALIZACIÓN DE PROMOCIONES VIGENTES.
+[ Insertar imagen PlantUML – Diagrama de Actividades – HU-11 ]
+ 
+Cliente - Módulo Ventas
+RF-12: AGREGAR PRODUCTOS AL CARRITO.
+
+ID del Requisito	RF-12
+Nombre del Requisito	Agregar Productos al Carrito
+Detalle del Requisito	El sistema debe permitir a los clientes agregar productos al carrito de compras.
+Descripción	El sistema debe permitir a los clientes agregar productos al carrito de compras. El carrito opera en localStorage para usuarios no autenticados y se sincroniza con el servidor (MongoDB) al iniciar sesión.
+
+CU-12: AGREGAR PRODUCTOS AL CARRITO.
+
+Código RF	RF-12
+Caso de Uso	CU-12: Agregar Productos al Carrito
+Descripción	Este caso de uso permite a los clientes agregar productos al carrito, con soporte híbrido: localStorage para invitados y MongoDB para autenticados.
+Precondiciones	1.	El catálogo debe tener productos con stock disponible.
+2.	El usuario puede ser invitado o estar autenticado.
+Secuencia Normal	Pasos - Acciones	Resultados Esperados
+	1.	El usuario hace clic en "Agregar al carrito" desde el catálogo o el detalle del producto.	Si es invitado, el producto se agrega al localStorage. Si está autenticado, el sistema ejecuta POST /api/cart/add.
+	2.	El sistema actualiza el contador del carrito en la barra de navegación en tiempo real.	El ícono del carrito muestra el número actualizado de ítems.
+	3.	El sistema muestra una notificación de confirmación (Toast).	El usuario recibe confirmación visual de que el producto fue agregado exitosamente.
+Postcondiciones	1.	El producto está en el carrito.
+2.	Al iniciar sesión desde invitado, el carrito local se fusiona automáticamente con el del servidor.
+Alternativas	1.	Si el producto está agotado, el botón "Agregar al carrito" está deshabilitado y no ejecuta ninguna acción.
+2.	Si se intenta agregar más unidades que el stock disponible, el sistema limita la cantidad al máximo disponible.
+3.	Si ocurre un error al sincronizar con el servidor, el sistema conserva el carrito local.
+
+DIAGRAMA DE CU-12: AGREGAR PRODUCTOS AL CARRITO.
+[ Insertar imagen PlantUML – Diagrama de Caso de Uso – CU-12 ]
+HU-12: AGREGAR PRODUCTOS AL CARRITO
+
+ID	HU-12
+Título	Agregar Productos al Carrito
+Descripción	Como cliente, Quiero agregar productos al carrito, Para seleccionar los productos que deseo comprar antes de proceder al pago.
+Criterios de Aceptación	1.	El botón "Agregar al carrito" debe estar disponible en el catálogo y en la página de detalle de cada producto.
+2.	Para usuarios invitados, el carrito debe almacenarse en localStorage.
+3.	Para usuarios autenticados, el carrito debe sincronizarse con el servidor vía POST /api/cart/add.
+4.	El contador del carrito en la barra de navegación debe actualizarse en tiempo real.
+5.	Debe mostrarse una notificación visual de confirmación al agregar un producto.
+6.	Solo deben poder agregarse productos con stock > 0.
+7.	Al iniciar sesión, el carrito del localStorage debe fusionarse con el del servidor.
+
+DIAGRAMA DE ACTIVIDADES – HU-12: AGREGAR PRODUCTOS AL CARRITO.
+[ Insertar imagen PlantUML – Diagrama de Actividades – HU-12 ]
+DIAGRAMA DE ESTADOS – HU-12: AGREGAR PRODUCTOS AL CARRITO.
+[ Insertar imagen PlantUML – Diagrama de Estados – HU-12 ]
+DIAGRAMA DE SECUENCIAS – HU-12: AGREGAR PRODUCTOS AL CARRITO.
+[ Insertar imagen PlantUML – Diagrama de Secuencias – HU-12 ]
+
+RF-13: MODIFICAR Y ELIMINAR PRODUCTOS DEL CARRITO.
+
+ID del Requisito	RF-13
+Nombre del Requisito	Modificar y Eliminar Productos del Carrito
+Detalle del Requisito	El sistema debe permitir a los clientes modificar o eliminar productos del carrito de compras.
+Descripción	El sistema debe permitir a los clientes modificar la cantidad de productos en el carrito y eliminar ítems individualmente o vaciar el carrito completo. Los cambios se reflejan en el total en tiempo real.
+
+CU-13: MODIFICAR Y ELIMINAR PRODUCTOS DEL CARRITO.
+
+Código RF	RF-13
+Caso de Uso	CU-13: Modificar y Eliminar Productos del Carrito
+Descripción	Este caso de uso permite a los clientes cambiar la cantidad de productos en el carrito o eliminarlos, con actualización automática del total.
+Precondiciones	1.	El carrito debe contener al menos un producto.
+Secuencia Normal	Pasos - Acciones	Resultados Esperados
+	1.	El usuario abre el carrito desde la barra de navegación.	El sistema muestra todos los productos del carrito con nombre, imagen, precio, cantidad y subtotal.
+	2.	El usuario modifica la cantidad de un producto con los botones + o -.	El sistema actualiza la cantidad (PATCH /api/cart/update) y recalcula el total en tiempo real.
+	3.	El usuario hace clic en el ícono de eliminar para quitar un producto del carrito.	El sistema elimina el ítem (DELETE /api/cart/item/:productId) y actualiza el total del carrito.
+Postcondiciones	1.	El carrito refleja correctamente los cambios realizados.
+2.	El total fue recalculado con los nuevos valores.
+Alternativas	1.	Si la cantidad llega a 0, el sistema elimina automáticamente el ítem del carrito.
+2.	Si ocurre un error al actualizar en el servidor, el sistema muestra mensaje de error y conserva el estado previo.
+
+DIAGRAMA DE CU-13: MODIFICAR Y ELIMINAR PRODUCTOS DEL CARRITO.
+[ Insertar imagen PlantUML – Diagrama de Caso de Uso – CU-13 ]
+HU-13: MODIFICAR Y ELIMINAR PRODUCTOS DEL CARRITO
+
+ID	HU-13
+Título	Modificar y Eliminar Productos del Carrito
+Descripción	Como cliente, Quiero modificar las cantidades o eliminar productos de mi carrito, Para ajustar mi pedido antes de proceder al pago.
+Criterios de Aceptación	1.	El carrito debe mostrar cada ítem con imagen, nombre, precio unitario, cantidad y subtotal.
+2.	Debe existir botones + y - para modificar la cantidad de cada ítem.
+3.	Al llegar a 0, el ítem debe eliminarse automáticamente.
+4.	Debe existir un botón de eliminar por ítem.
+5.	El total del carrito debe recalcularse en tiempo real al realizar cualquier cambio.
+6.	Debe haber una opción para vaciar el carrito completo.
+7.	Los cambios deben sincronizarse con el servidor para usuarios autenticados.
+
+DIAGRAMA DE ACTIVIDADES – HU-13: MODIFICAR Y ELIMINAR PRODUCTOS DEL CARRITO.
+[ Insertar imagen PlantUML – Diagrama de Actividades – HU-13 ]
+
+RF-14: CANCELACIÓN DE LA COMPRA.
+
+ID del Requisito	RF-14
+Nombre del Requisito	Cancelación de la Compra
+Detalle del Requisito	El sistema debe permitir a los clientes cancelar la compra de los productos en su carrito.
+Descripción	El sistema debe permitir a los clientes cancelar la compra en cualquier punto del proceso sin confirmar el pedido. El carrito se conserva en el servidor para sesiones autenticadas.
+
+CU-14: CANCELACIÓN DE LA COMPRA.
+
+Código RF	RF-14
+Caso de Uso	CU-14: Cancelación de la Compra
+Descripción	Este caso de uso permite a los clientes cancelar el proceso de checkout en cualquier punto sin generar pedido ni cargo.
+Precondiciones	1.	El cliente debe estar en el proceso de checkout.
+Secuencia Normal	Pasos - Acciones	Resultados Esperados
+	1.	El usuario hace clic en "Cancelar" o en la flecha de retroceso durante el checkout.	El sistema muestra un mensaje de confirmación de cancelación.
+	2.	El usuario confirma la cancelación.	El sistema cierra el checkout. El carrito se conserva intacto con todos los productos.
+Postcondiciones	1.	El proceso de compra fue cancelado.
+2.	El carrito conserva todos los productos.
+3.	No se generó pedido ni cargo.
+Alternativas	1.	Si el usuario ya inició el proceso de pago con Stripe, pero no confirmó, el PaymentIntent queda en "requires_payment_method" y expira automáticamente.
+2.	Si el usuario cancela en el paso de confirmación, el pedido no se crea y el carrito se restaura.
+
+DIAGRAMA DE CU-14: CANCELACIÓN DE LA COMPRA.
+[ Insertar imagen PlantUML – Diagrama de Caso de Uso – CU-14 ]
+HU-14: CANCELACIÓN DE LA COMPRA
+
+ID	HU-14
+Título	Cancelación de la Compra
+Descripción	Como cliente, Quiero poder cancelar mi compra en cualquier momento del proceso, Para no quedar comprometido con un pedido que no deseo completar.
+Criterios de Aceptación	1.	Debe existir una opción visible de "Cancelar" o retroceso en cada paso del checkout.
+2.	Al cancelar, el sistema debe solicitar confirmación antes de abandonar el proceso.
+3.	El carrito debe conservarse íntegro con todos los productos y cantidades al cancelar.
+4.	No debe generarse ningún pedido ni cargo al cancelar.
+5.	Si se inició un PaymentIntent en Stripe, este debe quedar en estado inactivo y expirar automáticamente.
+
+DIAGRAMA DE ACTIVIDADES – HU-14: CANCELACIÓN DE LA COMPRA.
+[ Insertar imagen PlantUML – Diagrama de Actividades – HU-14 ]
+DIAGRAMA DE ESTADOS – HU-14: CANCELACIÓN DE LA COMPRA.
+[ Insertar imagen PlantUML – Diagrama de Estados – HU-14 ]
+
+RF-15: FINALIZACIÓN DE LA COMPRA.
+
+ID del Requisito	RF-15
+Nombre del Requisito	Finalización de la Compra
+Detalle del Requisito	El sistema debe permitir a los clientes finalizar la compra de los productos en su carrito.
+Descripción	El sistema debe permitir a los clientes autenticados finalizar la compra de los productos en su carrito, confirmando el pedido y procesando el pago mediante el método seleccionado.
+
+CU-15: FINALIZACIÓN DE LA COMPRA.
+
+Código RF	RF-15
+Caso de Uso	CU-15: Finalización de la Compra
+Descripción	Este caso de uso permite a un cliente autenticado completar el proceso de compra generando un pedido en el sistema.
+Precondiciones	1.	El cliente debe estar autenticado.
+2.	El carrito debe contener al menos un producto con stock disponible.
+Secuencia Normal	Pasos - Acciones	Resultados Esperados
+	1.	El cliente hace clic en "Finalizar compra" desde el carrito.	El sistema redirige al flujo de checkout de 3 pasos.
+	2.	El cliente completa los 3 pasos: dirección de entrega, método de pago y confirmación.	El sistema valida cada paso antes de permitir avanzar al siguiente.
+	3.	El cliente confirma el pedido en el paso 3.	El backend crea el pedido en MongoDB (POST /api/orders) con estado "pending" y vacía el carrito del cliente.
+Postcondiciones	1.	El pedido fue creado con estado "pending".
+2.	El cliente recibe email de confirmación del pedido (Nodemailer).
+Alternativas	1.	Si algún producto se agotó antes de confirmar, el sistema notifica al cliente y solicita actualizar el carrito.
+2.	Si el cliente no está autenticado, el sistema solicita iniciar sesión antes de proceder al checkout.
+
+DIAGRAMA DE CU-15: FINALIZACIÓN DE LA COMPRA.
+[ Insertar imagen PlantUML – Diagrama de Caso de Uso – CU-15 ]
+HU-15: FINALIZACIÓN DE LA COMPRA
+
+ID	HU-15
+Título	Finalización de la Compra
+Descripción	Como cliente, Quiero finalizar mi compra, Para recibir mis productos y completar el proceso de pago de forma segura.
+Criterios de Aceptación	1.	El botón "Finalizar compra" debe estar disponible en el carrito solo para usuarios autenticados.
+2.	El checkout debe tener 3 pasos claros con indicador de progreso.
+3.	Paso 1: selección o ingreso de dirección de entrega.
+4.	Paso 2: selección de método de pago (tarjeta Stripe o transferencia bancaria) con resumen de la compra.
+5.	Paso 3: confirmación del pedido con resumen completo.
+6.	Al confirmar, el sistema crea el pedido vía POST /api/orders y vacía el carrito.
+7.	El cliente debe recibir un email de confirmación.
+8.	Si un producto se agota en el proceso, el sistema debe notificarlo.
+
+DIAGRAMA DE ACTIVIDADES – HU-15: FINALIZACIÓN DE LA COMPRA.
+[ Insertar imagen PlantUML – Diagrama de Actividades – HU-15 ]
+DIAGRAMA DE ESTADOS – HU-15: FINALIZACIÓN DE LA COMPRA.
+[ Insertar imagen PlantUML – Diagrama de Estados – HU-15 ]
+DIAGRAMA DE SECUENCIAS – HU-15: FINALIZACIÓN DE LA COMPRA.
+[ Insertar imagen PlantUML – Diagrama de Secuencias – HU-15 ]
+
+RF-16: CHECKOUT CON RESUMEN DE COMPRA.
+
+ID del Requisito	RF-16
+Nombre del Requisito	Checkout con Resumen de Compra
+Detalle del Requisito	El sistema debe permitir que, una vez el cliente decida finalizar la compra de los productos en su carrito, sea redirigido a una sección de check-out, donde se aprecien los detalles de la compra (productos, cantidades, subtotal, iva, descuentos, total), datos de facturación (nombre, documento de identidad, dirección y teléfono) y QR de pago.
+Descripción	El sistema debe redirigir al cliente a un flujo de checkout de 3 pasos que incluye: dirección de entrega, resumen de productos con método de pago (Stripe o QR de transferencia bancaria), y confirmación del pedido.
+
+CU-16: CHECKOUT CON RESUMEN DE COMPRA.
+
+Código RF	RF-16
+Caso de Uso	CU-16: Checkout con Resumen de Compra
+Descripción	Este caso de uso describe el flujo completo de checkout de 3 pasos con resumen detallado de la compra.
+Precondiciones	1.	El cliente debe estar autenticado.
+2.	El carrito debe tener al menos un producto.
+Secuencia Normal	Pasos - Acciones	Resultados Esperados
+	1.	Dirección: el cliente selecciona o ingresa una dirección de entrega.	El sistema muestra las direcciones guardadas del cliente o un formulario para ingresar una nueva.
+	2.	Pago: el cliente ve el resumen detallado (productos, cantidades, subtotal, IVA, descuento de cupón y total) y selecciona el método de pago.	Si elige tarjeta, el sistema muestra el formulario de Stripe Elements. Si elige transferencia, muestra el QR con datos bancarios.
+	3.	Confirmación: el cliente revisa el pedido completo y confirma.	El sistema crea el pedido (POST /api/orders). Si el pago es por Stripe, se crea el PaymentIntent. El carrito se vacía.
+Postcondiciones	1.	El pedido fue registrado.
+2.	Para pago Stripe se procesa automáticamente vía webhook.
+3.	Para transferencia, queda "pending" hasta validación del administrador.
+Alternativas	1.	Si el pago con Stripe falla (tarjeta rechazada), el sistema muestra el mensaje de error de Stripe y permite reintentar.
+2.	Si el cliente no selecciona una dirección de entrega, el sistema no permite avanzar al paso 2.
+
+DIAGRAMA DE CU-16: CHECKOUT CON RESUMEN DE COMPRA.
+[ Insertar imagen PlantUML – Diagrama de Caso de Uso – CU-16 ]
+HU-16: CHECKOUT CON RESUMEN DE COMPRA
+
+ID	HU-16
+Título	Checkout con Resumen de Compra
+Descripción	Como cliente, Quiero ver un resumen detallado de mi compra durante el checkout, Para verificar los productos, precios y totales antes de confirmar el pago.
+Criterios de Aceptación	1.	El checkout debe mostrar en el paso 2 un resumen con: lista de productos con cantidades y precios, subtotal, IVA (si aplica), monto de descuento de cupón aplicado y total final.
+2.	Debe ofrecerse dos métodos de pago: tarjeta de crédito/débito (Stripe Elements) y transferencia bancaria (QR).
+3.	El QR debe contener los datos bancarios del negocio.
+4.	El resumen debe actualizarse en tiempo real al aplicar o quitar cupones.
+5.	El paso 3 debe mostrar el resumen completo del pedido antes de confirmar.
+
+DIAGRAMA DE ACTIVIDADES – HU-16: CHECKOUT CON RESUMEN DE COMPRA.
+[ Insertar imagen PlantUML – Diagrama de Actividades – HU-16 ]
+DIAGRAMA DE ESTADOS – HU-16: CHECKOUT CON RESUMEN DE COMPRA.
+[ Insertar imagen PlantUML – Diagrama de Estados – HU-16 ]
+DIAGRAMA DE SECUENCIAS – HU-16: CHECKOUT CON RESUMEN DE COMPRA.
+[ Insertar imagen PlantUML – Diagrama de Secuencias – HU-16 ]
+
+RF-17: APLICACIÓN DE CÓDIGOS DE DESCUENTO.
+
+ID del Requisito	RF-17
+Nombre del Requisito	Aplicación de Códigos de Descuento
+Detalle del Requisito	El sistema debe permitir a los clientes ingresar y aplicar códigos de descuento válidos durante el proceso de compra.
+Descripción	El sistema debe permitir a los clientes ingresar y aplicar códigos de cupón válidos durante el proceso de checkout. El sistema valida el cupón contra POST /api/coupons/validate y descuenta el monto del total.
+
+CU-17: APLICACIÓN DE CÓDIGOS DE DESCUENTO.
+
+Código RF	RF-17
+Caso de Uso	CU-17: Aplicación de Códigos de Descuento
+Descripción	Este caso de uso permite al cliente aplicar un cupón de descuento durante el checkout, reduciendo el total según el tipo de cupón.
+Precondiciones	1.	El cliente debe estar en el paso 2 del checkout.
+2.	Debe existir al menos un cupón activo y vigente en el sistema.
+Secuencia Normal	Pasos - Acciones	Resultados Esperados
+	1.	El cliente ingresa un código de cupón en el campo del checkout.	El sistema envía el código al backend (POST /api/coupons/validate).
+	2.	El backend valida el cupón: existencia, estado activo, vigencia y uso único si aplica.	Si es válido, aplica el descuento y actualiza el total. Si no, muestra el motivo del error.
+	3.	El sistema actualiza el resumen mostrando el descuento aplicado.	El total se actualiza reflejando el precio final con el descuento correspondiente.
+Postcondiciones	1.	El descuento del cupón queda registrado en el pedido.
+2.	Al confirmar, el cupón se marca como usado si es de uso único.
+Alternativas	1.	Si el código no existe, el sistema muestra "Código de descuento inválido".
+2.	Si el cupón está expirado, el sistema muestra "Este cupón ha expirado".
+3.	Si el cupón ya fue usado (uso único), el sistema muestra "Este cupón ya fue utilizado".
+
+DIAGRAMA DE CU-17: APLICACIÓN DE CÓDIGOS DE DESCUENTO.
+[ Insertar imagen PlantUML – Diagrama de Caso de Uso – CU-17 ]
+HU-17: APLICACIÓN DE CÓDIGOS DE DESCUENTO
+
+ID	HU-17
+Título	Aplicación de Códigos de Descuento
+Descripción	Como cliente, Quiero aplicar un código de descuento en mi compra, Para obtener el precio reducido al que tengo derecho.
+Criterios de Aceptación	1.	Debe existir un campo para ingresar el código del cupón en el paso 2 del checkout.
+2.	Al ingresar el código, el sistema debe validarlo vía POST /api/coupons/validate.
+3.	Si el cupón es válido, el descuento debe aplicarse inmediatamente y reflejarse en el total.
+4.	El tipo de descuento puede ser porcentaje o monto fijo.
+5.	El resumen debe mostrar el monto de descuento aplicado de forma clara.
+6.	Si el cupón es inválido, expirado o ya usado, el sistema debe mostrar un mensaje descriptivo del motivo.
+7.	Al confirmar el pedido, el cupón de uso único debe marcarse como usado.
+
+DIAGRAMA DE ACTIVIDADES – HU-17: APLICACIÓN DE CÓDIGOS DE DESCUENTO.
+[ Insertar imagen PlantUML – Diagrama de Actividades – HU-17 ]
+DIAGRAMA DE SECUENCIAS – HU-17: APLICACIÓN DE CÓDIGOS DE DESCUENTO.
+[ Insertar imagen PlantUML – Diagrama de Secuencias – HU-17 ]
+
+RF-18: ENLACE DE WHATSAPP PARA COMPROBANTES DE PAGO.
+
+ID del Requisito	RF-18
+Nombre del Requisito	Enlace de WhatsApp para Comprobantes de Pago
+Detalle del Requisito	El sistema debe proporcionar a los clientes un enlace de WhatsApp para que estos puedan enviar sus comprobantes de pago.
+Descripción	El sistema debe proporcionar a los clientes un enlace directo a WhatsApp del negocio en la página de confirmación del checkout para enviar el comprobante de pago cuando el método elegido es transferencia bancaria.
+
+CU-18: ENLACE DE WHATSAPP PARA COMPROBANTES DE PAGO.
+
+Código RF	RF-18
+Caso de Uso	CU-18: Enlace de WhatsApp para Comprobantes de Pago
+Descripción	Este caso de uso provee al cliente un enlace directo a WhatsApp Business del negocio para enviar el comprobante de pago por transferencia.
+Precondiciones	1.	El cliente debe haber seleccionado transferencia bancaria como método de pago en el checkout.
+2.	El pedido debe haber sido creado con estado "pending".
+Secuencia Normal	Pasos - Acciones	Resultados Esperados
+	1.	El cliente confirma el pedido con método de pago por transferencia.	El sistema muestra la página de confirmación con el resumen del pedido, el QR de pago y el enlace de WhatsApp.
+	2.	El cliente hace clic en el enlace de WhatsApp.	Se abre WhatsApp con un mensaje prellenado que incluye el número de pedido para facilitar la identificación.
+	3.	El cliente envía el comprobante de pago por WhatsApp al negocio.	El negocio recibe el comprobante y el administrador procede a validar el pago en el panel.
+Postcondiciones	1.	El cliente envió el comprobante.
+2.	El pedido permanece en estado "pending" hasta que el administrador valide el pago.
+Alternativas	1.	Si el cliente no tiene WhatsApp instalado, el enlace abre WhatsApp Web en el navegador.
+
+DIAGRAMA DE CU-18: ENLACE DE WHATSAPP PARA COMPROBANTES DE PAGO.
+[ Insertar imagen PlantUML – Diagrama de Caso de Uso – CU-18 ]
+HU-18: ENLACE DE WHATSAPP PARA COMPROBANTES DE PAGO
+
+ID	HU-18
+Título	Enlace de WhatsApp para Comprobantes de Pago
+Descripción	Como cliente, Quiero enviar fácilmente el comprobante de pago al negocio, Para confirmar mi pago por transferencia bancaria y que mi pedido sea procesado.
+Criterios de Aceptación	1.	Al confirmar un pedido con método de pago por transferencia, la página de confirmación debe mostrar el QR de datos bancarios y un botón/enlace para abrir WhatsApp.
+2.	El enlace de WhatsApp debe incluir en el mensaje prellenado el número de pedido.
+3.	El enlace debe abrir WhatsApp Web si la app no está instalada.
+4.	La página de confirmación debe indicar claramente que el pedido queda pendiente hasta que el administrador valide el pago.
+
+DIAGRAMA DE ACTIVIDADES – HU-18: ENLACE DE WHATSAPP PARA COMPROBANTES DE PAGO.
+[ Insertar imagen PlantUML – Diagrama de Actividades – HU-18 ]
+DIAGRAMA DE SECUENCIAS – HU-18: ENLACE DE WHATSAPP PARA COMPROBANTES DE PAGO.
+[ Insertar imagen PlantUML – Diagrama de Secuencias – HU-18 ]
+
+RF-19: RECEPCIÓN DE FACTURA DE COMPRA.
+
+ID del Requisito	RF-19
+Nombre del Requisito	Recepción de Factura de Compra
+Detalle del Requisito	El sistema debe permitir a los clientes recibir una factura de su compra, una vez se confirme su pago.
+Descripción	El sistema debe generar y enviar automáticamente una factura en formato PDF (PDFKit) al correo electrónico del cliente cuando el administrador confirma el pago y cambia el estado del pedido a "paid".
+
+CU-19: RECEPCIÓN DE FACTURA DE COMPRA.
+
+Código RF	RF-19
+Caso de Uso	CU-19: Recepción de Factura de Compra
+Descripción	Este caso de uso describe la generación y envío automático de la factura PDF al cliente cuando su pago es confirmado.
+Precondiciones	1.	El pedido debe existir en el sistema.
+2.	El administrador debe haber cambiado el estado del pedido a "paid".
+Secuencia Normal	Pasos - Acciones	Resultados Esperados
+	1.	El administrador cambia el estado del pedido a "paid" en el panel.	El backend actualiza el estado y dispara el proceso de generación de factura.
+	2.	El sistema genera la factura PDF con PDFKit incluyendo productos, cantidades, subtotales, descuentos y total.	El PDF queda disponible para descarga desde el historial de pedidos del cliente.
+	3.	El sistema envía el PDF adjunto al correo del cliente mediante Nodemailer/Gmail.	El cliente recibe la factura en su bandeja de entrada.
+Postcondiciones	1.	El cliente recibió su factura por email y puede acceder a ella desde el historial de pedidos.
+Alternativas	1.	Si el envío de email falla (error SMTP), el error queda registrado en el log del servidor pero la factura sigue disponible para descarga desde el historial de pedidos.
+
+DIAGRAMA DE CU-19: RECEPCIÓN DE FACTURA DE COMPRA.
+[ Insertar imagen PlantUML – Diagrama de Caso de Uso – CU-19 ]
+HU-19: RECEPCIÓN DE FACTURA DE COMPRA
+
+ID	HU-19
+Título	Recepción de Factura de Compra
+Descripción	Como cliente, Quiero recibir la factura de mi compra por correo electrónico, Para tener un registro formal del pago y los productos adquiridos.
+Criterios de Aceptación	1.	Al confirmar el pago (estado "paid"), el sistema debe generar automáticamente una factura PDF con: número de pedido, fecha, lista de productos con cantidades y precios, subtotal, descuento aplicado, IVA y total.
+2.	La factura debe enviarse al correo del cliente como archivo adjunto (Nodemailer).
+3.	La factura debe estar disponible para descarga desde el historial de pedidos del cliente.
+4.	El formato PDF debe generarse con PDFKit.
+5.	Si el email falla, la factura debe seguir disponible en el historial.
+
+DIAGRAMA DE ACTIVIDADES – HU-19: RECEPCIÓN DE FACTURA DE COMPRA.
+[ Insertar imagen PlantUML – Diagrama de Actividades – HU-19 ]
+DIAGRAMA DE ESTADOS – HU-19: RECEPCIÓN DE FACTURA DE COMPRA.
+[ Insertar imagen PlantUML – Diagrama de Estados – HU-19 ]
+DIAGRAMA DE SECUENCIAS – HU-19: RECEPCIÓN DE FACTURA DE COMPRA.
+[ Insertar imagen PlantUML – Diagrama de Secuencias – HU-19 ]
+
+RF-20: NOTIFICACIONES POR CORREO ELECTRÓNICO DEL ESTADO DEL PEDIDO.
+
+ID del Requisito	RF-20
+Nombre del Requisito	Notificaciones por Correo Electrónico del Estado del Pedido
+Detalle del Requisito	El sistema debe permitir a los clientes recibir notificaciones vía correo electrónico sobre el estado de sus pedidos.
+Descripción	El sistema debe enviar automáticamente notificaciones por correo electrónico (Nodemailer + Gmail) al cliente cada vez que el estado de su pedido cambia entre cualquiera de los 3 estados: pending, paid, delivered.
+
+CU-20: NOTIFICACIONES POR CORREO ELECTRÓNICO DEL ESTADO DEL PEDIDO.
+
+Código RF	RF-20
+Caso de Uso	CU-20: Notificaciones por Correo Electrónico del Estado del Pedido
+Descripción	Este caso de uso describe el envío automático de emails al cliente en cada cambio de estado del pedido.
+Precondiciones	1.	El cliente debe tener un correo electrónico registrado.
+2.	El pedido debe existir con un estado activo.
+3.	El estado del pedido debe haber cambiado.
+Secuencia Normal	Pasos - Acciones	Resultados Esperados
+	1.	El estado del pedido cambia (por acción del administrador o por webhook de Stripe).	El backend detecta el cambio y construye el email con la plantilla del nuevo estado.
+	2.	El sistema genera el email con número de pedido, nuevo estado, resumen de productos y enlace al historial.	El email queda preparado para envío con toda la información relevante.
+	3.	Nodemailer envía el email al correo del cliente mediante Gmail/SMTP.	El cliente recibe la notificación en su bandeja de entrada.
+Postcondiciones	1.	El cliente fue notificado del cambio de estado de su pedido por correo electrónico.
+Alternativas	1.	Si Nodemailer no puede conectarse al servidor SMTP, el error queda registrado en el log del servidor pero el cambio de estado se aplica igualmente.
+
+DIAGRAMA DE CU-20: NOTIFICACIONES POR CORREO ELECTRÓNICO DEL ESTADO DEL PEDIDO.
+[ Insertar imagen PlantUML – Diagrama de Caso de Uso – CU-20 ]
+HU-20: NOTIFICACIONES POR CORREO ELECTRÓNICO DEL ESTADO DEL PEDIDO
+
+ID	HU-20
+Título	Notificaciones por Correo Electrónico del Estado del Pedido
+Descripción	Como cliente, Quiero recibir notificaciones por correo sobre el estado de mis pedidos, Para estar informado del progreso sin necesidad de ingresar a la plataforma.
+Criterios de Aceptación	1.	El sistema debe enviar un email al cliente en cada transición de estado del pedido entre los 3 estados posibles: pending, paid, delivered.
+2.	Cada email debe incluir el número de pedido, el nuevo estado, un resumen de los productos y un enlace al historial de pedidos.
+3.	Las notificaciones deben enviarse mediante Nodemailer usando Gmail/SMTP.
+4.	El envío debe ser automático sin intervención manual del administrador.
+5.	Si el envío falla, el cambio de estado debe aplicarse igualmente y el error debe registrarse en el log del servidor.
+
+DIAGRAMA DE ACTIVIDADES – HU-20: NOTIFICACIONES POR CORREO ELECTRÓNICO DEL ESTADO DEL PEDIDO.
+[ Insertar imagen PlantUML – Diagrama de Actividades – HU-20 ]
+DIAGRAMA DE ESTADOS – HU-20: NOTIFICACIONES POR CORREO ELECTRÓNICO DEL ESTADO DEL PEDIDO.
+[ Insertar imagen PlantUML – Diagrama de Estados – HU-20 ]
+DIAGRAMA DE SECUENCIAS – HU-20: NOTIFICACIONES POR CORREO ELECTRÓNICO DEL ESTADO DEL PEDIDO.
+[ Insertar imagen PlantUML – Diagrama de Secuencias – HU-20 ]
+
+RF-21: HISTORIAL DE PEDIDOS DEL CLIENTE.
+
+ID del Requisito	RF-21
+Nombre del Requisito	Historial de Pedidos del Cliente
+Detalle del Requisito	El sistema debe permitir a los clientes acceder en su perfil al historial de pedidos.
+Descripción	El sistema debe permitir a los clientes acceder desde su perfil al historial completo de pedidos, con fecha, estado actual, total y opción de ver el detalle de cada pedido y descargar la factura correspondiente.
+
+CU-21: HISTORIAL DE PEDIDOS DEL CLIENTE.
+
+Código RF	RF-21
+Caso de Uso	CU-21: Historial de Pedidos del Cliente
+Descripción	Este caso de uso permite a los clientes autenticados consultar su historial de pedidos y descargar facturas.
+Precondiciones	1.	El cliente debe estar autenticado en el sistema.
+Secuencia Normal	Pasos - Acciones	Resultados Esperados
+	1.	El cliente navega a "Mis Pedidos" desde su perfil.	El sistema realiza GET /api/orders/my-orders y carga la lista de pedidos del cliente.
+	2.	El sistema muestra los pedidos ordenados por fecha (más reciente primero) con número, estado, total y productos.	El cliente puede ver el historial completo de sus pedidos.
+	3.	El cliente hace clic en un pedido para ver el detalle completo.	El sistema muestra: productos, cantidades, precios, subtotal, descuento, total y estado con historial de cambios.
+	4.	El cliente descarga la factura de un pedido en estado "paid".	El sistema descarga el PDF de la factura generada para ese pedido.
+Postcondiciones	1.	El cliente tiene acceso completo a su historial y puede descargar facturas de compras confirmadas.
+Alternativas	1.	Si el cliente no tiene pedidos, el sistema muestra "Aún no tienes pedidos" con un enlace al catálogo.
+
+DIAGRAMA DE CU-21: HISTORIAL DE PEDIDOS DEL CLIENTE.
+[ Insertar imagen PlantUML – Diagrama de Caso de Uso – CU-21 ]
+HU-21: HISTORIAL DE PEDIDOS DEL CLIENTE
+
+ID	HU-21
+Título	Historial de Pedidos del Cliente
+Descripción	Como cliente, Quiero ver el historial de todos mis pedidos, Para hacer seguimiento de mis compras y descargar las facturas cuando las necesite.
+Criterios de Aceptación	1.	La sección "Mis Pedidos" debe estar accesible desde el perfil del cliente.
+2.	Los pedidos deben mostrarse ordenados de más reciente a más antiguo con: número de pedido, fecha, estado actual (con color indicativo), total y un botón para ver el detalle.
+3.	El detalle del pedido debe mostrar todos los productos con cantidades y precios, subtotal, descuento aplicado, total y el historial de cambios de estado.
+4.	Los pedidos en estado "paid" deben tener un botón para descargar la factura PDF.
+5.	Si no hay pedidos, el sistema muestra un mensaje informativo con enlace al catálogo.
+
+DIAGRAMA DE ACTIVIDADES – HU-21: HISTORIAL DE PEDIDOS DEL CLIENTE.
+[ Insertar imagen PlantUML – Diagrama de Actividades – HU-21 ]
+DIAGRAMA DE ESTADOS – HU-21: HISTORIAL DE PEDIDOS DEL CLIENTE.
+[ Insertar imagen PlantUML – Diagrama de Estados – HU-21 ]
+
+ 
+Cliente - Módulo Comunidad y Servicios
+RF-22: CALIFICACIÓN DE PRODUCTOS.
+
+ID del Requisito	RF-22
+Nombre del Requisito	Calificación de Productos
+Detalle del Requisito	El sistema debe permitir a los clientes calificar y dejar reseñas de los productos que han comprado.
+Descripción	El sistema debe permitir a los clientes calificar los productos que han comprado con una puntuación de 1 a 5 estrellas. Solo se permite calificar si existe un pedido en estado "delivered" que contenga el producto.
+
+CU-22: CALIFICACIÓN DE PRODUCTOS.
+
+Código RF	RF-22
+Caso de Uso	CU-22: Calificación de Productos
+Descripción	Este caso de uso permite a los clientes calificar con 1 a 5 estrellas los productos que han recibido, contribuyendo a la calificación promedio visible en el catálogo.
+Precondiciones	1.	El cliente debe estar autenticado.
+2.	El cliente debe tener al menos un pedido en estado "delivered" que contenga el producto a calificar.
+Secuencia Normal	Pasos - Acciones	Resultados Esperados
+	1.	El cliente accede al detalle del producto o al historial de pedidos y selecciona "Calificar".	El sistema verifica que existe un pedido "delivered" del cliente con ese producto. Si no se cumple, la opción no está disponible.
+	2.	El cliente selecciona una calificación de 1 a 5 estrellas.	El sistema muestra visualmente la calificación seleccionada.
+	3.	El cliente confirma la calificación.	El backend registra la reseña (POST /api/reviews) y actualiza el promedio del producto en MongoDB.
+Postcondiciones	1.	La calificación queda registrada.
+2.	El promedio del producto se actualiza y es visible en el catálogo y el detalle del producto.
+Alternativas	1.	Si el cliente ya calificó ese producto, el sistema muestra su calificación existente con opción de actualizarla.
+2.	Si el cliente no tiene un pedido "delivered" con ese producto, la opción de calificar no aparece.
+
+DIAGRAMA DE CU-22: CALIFICACIÓN DE PRODUCTOS.
+[ Insertar imagen PlantUML – Diagrama de Caso de Uso – CU-22 ]
+HU-22: CALIFICACIÓN DE PRODUCTOS
+
+ID	HU-22
+Título	Calificación de Productos
+Descripción	Como cliente, Quiero calificar los productos que he recibido, Para compartir mi experiencia y ayudar a otros clientes a tomar mejores decisiones de compra.
+Criterios de Aceptación	1.	La opción de calificar debe aparecer únicamente para productos incluidos en pedidos con estado "delivered".
+2.	La calificación debe ser de 1 a 5 estrellas.
+3.	El cliente solo puede calificar cada producto una vez; si ya lo hizo, puede actualizar su calificación.
+4.	La calificación se registra vía POST /api/reviews.
+5.	El promedio de calificación del producto debe actualizarse inmediatamente y mostrarse en el catálogo y el detalle del producto.
+6.	Si el cliente no ha recibido el producto, la opción de calificar no debe mostrarse.
+
+DIAGRAMA DE ACTIVIDADES – HU-22: CALIFICACIÓN DE PRODUCTOS.
+[ Insertar imagen PlantUML – Diagrama de Actividades – HU-22 ]
+DIAGRAMA DE SECUENCIAS – HU-22: CALIFICACIÓN DE PRODUCTOS.
+[ Insertar imagen PlantUML – Diagrama de Secuencias – HU-22 ]
+
+RF-23: PERSONALIZACIÓN DE EMPAQUES.
+
+ID del Requisito	RF-23
+Nombre del Requisito	Personalización de Empaques
+Detalle del Requisito	El sistema debe permitir a los clientes solicitar personalizaciones específicas en los empaques.
+Descripción	El sistema debe permitir a los clientes solicitar personalizaciones específicas en los empaques de sus productos, gestionadas a través del canal de WhatsApp integrado en la plataforma.
+
+CU-23: PERSONALIZACIÓN DE EMPAQUES.
+
+Código RF	RF-23
+Caso de Uso	CU-23: Personalización de Empaques
+Descripción	Este caso de uso permite a los clientes solicitar personalizaciones de empaque a través del enlace de WhatsApp Business del negocio.
+Precondiciones	1.	El cliente debe tener un pedido realizado o estar en proceso de compra.
+Secuencia Normal	Pasos - Acciones	Resultados Esperados
+	1.	El cliente accede a la opción de personalización desde el detalle del producto o el checkout.	El sistema muestra un enlace de WhatsApp con mensaje prellenado con el producto y número de pedido.
+	2.	El cliente hace clic en el enlace y envía sus instrucciones de personalización.	WhatsApp se abre con el mensaje prellenado. El cliente agrega los detalles de personalización y envía.
+	3.	El negocio recibe la solicitud por WhatsApp Business.	La solicitud queda registrada en el chat de WhatsApp para su atención.
+Postcondiciones	1.	La solicitud de personalización fue enviada al negocio por WhatsApp.
+2.	El negocio coordinará el detalle con el cliente.
+Alternativas	1.	Si el cliente no tiene WhatsApp, puede contactar al negocio por teléfono o email de contacto disponible en la plataforma.
+
+DIAGRAMA DE CU-23: PERSONALIZACIÓN DE EMPAQUES.
+[ Insertar imagen PlantUML – Diagrama de Caso de Uso – CU-23 ]
+HU-23: PERSONALIZACIÓN DE EMPAQUES
+
+ID	HU-23
+Título	Personalización de Empaques
+Descripción	Como cliente, Quiero solicitar personalizaciones en el empaque de mis productos, Para recibir un pedido con un detalle especial o mensaje personalizado.
+Criterios de Aceptación	1.	El sistema debe mostrar una opción para solicitar personalización de empaque en la página de detalle del producto y/o durante el checkout.
+2.	Al seleccionar esta opción, el sistema debe abrir WhatsApp con un mensaje prellenado que incluya el nombre del producto y el número de pedido (si ya fue creado).
+3.	El enlace debe funcionar tanto en dispositivos móviles como en escritorio (WhatsApp Web).
+4.	Debe mostrarse información de contacto alternativa (teléfono) para clientes que no usan WhatsApp.
+
+DIAGRAMA DE ACTIVIDADES – HU-23: PERSONALIZACIÓN DE EMPAQUES.
+[ Insertar imagen PlantUML – Diagrama de Actividades – HU-23 ]
+
+RF-24: UBICACIÓN EN MAPA INTERACTIVO.
+
+ID del Requisito	RF-24
+Nombre del Requisito	Ubicación en Mapa Interactivo
+Detalle del Requisito	El sistema debe permitir a los clientes acceder a la ubicación de la cafetería en un mapa interactivo.
+Descripción	El sistema debe permitir a los clientes acceder a la ubicación de la cafetería Don Palito Junior a través de un mapa interactivo integrado en la página principal de la tienda web y en la sección Visítanos de la app móvil.
+
+CU-24: UBICACIÓN EN MAPA INTERACTIVO.
+
+Código RF	RF-24
+Caso de Uso	CU-24: Ubicación en Mapa Interactivo
+Descripción	Este caso de uso permite a los clientes visualizar la ubicación exacta de la cafetería en un mapa interactivo.
+Precondiciones	1.	El usuario debe tener acceso a internet.
+Secuencia Normal	Pasos - Acciones	Resultados Esperados
+	1.	El usuario accede a la sección de ubicación desde la página principal de la tienda o la sección Visítanos de la app.	El sistema carga el mapa interactivo con la ubicación marcada de la cafetería.
+	2.	El usuario interactúa con el mapa: hace zoom y consulta la dirección y el horario de atención.	El mapa responde a las interacciones mostrando la ubicación exacta: Cra 47 #76D Sur-37, Sabaneta, Antioquia.
+Postcondiciones	1.	El usuario conoce la ubicación exacta de la cafetería y puede planificar su visita.
+Alternativas	1.	Si el mapa no carga por error de conexión, el sistema muestra la dirección en texto: Cra 47 #76D Sur-37, Sabaneta, Antioquia, junto con el horario de atención.
+
+DIAGRAMA DE CU-24: UBICACIÓN EN MAPA INTERACTIVO.
+[ Insertar imagen PlantUML – Diagrama de Caso de Uso – CU-24 ]
+HU-24: UBICACIÓN EN MAPA INTERACTIVO
+
+ID	HU-24
+Título	Ubicación en Mapa Interactivo
+Descripción	Como cliente, Quiero ver la ubicación de la cafetería en un mapa interactivo, Para saber cómo llegar y planificar mi visita presencial.
+Criterios de Aceptación	1.	El mapa interactivo debe estar embebido en la página principal de la tienda web y en la sección Visítanos de la app móvil.
+2.	Debe mostrar la ubicación marcada de la cafetería: Cra 47 #76D Sur-37, Sabaneta, Antioquia.
+3.	El usuario debe poder hacer zoom en el mapa.
+4.	Junto al mapa debe mostrarse la dirección completa y el horario de atención.
+5.	Si el mapa no carga, el sistema debe mostrar la dirección y horario en texto como alternativa.
+6.	El mapa debe ser responsivo y funcional en dispositivos móviles.
+
+DIAGRAMA DE ACTIVIDADES – HU-24: UBICACIÓN EN MAPA INTERACTIVO.
+[ Insertar imagen PlantUML – Diagrama de Actividades – HU-24 ]
+ 
+Administrador - Módulo Autenticación
+RF-25: REGISTRO DE ADMINISTRADORES.
+
+ID del Requisito	RF-25
+Nombre del Requisito	Registro de Administradores
+Detalle del Requisito	El sistema debe permitir a los nuevos administradores registrarse en el sistema proporcionando sus credenciales y datos de contacto.
+Descripción	El sistema debe permitir el registro de nuevos administradores. El rol admin se asigna mediante el campo publicMetadata.role: "admin" en el Clerk Dashboard. No existe formulario de registro de admin en la plataforma.
+
+CU-25: REGISTRO DE ADMINISTRADORES.
+
+Código RF	RF-25
+Caso de Uso	CU-25: Registro de Administradores
+Descripción	Este caso de uso describe cómo se registra un nuevo administrador. El rol admin se asigna desde el Clerk Dashboard, no mediante formulario público.
+Precondiciones	1.	El nuevo administrador debe tener una cuenta de usuario registrada en el sistema.
+2.	Un administrador existente debe tener acceso al Clerk Dashboard para asignar el rol.
+Secuencia Normal	Pasos - Acciones	Resultados Esperados
+	1.	El nuevo administrador crea una cuenta de usuario en la tienda web (registro estándar como cliente).	El usuario queda registrado en Clerk y sincronizado en MongoDB con rol "user".
+	2.	Un administrador accede al Clerk Dashboard y localiza al usuario.	El Dashboard muestra la lista de usuarios registrados con sus datos.
+	3.	El administrador asigna el rol "admin" editando publicMetadata.role del usuario.	El rol queda actualizado. En el próximo inicio de sesión, PostLogin detecta el rol admin y redirige al panel.
+Postcondiciones	1.	El nuevo administrador tiene rol "admin" en Clerk y puede acceder al panel de administración en su próximo inicio de sesión.
+Alternativas	1.	Si el usuario no existe en el sistema, debe registrarse primero como cliente.
+2.	Si quien asigna el rol no tiene permisos en el Clerk Dashboard, la operación no puede completarse.
+
+DIAGRAMA DE CU-25: REGISTRO DE ADMINISTRADORES.
+[ Insertar imagen PlantUML – Diagrama de Caso de Uso – CU-25 ]
+HU-25: REGISTRO DE ADMINISTRADORES
+
+ID	HU-25
+Título	Registro de Administradores
+Descripción	Como administrador del sistema, Quiero registrar nuevos administradores asignando el rol correspondiente, Para delegar funciones de gestión de la plataforma.
+Criterios de Aceptación	1.	El rol "admin" debe asignarse desde el Clerk Dashboard editando el campo publicMetadata.role del usuario.
+2.	No debe existir un formulario público de registro de administradores.
+3.	Al asignar el rol, el cambio debe ser efectivo en el próximo inicio de sesión del usuario.
+4.	El sistema (PostLogin.jsx) debe detectar el rol "admin" en los sessionClaims del JWT y redirigir al panel de administración (puerto 5174).
+5.	Un usuario con rol "user" que intente acceder al panel debe ser redirigido a la tienda.
+
+DIAGRAMA DE ACTIVIDADES – HU-25: REGISTRO DE ADMINISTRADORES.
+[ Insertar imagen PlantUML – Diagrama de Actividades – HU-25 ]
+DIAGRAMA DE SECUENCIAS – HU-25: REGISTRO DE ADMINISTRADORES.
+[ Insertar imagen PlantUML – Diagrama de Secuencias – HU-25 ]
+
+RF-26: INICIO DE SESIÓN DEL ADMINISTRADOR.
+
+ID del Requisito	RF-26
+Nombre del Requisito	Inicio de Sesión del Administrador
+Detalle del Requisito	El sistema debe permitir a los administradores iniciar sesión de forma segura.
+Descripción	El sistema debe permitir a los administradores iniciar sesión de forma segura a través de Clerk. El componente PostLogin detecta el rol admin en los sessionClaims y redirige automáticamente al panel de administración.
+
+CU-26: INICIO DE SESIÓN DEL ADMINISTRADOR.
+
+Código RF	RF-26
+Caso de Uso	CU-26: Inicio de Sesión del Administrador
+Descripción	Este caso de uso permite a los administradores iniciar sesión y ser redirigidos automáticamente al panel de administración.
+Precondiciones	1.	El administrador debe tener una cuenta con rol "admin" asignado en Clerk.
+2.	El administrador debe conocer sus credenciales de acceso.
+Secuencia Normal	Pasos - Acciones	Resultados Esperados
+	1.	El administrador accede al login y ingresa sus credenciales (email/contraseña o Google).	Clerk valida las credenciales y emite un JWT con publicMetadata.role: "admin".
+	2.	PostLogin.jsx detecta el rol "admin" en los sessionClaims del JWT.	El sistema redirige automáticamente al panel de administración (puerto 5174).
+	3.	El administrador accede al dashboard del panel con todas las funcionalidades disponibles.	El dashboard muestra estadísticas y acceso a todas las secciones del panel de administración.
+Postcondiciones	1.	El administrador está autenticado en el panel y puede gestionar productos, pedidos, clientes y cupones.
+Alternativas	1.	Si las credenciales son incorrectas, Clerk muestra un mensaje de error.
+2.	Si el usuario existe pero no tiene rol "admin", PostLogin redirige a la tienda web como cliente.
+
+DIAGRAMA DE CU-26: INICIO DE SESIÓN DEL ADMINISTRADOR.
+[ Insertar imagen PlantUML – Diagrama de Caso de Uso – CU-26 ]
+HU-26: INICIO DE SESIÓN DEL ADMINISTRADOR
+
+ID	HU-26
+Título	Inicio de Sesión del Administrador
+Descripción	Como administrador, Quiero iniciar sesión en la plataforma y ser redirigido automáticamente al panel de administración, Para gestionar el sistema de forma segura.
+Criterios de Aceptación	1.	El administrador debe iniciar sesión usando el mismo formulario de Clerk que los clientes.
+2.	PostLogin.jsx debe leer los sessionClaims del JWT para detectar el rol.
+3.	Si el rol es "admin", el sistema debe redirigir al panel de administración (puerto 5174) automáticamente.
+4.	Si el rol es "user", el sistema debe redirigir a la tienda web.
+5.	El panel de administración debe estar protegido y solo accesible para usuarios con rol "admin".
+6.	Un acceso directo a la URL del panel por un usuario sin rol "admin" debe ser rechazado.
+
+DIAGRAMA DE ACTIVIDADES – HU-26: INICIO DE SESIÓN DEL ADMINISTRADOR.
+[ Insertar imagen PlantUML – Diagrama de Actividades – HU-26 ]
+DIAGRAMA DE SECUENCIAS – HU-26: INICIO DE SESIÓN DEL ADMINISTRADOR.
+[ Insertar imagen PlantUML – Diagrama de Secuencias – HU-26 ]
+
+RF-27: CIERRE DE SESIÓN DEL ADMINISTRADOR.
+
+ID del Requisito	RF-27
+Nombre del Requisito	Cierre de Sesión del Administrador
+Detalle del Requisito	El sistema debe permitir a los administradores cerrar su sesión de forma segura.
+Descripción	El sistema debe permitir a los administradores cerrar su sesión de forma segura desde el panel de administración. Clerk invalida la sesión activa.
+
+CU-27: CIERRE DE SESIÓN DEL ADMINISTRADOR.
+
+Código RF	RF-27
+Caso de Uso	CU-27: Cierre de Sesión del Administrador
+Descripción	Este caso de uso permite a los administradores cerrar su sesión desde el panel de administración de forma segura.
+Precondiciones	1.	El administrador debe estar autenticado en el panel de administración.
+Secuencia Normal	Pasos - Acciones	Resultados Esperados
+	1.	El administrador hace clic en "Cerrar sesión" desde el menú del panel.	El sistema solicita confirmación de la acción.
+	2.	El administrador confirma el cierre de sesión.	Clerk invalida la sesión activa y elimina el JWT. El sistema redirige al inicio del panel.
+Postcondiciones	1.	La sesión del administrador fue cerrada.
+2.	El panel queda bloqueado hasta un nuevo inicio de sesión con credenciales válidas.
+Alternativas	1.	Si el administrador cancela la confirmación, la sesión permanece activa sin cambios.
+
+DIAGRAMA DE CU-27: CIERRE DE SESIÓN DEL ADMINISTRADOR.
+[ Insertar imagen PlantUML – Diagrama de Caso de Uso – CU-27 ]
+HU-27: CIERRE DE SESIÓN DEL ADMINISTRADOR
+
+ID	HU-27
+Título	Cierre de Sesión del Administrador
+Descripción	Como administrador, Quiero cerrar sesión de forma segura, Para proteger el acceso al panel cuando termino mi jornada de trabajo.
+Criterios de Aceptación	1.	El botón de "Cerrar sesión" debe estar visible en el menú del panel de administración.
+2.	Al confirmar, Clerk debe invalidar la sesión activa inmediatamente.
+3.	El sistema debe redirigir al administrador a la página de login del panel.
+4.	Si el administrador cancela, la sesión debe permanecer activa.
+5.	La sesión debe caducar automáticamente después de un período de inactividad configurado en Clerk.
+
+DIAGRAMA DE ACTIVIDADES – HU-27: CIERRE DE SESIÓN DEL ADMINISTRADOR.
+[ Insertar imagen PlantUML – Diagrama de Actividades – HU-27 ]
+
+RF-28: RECUPERACIÓN DE CONTRASEÑA DEL ADMINISTRADOR.
+
+ID del Requisito	RF-28
+Nombre del Requisito	Recuperación de Contraseña del Administrador
+Detalle del Requisito	El sistema debe permitir a los administradores recuperar y cambiar su contraseña.
+Descripción	El sistema debe permitir a los administradores recuperar y cambiar su contraseña. El flujo de recuperación es gestionado por Clerk y es idéntico al de los clientes.
+
+CU-28: RECUPERACIÓN DE CONTRASEÑA DEL ADMINISTRADOR.
+
+Código RF	RF-28
+Caso de Uso	CU-28: Recuperación de Contraseña del Administrador
+Descripción	Este caso de uso permite a los administradores recuperar su contraseña mediante el flujo estándar de Clerk.
+Precondiciones	1.	El administrador debe tener una cuenta con autenticación por email/contraseña (no aplica OAuth).
+Secuencia Normal	Pasos - Acciones	Resultados Esperados
+	1.	El administrador accede al login y hace clic en "¿Olvidaste tu contraseña?".	Clerk muestra el campo para ingresar el correo registrado.
+	2.	El administrador ingresa su correo y confirma.	Clerk envía un email con el enlace de recuperación de contraseña.
+	3.	El administrador accede al enlace y establece una nueva contraseña.	Clerk actualiza las credenciales. El administrador puede iniciar sesión con la nueva contraseña.
+Postcondiciones	1.	La contraseña del administrador fue actualizada.
+2.	Puede iniciar sesión con las nuevas credenciales.
+Alternativas	1.	Si el enlace de recuperación ha expirado (24 horas), el administrador debe solicitar uno nuevo.
+
+DIAGRAMA DE CU-28: RECUPERACIÓN DE CONTRASEÑA DEL ADMINISTRADOR.
+[ Insertar imagen PlantUML – Diagrama de Caso de Uso – CU-28 ]
+HU-28: RECUPERACIÓN DE CONTRASEÑA DEL ADMINISTRADOR
+
+ID	HU-28
+Título	Recuperación de Contraseña del Administrador
+Descripción	Como administrador, Quiero recuperar mi contraseña en caso de olvidarla, Para no perder el acceso al panel de administración.
+Criterios de Aceptación	1.	El flujo de recuperación de contraseña para administradores debe ser el mismo que para los clientes, gestionado por Clerk.
+2.	Debe enviarse un email con el enlace de recuperación en menos de 2 minutos.
+3.	El enlace debe expirar en 24 horas.
+4.	Al establecer la nueva contraseña, debe cumplir los mismos requisitos de seguridad que en el registro.
+5.	Esta funcionalidad aplica solo para cuentas con autenticación email/contraseña, no para cuentas Google OAuth.
+
+DIAGRAMA DE ACTIVIDADES – HU-28: RECUPERACIÓN DE CONTRASEÑA DEL ADMINISTRADOR.
+[ Insertar imagen PlantUML – Diagrama de Actividades – HU-28 ]
+
+RF-29: GESTIÓN DE CUENTAS DE USUARIO POR EL ADMINISTRADOR.
+
+ID del Requisito	RF-29
+Nombre del Requisito	Gestión de Cuentas de Usuario por el Administrador
+Detalle del Requisito	El sistema debe permitir a los administradores editar o modificar cuentas de usuario existentes.
+Descripción	El sistema debe permitir a los administradores editar o modificar cuentas de usuario existentes. La gestión incluye visualizar el listado, buscar clientes y cambiar el estado de sus cuentas.
+
+CU-29: GESTIÓN DE CUENTAS DE USUARIO POR EL ADMINISTRADOR.
+
+Código RF	RF-29
+Caso de Uso	CU-29: Gestión de Cuentas de Usuario por el Administrador
+Descripción	Este caso de uso permite a los administradores gestionar las cuentas de clientes desde el panel de administración.
+Precondiciones	1.	El administrador debe estar autenticado en el panel.
+2.	Deben existir cuentas de usuario registradas en el sistema.
+Secuencia Normal	Pasos - Acciones	Resultados Esperados
+	1.	El administrador accede a la sección "Clientes" del panel de administración.	El sistema realiza GET /api/admin/customers y muestra la lista de todos los clientes registrados.
+	2.	El administrador busca o filtra el cliente que desea gestionar.	El sistema muestra la información del cliente: nombre, email, estado (activo/inactivo) y fecha de registro.
+	3.	El administrador selecciona la acción: activar o desactivar la cuenta del cliente.	El sistema ejecuta la acción correspondiente y actualiza el estado en MongoDB.
+Postcondiciones	1.	El estado de la cuenta del cliente fue actualizado según la acción ejecutada por el administrador.
+Alternativas	1.	La modificación de datos de identidad (nombre, email) del cliente se realiza desde el Clerk Dashboard, no desde el panel de administración.
+
+DIAGRAMA DE CU-29: GESTIÓN DE CUENTAS DE USUARIO POR EL ADMINISTRADOR.
+[ Insertar imagen PlantUML – Diagrama de Caso de Uso – CU-29 ]
+HU-29: GESTIÓN DE CUENTAS DE USUARIO POR EL ADMINISTRADOR
+
+ID	HU-29
+Título	Gestión de Cuentas de Usuario por el Administrador
+Descripción	Como administrador, Quiero gestionar las cuentas de los clientes, Para controlar el acceso al sistema y mantener la base de usuarios actualizada.
+Criterios de Aceptación	1.	La sección "Clientes" del panel debe mostrar la lista de todos los clientes con: nombre, email, estado (activo/inactivo), fecha de registro y número de pedidos.
+2.	Debe existir una función de búsqueda por nombre o email.
+3.	El administrador debe poder activar o desactivar cualquier cuenta de cliente.
+4.	Los cambios de estado deben ejecutarse vía PATCH /api/admin/customers/:id/status.
+5.	La modificación de datos de identidad (nombre, email) requiere acceso al Clerk Dashboard.
+6.	La lista debe tener paginación para grandes volúmenes de clientes.
+
+DIAGRAMA DE ACTIVIDADES – HU-29: GESTIÓN DE CUENTAS DE USUARIO POR EL ADMINISTRADOR.
+[ Insertar imagen PlantUML – Diagrama de Actividades – HU-29 ]
+
+RF-30: DESACTIVACIÓN DE CUENTAS DE USUARIO.
+
+ID del Requisito	RF-30
+Nombre del Requisito	Desactivación de Cuentas de Usuario
+Detalle del Requisito	El sistema debe permitir a los administradores desactivar o eliminar cuentas de usuario.
+Descripción	El sistema debe permitir a los administradores desactivar o eliminar cuentas de usuario existentes desde la sección Clientes del panel, usando PATCH /api/admin/customers/:id/status con isActive: false.
+
+CU-30: DESACTIVACIÓN DE CUENTAS DE USUARIO.
+
+Código RF	RF-30
+Caso de Uso	CU-30: Desactivación de Cuentas de Usuario
+Descripción	Este caso de uso permite al administrador desactivar la cuenta de un cliente desde el panel de administración.
+Precondiciones	1.	El administrador debe estar autenticado en el panel.
+2.	La cuenta del cliente debe estar activa (isActive: true).
+Secuencia Normal	Pasos - Acciones	Resultados Esperados
+	1.	El administrador accede a "Clientes" y localiza al cliente en la lista.	El sistema muestra la información del cliente con su estado actual.
+	2.	El administrador hace clic en "Desactivar cuenta".	El sistema muestra un diálogo de confirmación con el impacto de la acción.
+	3.	El administrador confirma la desactivación.	El backend ejecuta PATCH /api/admin/customers/:id/status con isActive: false. La cuenta queda desactivada.
+Postcondiciones	1.	La cuenta del cliente está desactivada (isActive: false).
+2.	El cliente no puede iniciar sesión; recibe un error 403 al intentar acceder.
+Alternativas	1.	Si el administrador cancela el diálogo, la cuenta permanece activa sin cambios.
+2.	Si el cliente tiene pedidos en proceso, el sistema muestra una advertencia antes de proceder.
+
+DIAGRAMA DE CU-30: DESACTIVACIÓN DE CUENTAS DE USUARIO.
+[ Insertar imagen PlantUML – Diagrama de Caso de Uso – CU-30 ]
+HU-30: DESACTIVACIÓN DE CUENTAS DE USUARIO
+
+ID	HU-30
+Título	Desactivación de Cuentas de Usuario
+Descripción	Como administrador, Quiero desactivar cuentas de clientes, Para impedir el acceso de usuarios no autorizados o que incumplan las políticas de uso.
+Criterios de Aceptación	1.	La opción "Desactivar cuenta" debe estar disponible en el panel para cada cliente de la lista.
+2.	Al seleccionar la opción, el sistema debe mostrar un diálogo de confirmación.
+3.	Si el cliente tiene pedidos activos, el sistema debe mostrar una advertencia antes de proceder.
+4.	Al confirmar, el backend debe actualizar isActive: false vía PATCH /api/admin/customers/:id/status.
+5.	El cambio debe ser inmediato.
+6.	El cliente desactivado debe recibir un error 403 al intentar hacer peticiones autenticadas.
+7.	El estado "Inactivo" debe reflejarse en la lista de clientes del panel.
+
+DIAGRAMA DE ACTIVIDADES – HU-30: DESACTIVACIÓN DE CUENTAS DE USUARIO.
+[ Insertar imagen PlantUML – Diagrama de Actividades – HU-30 ]
+DIAGRAMA DE ESTADOS – HU-30: DESACTIVACIÓN DE CUENTAS DE USUARIO.
+[ Insertar imagen PlantUML – Diagrama de Estados – HU-30 ]
+
+RF-31: REACTIVACIÓN DE CUENTAS DE USUARIO.
+
+ID del Requisito	RF-31
+Nombre del Requisito	Reactivación de Cuentas de Usuario
+Detalle del Requisito	El sistema debe permitir a los administradores con sesión activa reactivar cuentas previamente desactivadas o eliminadas.
+Descripción	El sistema debe permitir a los administradores con sesión activa reactivar cuentas previamente desactivadas, restaurando el acceso del cliente al sistema con isActive: true.
+
+CU-31: REACTIVACIÓN DE CUENTAS DE USUARIO.
+
+Código RF	RF-31
+Caso de Uso	CU-31: Reactivación de Cuentas de Usuario
+Descripción	Este caso de uso permite al administrador reactivar una cuenta de cliente previamente desactivada.
+Precondiciones	1.	El administrador debe estar autenticado en el panel.
+2.	La cuenta del cliente debe estar desactivada (isActive: false).
+Secuencia Normal	Pasos - Acciones	Resultados Esperados
+	1.	El administrador accede a "Clientes" y filtra por cuentas inactivas o localiza el cliente.	El sistema muestra la lista con el estado inactivo indicado visualmente.
+	2.	El administrador selecciona la cuenta y hace clic en "Activar cuenta".	El sistema solicita confirmación de la reactivación.
+	3.	El administrador confirma la reactivación.	El backend ejecuta PATCH con isActive: true. El cliente puede volver a iniciar sesión.
+Postcondiciones	1.	La cuenta del cliente está activa nuevamente.
+2.	El cliente puede iniciar sesión y usar el sistema con normalidad.
+Alternativas	1.	Si la cuenta no existe en el sistema, el backend retorna error 404.
+
+DIAGRAMA DE CU-31: REACTIVACIÓN DE CUENTAS DE USUARIO.
+[ Insertar imagen PlantUML – Diagrama de Caso de Uso – CU-31 ]
+HU-31: REACTIVACIÓN DE CUENTAS DE USUARIO
+
+ID	HU-31
+Título	Reactivación de Cuentas de Usuario
+Descripción	Como administrador, Quiero reactivar cuentas de clientes que fueron desactivadas, Para restaurar el acceso a usuarios que cumplan nuevamente con las condiciones de uso.
+Criterios de Aceptación	1.	Las cuentas inactivas deben identificarse visualmente en la lista de clientes del panel (indicador de estado).
+2.	La opción "Activar cuenta" debe estar disponible para cuentas con isActive: false.
+3.	Al confirmar la reactivación, el backend debe actualizar isActive: true vía PATCH /api/admin/customers/:id/status.
+4.	La reactivación debe ser inmediata.
+5.	El cliente reactivado debe poder iniciar sesión sin necesidad de recuperar su contraseña.
+6.	El estado "Activo" debe reflejarse inmediatamente en la lista de clientes del panel.
+
+DIAGRAMA DE ACTIVIDADES – HU-31: REACTIVACIÓN DE CUENTAS DE USUARIO.
+[ Insertar imagen PlantUML – Diagrama de Actividades – HU-31 ]
+DIAGRAMA DE ESTADOS – HU-31: REACTIVACIÓN DE CUENTAS DE USUARIO.
+[ Insertar imagen PlantUML – Diagrama de Estados – HU-31 ]
+
+ 
+Administrador - Módulo Productos / Inventario
+RF-32: AGREGAR PRODUCTOS AL INVENTARIO.
+
+ID del Requisito	RF-32
+Nombre del Requisito	Agregar Productos al Inventario
+Detalle del Requisito	El sistema debe permitir a los administradores agregar productos al inventario.
+Descripción	El sistema debe permitir a los administradores agregar nuevos productos al inventario con nombre, descripción, precio, stock, categoría e imágenes. Las imágenes se suben a Cloudinary mediante Multer + POST /api/products.
+
+CU-32: AGREGAR PRODUCTOS AL INVENTARIO.
+
+Código RF	RF-32
+Caso de Uso	CU-32: Agregar Productos al Inventario
+Descripción	Este caso de uso permite a los administradores agregar nuevos productos al catálogo desde el panel, con subida de imágenes a Cloudinary.
+Precondiciones	1.	El administrador debe estar autenticado en el panel de administración.
+Secuencia Normal	Pasos - Acciones	Resultados Esperados
+	1.	El administrador accede a "Productos" y hace clic en "Agregar producto".	El sistema muestra el formulario de creación de producto con todos los campos requeridos.
+	2.	El administrador completa los campos: nombre, descripción, precio, stock, categoría y sube imagen(es).	La imagen se sube a Cloudinary mediante Multer y el backend retorna la URL de la imagen subida.
+	3.	El administrador hace clic en "Guardar producto".	El backend crea el producto en MongoDB (POST /api/products) con isActive: true. Aparece inmediatamente en el catálogo de la tienda.
+Postcondiciones	1.	El producto está disponible en el catálogo de la tienda web y la app móvil con isActive: true.
+Alternativas	1.	Si faltan campos requeridos (nombre, precio, categoría), el sistema muestra validaciones por campo.
+2.	Si la imagen supera el tamaño máximo permitido, el sistema muestra un mensaje de error.
+
+DIAGRAMA DE CU-32: AGREGAR PRODUCTOS AL INVENTARIO.
+[ Insertar imagen PlantUML – Diagrama de Caso de Uso – CU-32 ]
+HU-32: AGREGAR PRODUCTOS AL INVENTARIO
+
+ID	HU-32
+Título	Agregar Productos al Inventario
+Descripción	Como administrador, Quiero agregar nuevos productos al inventario, Para que los clientes puedan verlos y comprarlos en la tienda.
+Criterios de Aceptación	1.	El formulario de creación debe incluir los campos: nombre (requerido), descripción, precio (requerido, número positivo), stock (requerido, entero ≥ 0), categoría (requerido, seleccionable del enum) e imagen(es).
+2.	La subida de imágenes debe realizarse a Cloudinary mediante Multer.
+3.	El campo precio debe validar que sea un número positivo.
+4.	Al guardar, el producto debe crearse con isActive: true vía POST /api/products.
+5.	Los campos requeridos vacíos deben mostrar mensajes de validación específicos.
+6.	El producto debe aparecer inmediatamente en el catálogo de la tienda al ser creado.
+
+DIAGRAMA DE ACTIVIDADES – HU-32: AGREGAR PRODUCTOS AL INVENTARIO.
+[ Insertar imagen PlantUML – Diagrama de Actividades – HU-32 ]
+DIAGRAMA DE SECUENCIAS – HU-32: AGREGAR PRODUCTOS AL INVENTARIO.
+[ Insertar imagen PlantUML – Diagrama de Secuencias – HU-32 ]
+
+RF-33: MODIFICAR PRODUCTOS DEL INVENTARIO.
+
+ID del Requisito	RF-33
+Nombre del Requisito	Modificar Productos del Inventario
+Detalle del Requisito	El sistema debe permitir a los administradores modificar productos del inventario.
+Descripción	El sistema debe permitir a los administradores modificar cualquier campo de un producto existente (nombre, descripción, precio, stock, categoría, imágenes) mediante PUT /api/products/:id.
+
+CU-33: MODIFICAR PRODUCTOS DEL INVENTARIO.
+
+Código RF	RF-33
+Caso de Uso	CU-33: Modificar Productos del Inventario
+Descripción	Este caso de uso permite a los administradores editar la información de un producto existente en el catálogo.
+Precondiciones	1.	El administrador debe estar autenticado en el panel.
+2.	El producto debe existir en el sistema.
+Secuencia Normal	Pasos - Acciones	Resultados Esperados
+	1.	El administrador accede a "Productos" y hace clic en el ícono de editar de un producto.	El sistema carga el formulario de edición con los datos actuales del producto prellenados.
+	2.	El administrador modifica los campos deseados: nombre, descripción, precio, stock, categoría o imágenes.	Los campos muestran los cambios realizados en tiempo real.
+	3.	El administrador guarda los cambios.	El backend actualiza el producto (PUT /api/products/:id). Los cambios son visibles de inmediato en el catálogo.
+Postcondiciones	1.	El producto fue actualizado exitosamente.
+2.	Los cambios son visibles en el catálogo de la tienda.
+Alternativas	1.	Si los campos requeridos quedan vacíos, el sistema no permite guardar y muestra validaciones.
+2.	Si ocurre un error de red, el sistema muestra un mensaje y conserva los datos originales.
+
+DIAGRAMA DE CU-33: MODIFICAR PRODUCTOS DEL INVENTARIO.
+[ Insertar imagen PlantUML – Diagrama de Caso de Uso – CU-33 ]
+HU-33: MODIFICAR PRODUCTOS DEL INVENTARIO
+
+ID	HU-33
+Título	Modificar Productos del Inventario
+Descripción	Como administrador, Quiero modificar la información de los productos existentes, Para mantener el catálogo actualizado con precios, stock e información correctos.
+Criterios de Aceptación	1.	El formulario de edición debe cargarse con todos los datos actuales del producto.
+2.	Todos los campos deben ser editables: nombre, descripción, precio, stock, categoría e imágenes.
+3.	Al cambiar la imagen, el sistema debe subir la nueva a Cloudinary y actualizar la URL.
+4.	La actualización debe realizarse vía PUT /api/products/:id.
+5.	Los cambios deben reflejarse inmediatamente en el catálogo de la tienda.
+6.	Si los campos requeridos quedan vacíos, el sistema no debe permitir guardar.
+
+DIAGRAMA DE ACTIVIDADES – HU-33: MODIFICAR PRODUCTOS DEL INVENTARIO.
+[ Insertar imagen PlantUML – Diagrama de Actividades – HU-33 ]
+DIAGRAMA DE SECUENCIAS – HU-33: MODIFICAR PRODUCTOS DEL INVENTARIO.
+[ Insertar imagen PlantUML – Diagrama de Secuencias – HU-33 ]
+
+RF-34: ELIMINAR PRODUCTOS DEL INVENTARIO.
+
+ID del Requisito	RF-34
+Nombre del Requisito	Eliminar Productos del Inventario
+Detalle del Requisito	El sistema debe permitir a los administradores eliminar productos del inventario.
+Descripción	El sistema debe permitir a los administradores eliminar productos del inventario mediante DELETE /api/products/:id. El producto deja de aparecer en el catálogo de los clientes.
+
+CU-34: ELIMINAR PRODUCTOS DEL INVENTARIO.
+
+Código RF	RF-34
+Caso de Uso	CU-34: Eliminar Productos del Inventario
+Descripción	Este caso de uso permite a los administradores eliminar permanentemente un producto del catálogo de la tienda.
+Precondiciones	1.	El administrador debe estar autenticado en el panel.
+2.	El producto debe existir en el sistema.
+Secuencia Normal	Pasos - Acciones	Resultados Esperados
+	1.	El administrador accede a "Productos" y hace clic en el ícono de eliminar de un producto.	El sistema muestra un diálogo de confirmación de eliminación permanente.
+	2.	El administrador confirma la eliminación.	El backend elimina el producto de MongoDB (DELETE /api/products/:id). El producto desaparece inmediatamente del catálogo.
+Postcondiciones	1.	El producto fue eliminado del sistema.
+2.	No aparece en el catálogo ni en búsquedas de la tienda.
+Alternativas	1.	Si el administrador cancela la confirmación, el producto no es eliminado.
+2.	Si ocurre un error de red, el sistema muestra un mensaje de error y el producto permanece en el inventario.
+
+DIAGRAMA DE CU-34: ELIMINAR PRODUCTOS DEL INVENTARIO.
+[ Insertar imagen PlantUML – Diagrama de Caso de Uso – CU-34 ]
+HU-34: ELIMINAR PRODUCTOS DEL INVENTARIO
+
+ID	HU-34
+Título	Eliminar Productos del Inventario
+Descripción	Como administrador, Quiero eliminar productos del inventario, Para que los clientes no puedan ver ni comprar productos que ya no están disponibles.
+Criterios de Aceptación	1.	La opción de eliminar debe estar disponible para cada producto en la sección "Productos" del panel.
+2.	Al hacer clic en eliminar, el sistema debe mostrar un diálogo de confirmación advirtiendo que la acción es permanente.
+3.	Al confirmar, el backend debe eliminar el producto vía DELETE /api/products/:id.
+4.	La eliminación debe ser inmediata y el producto debe desaparecer del catálogo de la tienda sin necesidad de recargar la página.
+5.	Si el administrador cancela, el producto debe permanecer sin cambios.
+
+DIAGRAMA DE ACTIVIDADES – HU-34: ELIMINAR PRODUCTOS DEL INVENTARIO.
+[ Insertar imagen PlantUML – Diagrama de Actividades – HU-34 ]
+
+ 
+RF-35: CREAR CATEGORÍAS DE PRODUCTOS.
+
+ID del Requisito	RF-35
+Nombre del Requisito	Crear Categorías de Productos
+Detalle del Requisito	El sistema debe permitir a los administradores crear categorías de productos.
+Descripción	El sistema debe permitir a los administradores crear categorías de productos. Las categorías actuales son un enum fijo en el modelo: Palitos Premium, Cocteleros, Dulces, Especiales, Nuevos.
+
+CU-35: CREAR CATEGORÍAS DE PRODUCTOS.
+
+Código RF	RF-35
+Caso de Uso	CU-35: Crear Categorías de Productos
+Descripción	Este caso de uso describe la gestión de categorías. La asignación se realiza al crear o editar un producto desde el campo desplegable de categorías.
+Precondiciones	1.	El administrador debe estar autenticado en el panel de administración.
+Secuencia Normal	Pasos - Acciones	Resultados Esperados
+	1.	El administrador accede a creación o edición de un producto y selecciona la categoría del campo desplegable.	El sistema muestra las categorías disponibles: Palitos Premium, Cocteleros, Dulces, Especiales, Nuevos.
+	2.	El administrador selecciona la categoría adecuada para el producto.	La categoría queda asignada al producto en el formulario.
+	3.	El administrador guarda el producto.	El backend registra la categoría seleccionada en el documento del producto en MongoDB.
+Postcondiciones	1.	El producto queda asignado a la categoría seleccionada.
+2.	Los clientes pueden filtrar el catálogo por dicha categoría.
+Alternativas	1.	Si se requiere agregar una nueva categoría no contemplada en el enum, se requiere actualización del esquema del backend y redespliegue del sistema.
+
+DIAGRAMA DE CU-35: CREAR CATEGORÍAS DE PRODUCTOS.
+[ Insertar imagen PlantUML – Diagrama de Caso de Uso – CU-35 ]
+HU-35: CREAR CATEGORÍAS DE PRODUCTOS
+
+ID	HU-35
+Título	Crear Categorías de Productos
+Descripción	Como administrador, Quiero asignar categorías a los productos, Para organizar el catálogo y facilitar la navegación de los clientes.
+Criterios de Aceptación	1.	El formulario de producto (creación y edición) debe incluir un campo desplegable con las categorías disponibles: Palitos Premium, Cocteleros, Dulces, Especiales, Nuevos.
+2.	El campo de categoría debe ser requerido.
+3.	Al guardar, la categoría queda registrada en el documento del producto en MongoDB.
+4.	Los clientes deben poder filtrar el catálogo por categoría.
+5.	Las categorías están definidas como un enum en el modelo de datos; agregar nuevas categorías requiere actualización del esquema del backend.
+
+DIAGRAMA DE ACTIVIDADES – HU-35: CREAR CATEGORÍAS DE PRODUCTOS.
+[ Insertar imagen PlantUML – Diagrama de Actividades – HU-35 ]
+
+RF-36: MODIFICAR CATEGORÍAS DE PRODUCTOS.
+
+ID del Requisito	RF-36
+Nombre del Requisito	Modificar Categorías de Productos
+Detalle del Requisito	El sistema debe permitir a los administradores modificar categorías de productos.
+Descripción	El sistema debe permitir a los administradores modificar la categoría asignada a un producto al editarlo. La modificación del catálogo de categorías como entidad independiente requiere actualización del esquema del backend.
+
+CU-36: MODIFICAR CATEGORÍAS DE PRODUCTOS.
+
+Código RF	RF-36
+Caso de Uso	CU-36: Modificar Categorías de Productos
+Descripción	Este caso de uso permite a los administradores cambiar la categoría de un producto existente al editarlo en el panel.
+Precondiciones	1.	El administrador debe estar autenticado.
+2.	El producto debe existir con una categoría asignada.
+Secuencia Normal	Pasos - Acciones	Resultados Esperados
+	1.	El administrador edita un producto existente en el panel.	El sistema carga el formulario con la categoría actual del producto seleccionada en el desplegable.
+	2.	El administrador selecciona una categoría diferente del desplegable.	El campo desplegable muestra la nueva categoría seleccionada.
+	3.	El administrador guarda los cambios.	El backend actualiza la categoría del producto (PUT /api/products/:id). El producto aparece en la nueva categoría en el catálogo.
+Postcondiciones	1.	La categoría del producto fue actualizada.
+2.	El producto aparece en la nueva categoría al filtrar el catálogo de la tienda.
+Alternativas	1.	Si el administrador cancela sin guardar, la categoría original se conserva sin cambios.
+
+DIAGRAMA DE CU-36: MODIFICAR CATEGORÍAS DE PRODUCTOS.
+[ Insertar imagen PlantUML – Diagrama de Caso de Uso – CU-36 ]
+HU-36: MODIFICAR CATEGORÍAS DE PRODUCTOS
+
+ID	HU-36
+Título	Modificar Categorías de Productos
+Descripción	Como administrador, Quiero cambiar la categoría de un producto existente, Para reorganizar el catálogo cuando sea necesario.
+Criterios de Aceptación	1.	El formulario de edición de producto debe mostrar la categoría actual seleccionada en el desplegable.
+2.	El administrador debe poder cambiar la categoría seleccionando una diferente de las disponibles.
+3.	Al guardar, el backend debe actualizar la categoría vía PUT /api/products/:id.
+4.	El cambio debe reflejarse inmediatamente en el catálogo: el producto debe aparecer en la nueva categoría y desaparecer de la anterior.
+
+DIAGRAMA DE ACTIVIDADES – HU-36: MODIFICAR CATEGORÍAS DE PRODUCTOS.
+[ Insertar imagen PlantUML – Diagrama de Actividades – HU-36 ]
+
+RF-37: ELIMINAR CATEGORÍAS DE PRODUCTOS.
+
+ID del Requisito	RF-37
+Nombre del Requisito	Eliminar Categorías de Productos
+Detalle del Requisito	El sistema debe permitir a los administradores eliminar categorías de productos.
+Descripción	El sistema debe permitir a los administradores eliminar o reasignar categorías de productos. Esta operación actualmente requiere modificación del enum en el modelo de datos del backend.
+
+CU-37: ELIMINAR CATEGORÍAS DE PRODUCTOS.
+
+Código RF	RF-37
+Caso de Uso	CU-37: Eliminar Categorías de Productos
+Descripción	Este caso de uso describe cómo se reasignan los productos de una categoría en desuso editándolos individualmente en el panel.
+Precondiciones	1.	El administrador debe estar autenticado en el panel.
+Secuencia Normal	Pasos - Acciones	Resultados Esperados
+	1.	El administrador filtra los productos de la categoría que desea discontinuar.	El sistema muestra los productos de esa categoría.
+	2.	El administrador edita cada producto y asigna una nueva categoría disponible.	Los productos quedan reasignados a la nueva categoría seleccionada.
+	3.	Una vez reasignados todos los productos, la categoría original queda sin productos.	La categoría no aparece en los filtros del catálogo cuando no tiene productos activos asociados.
+Postcondiciones	1.	Los productos fueron reasignados a otras categorías.
+2.	La categoría original ya no tiene productos asociados y no aparece en el catálogo.
+Alternativas	1.	La eliminación formal de una categoría del enum requiere actualización del esquema del backend y redespliegue del sistema.
+
+DIAGRAMA DE CU-37: ELIMINAR CATEGORÍAS DE PRODUCTOS.
+[ Insertar imagen PlantUML – Diagrama de Caso de Uso – CU-37 ]
+HU-37: ELIMINAR CATEGORÍAS DE PRODUCTOS
+
+ID	HU-37
+Título	Eliminar Categorías de Productos
+Descripción	Como administrador, Quiero poder reasignar productos de categorías en desuso, Para mantener el catálogo organizado y sin categorías vacías.
+Criterios de Aceptación	1.	El administrador debe poder filtrar los productos por categoría para identificar los que pertenecen a una categoría en desuso.
+2.	Al editar cada producto, debe poder asignar una categoría diferente.
+3.	Las categorías sin productos activos no deben mostrarse en los filtros del catálogo de la tienda.
+4.	La eliminación formal de una categoría del enum requiere modificación del esquema del backend por parte del equipo de desarrollo.
+
+DIAGRAMA DE ACTIVIDADES – HU-37: ELIMINAR CATEGORÍAS DE PRODUCTOS.
+[ Insertar imagen PlantUML – Diagrama de Actividades – HU-37 ]
+
+ 
+RF-38: CREAR PROMOCIONES Y DESCUENTOS.
+
+ID del Requisito	RF-38
+Nombre del Requisito	Crear Promociones y Descuentos
+Detalle del Requisito	El sistema debe permitir a los administradores crear promociones y descuentos.
+Descripción	El sistema debe permitir a los administradores crear cupones de descuento con código único, tipo (porcentaje o monto fijo en COP), valor, fecha de expiración y estado activo/inactivo, mediante POST /api/coupons.
+
+CU-38: CREAR PROMOCIONES Y DESCUENTOS.
+
+Código RF	RF-38
+Caso de Uso	CU-38: Crear Promociones y Descuentos
+Descripción	Este caso de uso permite a los administradores crear nuevos cupones de descuento en el panel.
+Precondiciones	1.	El administrador debe estar autenticado en el panel de administración.
+Secuencia Normal	Pasos - Acciones	Resultados Esperados
+	1.	El administrador accede a la sección "Cupones" y hace clic en "Crear cupón".	El sistema muestra el formulario de creación de cupón con todos los campos requeridos.
+	2.	El administrador completa los campos: código único, tipo (porcentaje o monto fijo), valor, fecha de expiración y estado.	El sistema valida en tiempo real que el código no exista ya en el sistema.
+	3.	El administrador guarda el cupón.	El backend crea el cupón en MongoDB (POST /api/coupons). Si está activo, aparece en la sección de promociones de la tienda.
+Postcondiciones	1.	El cupón está registrado en el sistema.
+2.	Si isActive: true y la expiración es futura, aparece en las promociones activas de la tienda web.
+Alternativas	1.	Si el código del cupón ya existe, el sistema muestra un error de código duplicado.
+2.	Si el valor o la fecha son inválidos, el sistema muestra validaciones de error por campo.
+
+DIAGRAMA DE CU-38: CREAR PROMOCIONES Y DESCUENTOS.
+[ Insertar imagen PlantUML – Diagrama de Caso de Uso – CU-38 ]
+HU-38: CREAR PROMOCIONES Y DESCUENTOS
+
+ID	HU-38
+Título	Crear Promociones y Descuentos
+Descripción	Como administrador, Quiero crear cupones de descuento, Para ofrecer promociones a los clientes y aumentar las ventas de la cafetería.
+Criterios de Aceptación	1.	El formulario de creación debe incluir: código del cupón (requerido, único, alfanumérico), tipo de descuento (porcentaje o monto fijo), valor del descuento (requerido, número positivo), fecha de expiración (requerida, fecha futura) y estado (activo/inactivo).
+2.	El sistema debe validar que el código no exista previamente.
+3.	El tipo "porcentaje" debe tener un valor entre 1 y 100.
+4.	El tipo "monto fijo" debe especificarse en COP.
+5.	Al guardar, el cupón se crea vía POST /api/coupons.
+6.	Los cupones activos con expiración futura deben mostrarse en la página principal de la tienda.
+
+DIAGRAMA DE ACTIVIDADES – HU-38: CREAR PROMOCIONES Y DESCUENTOS.
+[ Insertar imagen PlantUML – Diagrama de Actividades – HU-38 ]
+DIAGRAMA DE ESTADOS – HU-38: CREAR PROMOCIONES Y DESCUENTOS.
+[ Insertar imagen PlantUML – Diagrama de Estados – HU-38 ]
+DIAGRAMA DE SECUENCIAS – HU-38: CREAR PROMOCIONES Y DESCUENTOS.
+[ Insertar imagen PlantUML – Diagrama de Secuencias – HU-38 ]
+
+RF-39: MODIFICAR PROMOCIONES Y DESCUENTOS.
+
+ID del Requisito	RF-39
+Nombre del Requisito	Modificar Promociones y Descuentos
+Detalle del Requisito	El sistema debe permitir a los administradores modificar promociones y descuentos existentes.
+Descripción	El sistema debe permitir a los administradores modificar cupones de descuento existentes: código, tipo, valor y fecha de expiración, mediante PUT /api/coupons/:id.
+
+CU-39: MODIFICAR PROMOCIONES Y DESCUENTOS.
+
+Código RF	RF-39
+Caso de Uso	CU-39: Modificar Promociones y Descuentos
+Descripción	Este caso de uso permite a los administradores editar los parámetros de un cupón de descuento existente.
+Precondiciones	1.	El administrador debe estar autenticado.
+2.	El cupón debe existir en el sistema.
+Secuencia Normal	Pasos - Acciones	Resultados Esperados
+	1.	El administrador accede a la sección "Cupones" y hace clic en editar un cupón.	El sistema carga el formulario de edición con los datos actuales del cupón prellenados.
+	2.	El administrador modifica los campos deseados: código, tipo, valor o fecha de expiración.	El formulario muestra los cambios en tiempo real.
+	3.	El administrador guarda los cambios.	El backend actualiza el cupón (PUT /api/coupons/:id). Los cambios son efectivos de inmediato.
+Postcondiciones	1.	El cupón fue actualizado exitosamente.
+2.	Si la fecha de expiración fue extendida, los clientes pueden seguir usándolo.
+Alternativas	1.	Si el nuevo código ya está en uso por otro cupón, el sistema muestra un error de duplicado.
+
+DIAGRAMA DE CU-39: MODIFICAR PROMOCIONES Y DESCUENTOS.
+[ Insertar imagen PlantUML – Diagrama de Caso de Uso – CU-39 ]
+HU-39: MODIFICAR PROMOCIONES Y DESCUENTOS
+
+ID	HU-39
+Título	Modificar Promociones y Descuentos
+Descripción	Como administrador, Quiero modificar los cupones de descuento existentes, Para ajustar los valores o extender la vigencia de las promociones según las necesidades del negocio.
+Criterios de Aceptación	1.	El formulario de edición debe cargarse con todos los datos actuales del cupón.
+2.	Todos los campos deben ser editables: código, tipo de descuento, valor y fecha de expiración.
+3.	El sistema debe validar que el nuevo código no esté en uso por otro cupón.
+4.	La actualización debe realizarse vía PUT /api/coupons/:id.
+5.	Los cambios deben ser efectivos inmediatamente.
+6.	Si la nueva fecha de expiración es futura y el cupón está activo, debe mostrarse en las promociones activas de la tienda.
+
+DIAGRAMA DE ACTIVIDADES – HU-39: MODIFICAR PROMOCIONES Y DESCUENTOS.
+[ Insertar imagen PlantUML – Diagrama de Actividades – HU-39 ]
+
+RF-40: ELIMINAR O DESACTIVAR PROMOCIONES Y DESCUENTOS.
+
+ID del Requisito	RF-40
+Nombre del Requisito	Eliminar o Desactivar Promociones y Descuentos
+Detalle del Requisito	El sistema debe permitir a los administradores eliminar o desactivar promociones y descuentos.
+Descripción	El sistema debe permitir a los administradores desactivar (toggle isActive) o eliminar permanentemente cupones de descuento mediante DELETE /api/coupons/:id.
+
+CU-40: ELIMINAR O DESACTIVAR PROMOCIONES Y DESCUENTOS.
+
+Código RF	RF-40
+Caso de Uso	CU-40: Eliminar o Desactivar Promociones y Descuentos
+Descripción	Este caso de uso permite a los administradores desactivar temporalmente o eliminar permanentemente un cupón.
+Precondiciones	1.	El administrador debe estar autenticado.
+2.	El cupón debe existir en el sistema.
+Secuencia Normal	Pasos - Acciones	Resultados Esperados
+	1.	El administrador accede a la sección "Cupones" y localiza el cupón a gestionar.	El sistema muestra el listado de cupones con su estado actual (activo/inactivo).
+	2.	Para desactivar: el administrador hace clic en el toggle de estado del cupón.	El backend actualiza isActive al valor contrario (toggle). El cupón deja de aparecer en promociones activas si se desactiva.
+	3.	Para eliminar: el administrador hace clic en "Eliminar" y confirma el diálogo.	El backend elimina el cupón permanentemente (DELETE /api/coupons/:id). No puede recuperarse.
+Postcondiciones	1.	El cupón está desactivado o eliminado.
+2.	Los clientes no pueden aplicarlo en nuevos pedidos.
+Alternativas	1.	Si el administrador cancela la confirmación de eliminación, el cupón permanece en el sistema sin cambios.
+
+DIAGRAMA DE CU-40: ELIMINAR O DESACTIVAR PROMOCIONES Y DESCUENTOS.
+[ Insertar imagen PlantUML – Diagrama de Caso de Uso – CU-40 ]
+HU-40: ELIMINAR O DESACTIVAR PROMOCIONES Y DESCUENTOS
+
+ID	HU-40
+Título	Eliminar o Desactivar Promociones y Descuentos
+Descripción	Como administrador, Quiero desactivar o eliminar cupones, Para controlar qué promociones están disponibles para los clientes en cada momento.
+Criterios de Aceptación	1.	Debe existir un toggle de estado (activo/inactivo) para cada cupón en la lista.
+2.	Al desactivar, el cupón debe desaparecer de las promociones activas de la tienda inmediatamente.
+3.	Al reactivar, debe volver a aparecer si la fecha de expiración es futura.
+4.	Debe existir un botón de "Eliminar" por cupón.
+5.	Al eliminar, el sistema debe solicitar confirmación advirtiendo que la acción es permanente.
+6.	La eliminación debe ejecutarse vía DELETE /api/coupons/:id.
+7.	Los pedidos existentes que tenían el cupón aplicado no deben verse afectados por la eliminación.
+
+DIAGRAMA DE ACTIVIDADES – HU-40: ELIMINAR O DESACTIVAR PROMOCIONES Y DESCUENTOS.
+[ Insertar imagen PlantUML – Diagrama de Actividades – HU-40 ]
+DIAGRAMA DE ESTADOS – HU-40: ELIMINAR O DESACTIVAR PROMOCIONES Y DESCUENTOS.
+[ Insertar imagen PlantUML – Diagrama de Estados – HU-40 ]
+
+ 
+Administrador - Módulo Ventas
+RF-41: REGISTRO MANUAL DEL ESTADO DEL PEDIDO.
+
+ID del Requisito	RF-41
+Nombre del Requisito	Registro Manual del Estado del Pedido
+Detalle del Requisito	El sistema debe permitir al administrador registrar manualmente el estado del pedido (pendiente, pagado, entregado).
+Descripción	El sistema debe permitir al administrador registrar y actualizar manualmente el estado de un pedido. Los estados posibles son: pending, paid, delivered, mediante PATCH /api/admin/orders/:id/status.
+
+CU-41: REGISTRO MANUAL DEL ESTADO DEL PEDIDO.
+
+Código RF	RF-41
+Caso de Uso	CU-41: Registro Manual del Estado del Pedido
+Descripción	Este caso de uso permite al administrador actualizar manualmente el estado de un pedido siguiendo el ciclo de vida definido.
+Precondiciones	1.	El administrador debe estar autenticado.
+2.	El pedido debe existir en el sistema.
+Secuencia Normal	Pasos - Acciones	Resultados Esperados
+	1.	El administrador accede a "Pedidos" y localiza el pedido a gestionar.	El sistema muestra el detalle del pedido con su estado actual.
+	2.	El administrador selecciona el nuevo estado del desplegable de estados.	El sistema muestra los estados disponibles según el flujo: pending → paid → delivered.
+	3.	El administrador confirma el cambio de estado.	El backend actualiza el estado (PATCH /api/admin/orders/:id/status) y dispara el envío automático de email al cliente.
+Postcondiciones	1.	El estado del pedido fue actualizado.
+2.	El cliente recibe una notificación por email del cambio de estado.
+Alternativas	1.	Si el pedido ya está en un estado final (delivered, canceled, rejected), el sistema no permite cambios adicionales de estado.
+
+DIAGRAMA DE CU-41: REGISTRO MANUAL DEL ESTADO DEL PEDIDO.
+[ Insertar imagen PlantUML – Diagrama de Caso de Uso – CU-41 ]
+HU-41: REGISTRO MANUAL DEL ESTADO DEL PEDIDO
+
+ID	HU-41
+Título	Registro Manual del Estado del Pedido
+Descripción	Como administrador, Quiero actualizar el estado de los pedidos manualmente, Para informar a los clientes del progreso de su pedido y gestionar el flujo de trabajo de la cafetería.
+Criterios de Aceptación	1.	El panel debe mostrar un desplegable o botones para cambiar el estado de cada pedido.
+2.	Los estados disponibles deben seguir el flujo definido: pending → paid → ready → delivered (flujo normal).
+3.	El estado final (delivered) no debe permitir cambios adicionales.
+4.	Al cambiar el estado, el sistema debe ejecutar PATCH /api/admin/orders/:id/status y disparar automáticamente el envío del email de notificación al cliente.
+5.	El nuevo estado debe reflejarse inmediatamente en el panel.
+
+DIAGRAMA DE ACTIVIDADES – HU-41: REGISTRO MANUAL DEL ESTADO DEL PEDIDO.
+[ Insertar imagen PlantUML – Diagrama de Actividades – HU-41 ]
+DIAGRAMA DE ESTADOS – HU-41: REGISTRO MANUAL DEL ESTADO DEL PEDIDO.
+[ Insertar imagen PlantUML – Diagrama de Estados – HU-41 ]
+DIAGRAMA DE SECUENCIAS – HU-41: REGISTRO MANUAL DEL ESTADO DEL PEDIDO.
+[ Insertar imagen PlantUML – Diagrama de Secuencias – HU-41 ]
+
+RF-42: VALIDACIÓN DE PAGO POR EL ADMINISTRADOR.
+
+ID del Requisito	RF-42
+Nombre del Requisito	Validación de Pago por el Administrador
+Detalle del Requisito	El sistema debe actualizar el estado del pedido a "Pagado" o "Rechazado" según la validación del pago por parte del administrador.
+Descripción	El sistema debe actualizar el estado del pedido a "paid" (tras verificar comprobante de transferencia) o notificar en caso de pago no válido, según la validación del administrador. Para pagos Stripe, el webhook actualiza automáticamente a "paid".
+
+CU-42: VALIDACIÓN DE PAGO POR EL ADMINISTRADOR.
+
+Código RF	RF-42
+Caso de Uso	CU-42: Validación de Pago por el Administrador
+Descripción	Este caso de uso describe el proceso de validación manual del pago para pedidos con transferencia bancaria.
+Precondiciones	1.	El pedido debe existir en estado "pending" con método de pago por transferencia bancaria.
+2.	El administrador debe haber recibido el comprobante de pago por WhatsApp.
+Secuencia Normal	Pasos - Acciones	Resultados Esperados
+	1.	El administrador revisa el comprobante de pago enviado por el cliente por WhatsApp.	El administrador verifica que el monto y los datos del depósito coinciden con el total del pedido.
+	2.	Si el pago es válido, el administrador cambia el estado a "paid" en el panel.	El backend actualiza el estado a "paid", registra el paymentResult con timestamp y dispara la generación de la factura PDF y el envío por email.
+	3.	Si el pago no es válido, el administrador notifica manualmente que el pago fue rechazado.	El administrador envía email o WhatsApp de notificación al cliente indicando el rechazo.
+Postcondiciones	1.	El pedido queda en estado "paid" (con factura generada y enviada).
+2.	El cliente fue notificado en ambos casos.
+Alternativas	1.	Para pedidos pagados con Stripe, el webhook actualiza automáticamente el estado a "paid" sin intervención del administrador.
+
+DIAGRAMA DE CU-42: VALIDACIÓN DE PAGO POR EL ADMINISTRADOR.
+[ Insertar imagen PlantUML – Diagrama de Caso de Uso – CU-42 ]
+HU-42: VALIDACIÓN DE PAGO POR EL ADMINISTRADOR
+
+ID	HU-42
+Título	Validación de Pago por el Administrador
+Descripción	Como administrador, Quiero validar los pagos por transferencia bancaria de los pedidos, Para confirmar o rechazar los pedidos y actualizar su estado correspondiente.
+Criterios de Aceptación	1.	Los pedidos con método de pago por transferencia y estado "pending" deben estar claramente identificados en el panel.
+2.	El administrador debe poder cambiar el estado a "paid" desde el detalle del pedido.
+3.	Al cambiar a "paid", el sistema debe generar la factura PDF y enviarla al cliente automáticamente.
+5.	Para pagos con Stripe, el webhook debe actualizar el estado automáticamente sin intervención del administrador.
+6.	El paymentResult debe registrarse con id, status y timestamp.
+
+DIAGRAMA DE ACTIVIDADES – HU-42: VALIDACIÓN DE PAGO POR EL ADMINISTRADOR.
+[ Insertar imagen PlantUML – Diagrama de Actividades – HU-42 ]
+DIAGRAMA DE ESTADOS – HU-42: VALIDACIÓN DE PAGO POR EL ADMINISTRADOR.
+[ Insertar imagen PlantUML – Diagrama de Estados – HU-42 ]
+DIAGRAMA DE SECUENCIAS – HU-42: VALIDACIÓN DE PAGO POR EL ADMINISTRADOR.
+[ Insertar imagen PlantUML – Diagrama de Secuencias – HU-42 ]
+
+RF-43: NOTIFICACIÓN DE ESTADO DE PEDIDO AL CLIENTE.
+
+ID del Requisito	RF-43
+Nombre del Requisito	Notificación de Estado de Pedido al Cliente
+Detalle del Requisito	El sistema debe permitir al administrador enviar correos electrónicos a los clientes notificando el estado de su pedido.
+Descripción	El sistema debe enviar automáticamente correos electrónicos al cliente (Nodemailer) notificando el cambio de estado de su pedido en cada transición. Este proceso es automático; no requiere acción manual del administrador.
+
+CU-43: NOTIFICACIÓN DE ESTADO DE PEDIDO AL CLIENTE.
+
+Código RF	RF-43
+Caso de Uso	CU-43: Notificación de Estado de Pedido al Cliente
+Descripción	Este caso de uso describe el envío automático de emails al cliente en cada cambio de estado del pedido realizado por el administrador.
+Precondiciones	1.	El pedido debe existir en el sistema.
+2.	El cliente debe tener un correo electrónico registrado.
+3.	El administrador debe haber cambiado el estado del pedido.
+Secuencia Normal	Pasos - Acciones	Resultados Esperados
+	1.	El administrador actualiza el estado del pedido en el panel.	El backend registra el cambio y dispara el envío de email de notificación.
+	2.	El sistema genera el email con la plantilla correspondiente al nuevo estado.	El email incluye: número de pedido, nuevo estado, resumen de productos y enlace al historial.
+	3.	Nodemailer envía el email al correo del cliente mediante Gmail/SMTP.	El cliente recibe la notificación en su bandeja de entrada.
+Postcondiciones	1.	El cliente fue notificado del cambio de estado por correo electrónico de forma automática.
+Alternativas	1.	Si Nodemailer no puede conectarse al SMTP, el error queda en el log del servidor, pero el cambio de estado se aplica igualmente al pedido.
+
+DIAGRAMA DE CU-43: NOTIFICACIÓN DE ESTADO DE PEDIDO AL CLIENTE.
+[ Insertar imagen PlantUML – Diagrama de Caso de Uso – CU-43 ]
+HU-43: NOTIFICACIÓN DE ESTADO DE PEDIDO AL CLIENTE
+
+ID	HU-43
+Título	Notificación de Estado de Pedido al Cliente
+Descripción	Como administrador, Quiero que el sistema notifique automáticamente a los clientes sobre los cambios de estado de sus pedidos, Para no tener que hacerlo manualmente y asegurar una comunicación eficiente.
+Criterios de Aceptación	1.	El sistema debe enviar un email de notificación automáticamente en cada cambio de estado del pedido sin necesidad de acción manual adicional.
+2.	Cada email debe usar una plantilla específica según el nuevo estado.
+3.	El email debe incluir: número de pedido, descripción del nuevo estado, resumen de los productos del pedido y un enlace directo al historial de pedidos del cliente.
+4.	Los emails deben enviarse mediante Nodemailer usando la configuración SMTP de Gmail.
+5.	Si el envío falla, el cambio de estado debe aplicarse igualmente y el error debe registrarse en el log.
+
+DIAGRAMA DE ACTIVIDADES – HU-43: NOTIFICACIÓN DE ESTADO DE PEDIDO AL CLIENTE.
+[ Insertar imagen PlantUML – Diagrama de Actividades – HU-43 ]
+
+RF-44: VISUALIZACIÓN DE PEDIDOS POR EL ADMINISTRADOR.
+
+ID del Requisito	RF-44
+Nombre del Requisito	Visualización de Pedidos por el Administrador
+Detalle del Requisito	El sistema debe mostrar a los administradores una lista de todos los pedidos realizados.
+Descripción	El sistema debe mostrar a los administradores una lista completa de todos los pedidos realizados, con fecha, cliente, total y estado, mediante GET /api/admin/orders.
+
+CU-44: VISUALIZACIÓN DE PEDIDOS POR EL ADMINISTRADOR.
+
+Código RF	RF-44
+Caso de Uso	CU-44: Visualización de Pedidos por el Administrador
+Descripción	Este caso de uso permite a los administradores ver y gestionar el listado completo de pedidos del sistema.
+Precondiciones	1.	El administrador debe estar autenticado en el panel de administración.
+Secuencia Normal	Pasos - Acciones	Resultados Esperados
+	1.	El administrador accede a la sección "Pedidos" del panel de administración.	El sistema realiza GET /api/admin/orders y muestra la lista completa de pedidos.
+	2.	El sistema muestra los pedidos con: fecha, número de pedido, nombre del cliente, total y estado actual.	Los pedidos aparecen ordenados por fecha de creación (más reciente primero).
+	3.	El administrador puede filtrar pedidos por estado para encontrar los que requieren acción.	El sistema filtra y muestra solo los pedidos del estado seleccionado.
+Postcondiciones	1.	El administrador tiene visibilidad completa de todos los pedidos del sistema y puede gestionarlos.
+Alternativas	1.	Si no hay pedidos en el sistema, el sistema muestra un mensaje "No hay pedidos registrados".
+
+DIAGRAMA DE CU-44: VISUALIZACIÓN DE PEDIDOS POR EL ADMINISTRADOR.
+[ Insertar imagen PlantUML – Diagrama de Caso de Uso – CU-44 ]
+HU-44: VISUALIZACIÓN DE PEDIDOS POR EL ADMINISTRADOR
+
+ID	HU-44
+Título	Visualización de Pedidos por el Administrador
+Descripción	Como administrador, Quiero ver la lista completa de pedidos, Para tener control de todas las ventas y poder gestionar cada pedido según su estado.
+Criterios de Aceptación	1.	La sección "Pedidos" debe mostrar todos los pedidos con: número de pedido, fecha, nombre del cliente, total, estado actual (con indicador visual de color) y acciones disponibles.
+2.	Los pedidos deben ordenarse por defecto de más reciente a más antiguo.
+3.	Debe existir un filtro por estado para mostrar solo pedidos en un estado específico.
+4.	Al hacer clic en un pedido, el sistema debe mostrar su detalle completo.
+5.	La lista debe tener paginación para grandes volúmenes de pedidos.
+
+DIAGRAMA DE ACTIVIDADES – HU-44: VISUALIZACIÓN DE PEDIDOS POR EL ADMINISTRADOR.
+[ Insertar imagen PlantUML – Diagrama de Actividades – HU-44 ]
+
+RF-45: VISUALIZACIÓN DE FACTURAS POR EL ADMINISTRADOR.
+
+ID del Requisito	RF-45
+Nombre del Requisito	Visualización de Facturas por el Administrador
+Detalle del Requisito	El sistema debe permitir al administrador visualizar las facturas para cada compra realizada.
+Descripción	El sistema debe permitir al administrador visualizar y acceder a las facturas PDF generadas para cada compra confirmada (estado "paid") desde el detalle del pedido en el panel.
+
+CU-45: VISUALIZACIÓN DE FACTURAS POR EL ADMINISTRADOR.
+
+Código RF	RF-45
+Caso de Uso	CU-45: Visualización de Facturas por el Administrador
+Descripción	Este caso de uso permite al administrador acceder y descargar las facturas PDF de los pedidos confirmados.
+Precondiciones	1.	El administrador debe estar autenticado.
+2.	El pedido debe estar al menos en estado "paid" y tener factura generada.
+Secuencia Normal	Pasos - Acciones	Resultados Esperados
+	1.	El administrador accede al detalle de un pedido en estado "paid" o “delivered”.	El sistema muestra el detalle completo del pedido incluyendo la opción de ver la factura.
+	2.	El administrador hace clic en "Ver factura" o "Descargar factura PDF".	El sistema descarga o abre en el navegador el PDF de la factura del pedido.
+Postcondiciones	1.	El administrador ha accedido a la factura del pedido seleccionado.
+Alternativas	1.	Si la factura no fue generada (error durante la confirmación del pago), el sistema muestra un aviso y permite regenerarla.
+
+DIAGRAMA DE CU-45: VISUALIZACIÓN DE FACTURAS POR EL ADMINISTRADOR.
+[ Insertar imagen PlantUML – Diagrama de Caso de Uso – CU-45 ]
+HU-45: VISUALIZACIÓN DE FACTURAS POR EL ADMINISTRADOR
+
+ID	HU-45
+Título	Visualización de Facturas por el Administrador
+Descripción	Como administrador, Quiero poder ver y descargar las facturas de los pedidos pagados, Para llevar un registro de las ventas y resolver consultas de los clientes.
+Criterios de Aceptación	1.	Los pedidos en estado "paid" y “delivered” deben mostrar un botón "Ver factura" o "Descargar PDF" en el detalle del pedido dentro del panel.
+2.	Al hacer clic, el sistema debe descargar o abrir el PDF de la factura.
+3.	La factura debe mostrar: número de pedido, fecha, datos del cliente, lista de productos con cantidades y precios, subtotal, descuento, IVA y total.
+4.	Si la factura no existe o hubo un error en su generación, el sistema debe ofrecer la opción de regenerarla.
+
+DIAGRAMA DE ACTIVIDADES – HU-45: VISUALIZACIÓN DE FACTURAS POR EL ADMINISTRADOR.
+[ Insertar imagen PlantUML – Diagrama de Actividades – HU-45 ]
+
+RF-46: PAGINACIÓN DE FACTURAS.
+
+ID del Requisito	RF-46
+Nombre del Requisito	Paginación de Facturas
+Detalle del Requisito	El sistema debe permitir al administrador paginar las facturas de cada compra realizada.
+Descripción	El sistema debe permitir al administrador paginar el listado de facturas/pedidos desde el panel de administración. La paginación es gestionada por el frontend con los datos retornados por la API.
+
+CU-46: PAGINACIÓN DE FACTURAS.
+
+Código RF	RF-46
+Caso de Uso	CU-46: Paginación de Facturas
+Descripción	Este caso de uso permite al administrador navegar por el listado de pedidos y facturas mediante controles de paginación.
+Precondiciones	1.	El administrador debe estar autenticado.
+2.	Debe haber suficientes pedidos para que la paginación sea necesaria.
+Secuencia Normal	Pasos - Acciones	Resultados Esperados
+	1.	El administrador accede a la sección "Pedidos" del panel.	El sistema muestra los primeros pedidos según la configuración de página del frontend.
+	2.	El administrador hace clic en los controles de paginación (siguiente página, anterior, número de página).	El sistema muestra el conjunto de pedidos correspondiente a la página seleccionada.
+Postcondiciones	1.	El administrador puede navegar por todos los pedidos del sistema en páginas de tamaño manejable.
+Alternativas	1.	Si el número de pedidos es menor que el tamaño de página configurado, los controles de paginación no se muestran.
+
+DIAGRAMA DE CU-46: PAGINACIÓN DE FACTURAS.
+[ Insertar imagen PlantUML – Diagrama de Caso de Uso – CU-46 ]
+HU-46: PAGINACIÓN DE FACTURAS
+
+ID	HU-46
+Título	Paginación de Facturas
+Descripción	Como administrador, Quiero paginar el listado de pedidos y facturas, Para navegar cómodamente por grandes volúmenes de registros sin que la pantalla se sobrecargue.
+Criterios de Aceptación	1.	La lista de pedidos debe mostrar un número configurable de registros por página (por ejemplo, 10 o 20 pedidos por página).
+2.	Deben existir controles de paginación: botones de anterior/siguiente y opción de ir a una página específica.
+3.	El número total de pedidos y la página actual deben mostrarse al usuario.
+4.	Si hay menos pedidos que el tamaño de página, los controles de paginación no deben mostrarse.
+5.	La paginación debe funcionar en combinación con los filtros de estado.
+
+DIAGRAMA DE ACTIVIDADES – HU-46: PAGINACIÓN DE FACTURAS.
+[ Insertar imagen PlantUML – Diagrama de Actividades – HU-46 ]
+
+ 
+Administrador - Módulo Comunidad y Servicios
+RF-47: MODERACIÓN DE CALIFICACIONES.
+
+ID del Requisito	RF-47
+Nombre del Requisito	Moderación de Calificaciones
+Detalle del Requisito	El sistema debe permitir a los administradores moderar los comentarios y calificaciones de los productos.
+Descripción	El sistema debe permitir a los administradores moderar las calificaciones de productos. Las reseñas contienen únicamente calificación numérica (1-5 estrellas) sin texto libre.
+
+CU-47: MODERACIÓN DE CALIFICACIONES.
+
+Código RF	RF-47
+Caso de Uso	CU-47: Moderación de Calificaciones
+Descripción	Este caso de uso permite al administrador revisar y eliminar calificaciones de productos desde el panel.
+Precondiciones	1.	El administrador debe estar autenticado.
+2.	Deben existir calificaciones registradas en el sistema.
+Secuencia Normal	Pasos - Acciones	Resultados Esperados
+	1.	El administrador accede a las reseñas desde el detalle de un producto en el panel.	El sistema muestra las calificaciones registradas para ese producto con fecha y usuario.
+	2.	El administrador identifica una calificación inapropiada o errónea y selecciona eliminarla.	El sistema solicita confirmación de la eliminación de la calificación.
+	3.	El administrador confirma la eliminación.	El backend elimina la reseña (DELETE /api/reviews/:id) y recalcula automáticamente el promedio del producto.
+Postcondiciones	1.	La calificación eliminada no aparece en el producto y el promedio fue recalculado correctamente.
+Alternativas	1.	Si no hay calificaciones para el producto, el sistema muestra un mensaje indicando que no hay reseñas registradas.
+
+DIAGRAMA DE CU-47: MODERACIÓN DE CALIFICACIONES.
+[ Insertar imagen PlantUML – Diagrama de Caso de Uso – CU-47 ]
+HU-47: MODERACIÓN DE CALIFICACIONES
+
+ID	HU-47
+Título	Moderación de Calificaciones
+Descripción	Como administrador, Quiero moderar las calificaciones de los productos, Para mantener la integridad de las puntuaciones y gestionar posibles abusos.
+Criterios de Aceptación	1.	El detalle de cada producto en el panel debe mostrar las calificaciones registradas con: fecha, usuario que calificó y puntuación (1-5 estrellas).
+2.	El administrador debe poder eliminar cualquier calificación con confirmación previa.
+3.	Al eliminar, el sistema debe recalcular el promedio del producto vía DELETE /api/reviews/:id.
+4.	El promedio actualizado debe reflejarse inmediatamente en el catálogo de la tienda.
+5.	Si no hay calificaciones, el sistema debe mostrarlo claramente.
+
+DIAGRAMA DE ACTIVIDADES – HU-47: MODERACIÓN DE CALIFICACIONES.
+[ Insertar imagen PlantUML – Diagrama de Actividades – HU-47 ]
+
+RF-48: GESTIÓN DE ATENCIÓN AL CLIENTE.
+
+ID del Requisito	RF-48
+Nombre del Requisito	Gestión de Atención al Cliente
+Detalle del Requisito	El sistema debe permitir a los administradores gestionar líneas de atención al cliente para brindar soporte.
+Descripción	El sistema debe permitir a los administradores gestionar el canal de atención al cliente. El soporte se canaliza a través del enlace de WhatsApp integrado en la plataforma.
+
+CU-48: GESTIÓN DE ATENCIÓN AL CLIENTE.
+
+Código RF	RF-48
+Caso de Uso	CU-48: Gestión de Atención al Cliente
+Descripción	Este caso de uso describe la gestión del soporte al cliente a través del canal de WhatsApp Business.
+Precondiciones	1.	El administrador debe tener acceso al WhatsApp Business del negocio.
+Secuencia Normal	Pasos - Acciones	Resultados Esperados
+	1.	El cliente envía un mensaje de soporte o comprobante de pago a través del enlace de WhatsApp de la plataforma.	El mensaje llega al WhatsApp Business de la cafetería Don Palito Junior.
+	2.	El administrador revisa los mensajes recibidos en WhatsApp Business y responde al cliente.	El cliente recibe respuesta directa del negocio a través de WhatsApp.
+Postcondiciones	1.	La solicitud del cliente fue atendida a través del canal de WhatsApp Business.
+Alternativas	1.	Si el administrador no está disponible, el cliente puede dejar el mensaje y será atendido en el próximo turno de atención del negocio.
+
+DIAGRAMA DE CU-48: GESTIÓN DE ATENCIÓN AL CLIENTE.
+[ Insertar imagen PlantUML – Diagrama de Caso de Uso – CU-48 ]
+HU-48: GESTIÓN DE ATENCIÓN AL CLIENTE
+
+ID	HU-48
+Título	Gestión de Atención al Cliente
+Descripción	Como administrador, Quiero gestionar las consultas de soporte de los clientes, Para brindar una atención oportuna y mantener la satisfacción de los clientes de la cafetería.
+Criterios de Aceptación	1.	La plataforma debe incluir un enlace a WhatsApp Business del negocio accesible para los clientes desde la tienda web y la app móvil.
+2.	El enlace debe abrir WhatsApp con el número de contacto del negocio.
+3.	Las consultas de soporte, comprobantes de pago y solicitudes de personalización deben canalizarse a través de este mismo enlace.
+4.	El administrador debe poder responder desde WhatsApp Business en su dispositivo o computador.
+5.	El sistema debe mostrar el horario de atención junto al enlace de contacto.
+
+DIAGRAMA DE ACTIVIDADES – HU-48: GESTIÓN DE ATENCIÓN AL CLIENTE.
+[ Insertar imagen PlantUML – Diagrama de Actividades – HU-48 ]
+
+ 
+Administrador - Módulo Reportes
+RF-49: ESTADÍSTICAS DE PRODUCTOS Y VENTAS.
+
+ID del Requisito	RF-49
+Nombre del Requisito	Estadísticas de Productos y Ventas
+Detalle del Requisito	El sistema debe permitir a los administradores ver estadísticas de los productos.
+Descripción	El sistema debe permitir a los administradores visualizar estadísticas clave del negocio: total de ventas, número de pedidos activos, total de clientes registrados y métricas de productos, mediante GET /api/admin/dashboard.
+
+CU-49: ESTADÍSTICAS DE PRODUCTOS Y VENTAS.
+
+Código RF	RF-49
+Caso de Uso	CU-49: Estadísticas de Productos y Ventas
+Descripción	Este caso de uso permite a los administradores visualizar las estadísticas clave del negocio en el dashboard del panel.
+Precondiciones	1.	El administrador debe estar autenticado.
+2.	Deben existir pedidos y/o productos registrados en el sistema.
+Secuencia Normal	Pasos - Acciones	Resultados Esperados
+	1.	El administrador accede al dashboard del panel de administración.	El sistema realiza GET /api/admin/dashboard y carga las métricas del negocio.
+	2.	El sistema muestra las estadísticas: total de ventas (COP), número de pedidos activos, total de clientes registrados y número de productos activos.	Las métricas se presentan con indicadores visuales (tarjetas o gráficos) de fácil lectura.
+Postcondiciones	1.	El administrador tiene visibilidad de los indicadores clave del negocio para tomar decisiones informadas.
+Alternativas	1.	Si aún no hay datos en el sistema, el dashboard muestra los contadores en 0 sin mostrar errores.
+
+DIAGRAMA DE CU-49: ESTADÍSTICAS DE PRODUCTOS Y VENTAS.
+[ Insertar imagen PlantUML – Diagrama de Caso de Uso – CU-49 ]
+HU-49: ESTADÍSTICAS DE PRODUCTOS Y VENTAS
+
+ID	HU-49
+Título	Estadísticas de Productos y Ventas
+Descripción	Como administrador, Quiero ver estadísticas del negocio en el dashboard, Para tomar decisiones basadas en datos sobre productos, ventas y clientes.
+Criterios de Aceptación	1.	El dashboard debe mostrar como mínimo las siguientes métricas: total de ventas acumuladas en COP, número de pedidos activos (en estados pending, paid, in_preparation, ready), total de clientes registrados y número de productos activos en el catálogo.
+2.	Las métricas deben obtenerse vía GET /api/admin/dashboard.
+3.	Los datos deben actualizarse al recargar el dashboard.
+4.	Si no hay datos, los contadores deben mostrarse en 0 sin errores.
+5.	Las métricas deben presentarse en tarjetas visualmente claras.
+
+DIAGRAMA DE ACTIVIDADES – HU-49: ESTADÍSTICAS DE PRODUCTOS Y VENTAS.
+[ Insertar imagen PlantUML – Diagrama de Actividades – HU-49 ]
+DIAGRAMA DE SECUENCIAS – HU-49: ESTADÍSTICAS DE PRODUCTOS Y VENTAS.
+[ Insertar imagen PlantUML – Diagrama de Secuencias – HU-49 ]
+
+RF-50: EXPORTACIÓN DE DATOS.
+
+ID del Requisito	RF-50
+Nombre del Requisito	Exportación de Datos
+Detalle del Requisito	El sistema debe permitir a los administradores exportar datos de ventas, inventario y clientes en formatos comunes (CSV, PDF).
+Descripción	El sistema debe permitir a los administradores exportar datos de ventas e inventario en formatos CSV (generado con csv-writer) y PDF (generado con PDFKit). Los archivos se envían por email y están disponibles para descarga.
+
+CU-50: EXPORTACIÓN DE DATOS.
+
+Código RF	RF-50
+Caso de Uso	CU-50: Exportación de Datos
+Descripción	Este caso de uso permite a los administradores exportar datos del sistema en formato CSV o PDF para análisis externo.
+Precondiciones	1.	El administrador debe estar autenticado en el panel.
+Secuencia Normal	Pasos - Acciones	Resultados Esperados
+	1.	El administrador accede a la sección de reportes y selecciona el tipo de datos a exportar: ventas, inventario o clientes.	El sistema muestra las opciones de formato disponibles: CSV o PDF.
+	2.	El administrador selecciona el formato deseado y hace clic en "Exportar".	El backend genera el archivo CSV (csv-writer) o PDF (PDFKit) con los datos solicitados.
+	3.	El archivo generado se descarga en el navegador del administrador.	El administrador recibe el archivo con los datos completos, listo para análisis en herramientas externas.
+Postcondiciones	1.	El administrador tiene el archivo exportado con los datos del sistema en el formato seleccionado.
+Alternativas	1.	Si no hay datos para exportar en el tipo seleccionado, el sistema genera un archivo vacío con los encabezados correspondientes.
+
+DIAGRAMA DE CU-50: EXPORTACIÓN DE DATOS.
+[ Insertar imagen PlantUML – Diagrama de Caso de Uso – CU-50 ]
+HU-50: EXPORTACIÓN DE DATOS
+
+ID	HU-50
+Título	Exportación de Datos
+Descripción	Como administrador, Quiero exportar los datos del sistema en formatos CSV o PDF, Para analizarlos en herramientas externas o compartirlos con los propietarios del negocio.
+Criterios de Aceptación	1.	El sistema debe ofrecer exportación de: datos de ventas (pedidos con fechas, totales y estados), inventario (productos con precios y stock) y clientes (datos básicos de registro).
+2.	Debe ofrecerse en dos formatos: CSV (generado con csv-writer) y PDF (generado con PDFKit).
+3.	Los archivos CSV deben incluir encabezados descriptivos.
+4.	Los archivos PDF deben estar formateados de forma legible.
+5.	La exportación debe activarse con un botón en el panel.
+6.	Si no hay datos, el sistema debe generar un archivo con solo los encabezados.
+
+DIAGRAMA DE ACTIVIDADES – HU-50: EXPORTACIÓN DE DATOS.
+[ Insertar imagen PlantUML – Diagrama de Actividades – HU-50 ]
+DIAGRAMA DE SECUENCIAS – HU-50: EXPORTACIÓN DE DATOS.
+[ Insertar imagen PlantUML – Diagrama de Secuencias – HU-50 ]
+
+RF-51: INFORMES DE VENTAS POR PERÍODO.
+
+ID del Requisito	RF-51
+Nombre del Requisito	Informes de Ventas por Período
+Detalle del Requisito	El sistema debe permitir a los administradores generar informes de ventas por período.
+Descripción	El sistema debe permitir a los administradores consultar estadísticas generales de ventas. Los informes por período específico con filtros de fecha están planificados como mejora futura.
+
+CU-51: INFORMES DE VENTAS POR PERÍODO.
+
+Código RF	RF-51
+Caso de Uso	CU-51: Informes de Ventas por Período
+Descripción	Este caso de uso describe el acceso a estadísticas de ventas en el dashboard. Los informes por período son una mejora planificada para versiones futuras.
+Precondiciones	1.	El administrador debe estar autenticado en el panel de administración.
+Secuencia Normal	Pasos - Acciones	Resultados Esperados
+	1.	El administrador accede al dashboard del panel de administración.	El sistema muestra las estadísticas generales de ventas: total acumulado, número de pedidos y número de clientes.
+	2.	El administrador puede exportar los datos completos de ventas usando el módulo de exportación (RF-50).	El sistema genera el reporte de ventas en CSV o PDF con todos los registros disponibles.
+Postcondiciones	1.	El administrador tiene acceso a los datos de ventas actuales.
+2.	Los reportes por período con filtros de fecha están planificados como mejora futura del sistema.
+Alternativas	1.	Si no hay ventas registradas, el sistema muestra los contadores en 0 sin errores.
+
+DIAGRAMA DE CU-51: INFORMES DE VENTAS POR PERÍODO.
+[ Insertar imagen PlantUML – Diagrama de Caso de Uso – CU-51 ]
+HU-51: INFORMES DE VENTAS POR PERÍODO
+
+ID	HU-51
+Título	Informes de Ventas por Período
+Descripción	Como administrador, Quiero consultar un resumen de las ventas del negocio, Para evaluar el rendimiento de la cafetería y tomar decisiones de mejora.
+Criterios de Aceptación	1.	El dashboard debe mostrar las estadísticas generales de ventas disponibles en el sistema.
+2.	El administrador puede exportar los datos de ventas completos usando el módulo de exportación.
+3.	En la versión actual (v3.0), los filtros por período de fecha específico no están implementados.
+4.	Los informes por período con filtros de fecha están planificados como mejora futura.
+5.	Si no hay ventas registradas, el sistema muestra los valores en 0 sin errores.
+
+DIAGRAMA DE ACTIVIDADES – HU-51: INFORMES DE VENTAS POR PERÍODO.
+[ Insertar imagen PlantUML – Diagrama de Actividades – HU-51 ]
+
+ 
+3.2 Requisitos No Funcionales (RNF) Específicos
+Seguridad
+
+RNF-01: SEGURIDAD.
+ID del Requisito	RNF-01
+Nombre del Requisito	Seguridad
+Actor de Sistema	Sistema
+Descripción	El sistema debe implementar medidas de seguridad para proteger contra ataques y accesos no autorizados.
+
+RNF-07: CUMPLIMIENTO LEGAL.
+ID del Requisito	RNF-07
+Nombre del Requisito	Cumplimiento Legal
+Actor de Sistema	Sistema
+Descripción	La página web debe cumplir con todas las leyes y regulaciones locales sobre privacidad y protección de datos.
+
+RNF-13: AUDITORíA.
+ID del Requisito	RNF-13
+Nombre del Requisito	Auditoría
+Actor de Sistema	Sistema
+Descripción	El sistema debe mantener registros de auditoría para todas las transacciones financieras y cambios en el inventario.
+Rendimiento
+
+RNF-02: TIEMPO DE CARGA.
+ID del Requisito	RNF-02
+Nombre del Requisito	Tiempo de Carga
+Actor de Sistema	Sistema
+Descripción	El sistema debe cargar en menos de 3 segundos en una conexión de red estándar.
+
+RNF-10: RENDIMIENTO.
+ID del Requisito	RNF-10
+Nombre del Requisito	Rendimiento
+Actor de Sistema	Sistema
+Descripción	El sistema debe mantener un rendimiento óptimo bajo carga máxima esperada.
+
+RNF-16: CARGA DE RECURSOS.
+ID del Requisito	RNF-16
+Nombre del Requisito	Carga de Recursos
+Actor de Sistema	Sistema
+Descripción	Los recursos de la página web deben cargarse en menos de 1 segundo en conexiones de banda ancha.
+
+RNF-18: GESTIóN DE CACHé.
+ID del Requisito	RNF-18
+Nombre del Requisito	Gestión de Caché
+Actor de Sistema	Sistema
+Descripción	Implementar un sistema de caché para reducir la carga del servidor y mejorar los tiempos de respuesta.
+Disponibilidad
+RNF-03: DISPONIBILIDAD.
+ID del Requisito	RNF-03
+Nombre del Requisito	Disponibilidad
+Actor de Sistema	Sistema
+Descripción	El sistema debe estar disponible 24/7 con un tiempo de inactividad mínimo.
+
+RNF-11: RECUPERACIóN.
+ID del Requisito	RNF-11
+Nombre del Requisito	Recuperación
+Actor de Sistema	Sistema
+Descripción	El sistema debe permitir una rápida recuperación en caso de fallo grave.
+
+RNF-19: SOPORTE DE COPIAS DE SEGURIDAD.
+ID del Requisito	RNF-19
+Nombre del Requisito	Soporte de Copias de Seguridad
+Actor de Sistema	Sistema
+Descripción	El sistema debe realizar copias de seguridad automáticas.
+Portabilidad
+RNF-04: COMPATIBILIDAD DE NAVEGADORES.
+ID del Requisito	RNF-04
+Nombre del Requisito	Compatibilidad de Navegadores
+Actor de Sistema	Cliente
+Descripción	La página web debe ser compatible con los principales navegadores (Chrome, Firefox, Safari, Edge).
+
+RNF-05: RESPONSIVIDAD.
+ID del Requisito	RNF-05
+Nombre del Requisito	Responsividad
+Actor de Sistema	Cliente
+Descripción	La interfaz de usuario debe ser completamente responsiva, adaptándose a dispositivos móviles, tablets y escritorio.
+
+RNF-17: COMPATIBILIDAD CON VERSIONES ANTERIORES.
+ID del Requisito	RNF-17
+Nombre del Requisito	Compatibilidad con Versiones Anteriores
+Actor de Sistema	Cliente
+Descripción	Las actualizaciones del sistema no deben afectar la funcionalidad de las versiones de la API utilizadas por aplicaciones de terceros.
+Escalabilidad
+RNF-06: ESCALABILIDAD.
+ID del Requisito	RNF-06
+Nombre del Requisito	Escalabilidad
+Actor de Sistema	Sistema
+Descripción	El sistema debe ser escalable para manejar un aumento en el tráfico de usuarios sin afectar el rendimiento.
+
+RNF-12: INTEGRACIóN DE API.
+ID del Requisito	RNF-12
+Nombre del Requisito	Integración de API
+Actor de Sistema	Sistema
+Descripción	El sistema debe integrarse de manera efectiva con APIs de mapas y pagos.
+
+RNF-20: EFICIENCIA ENERGéTICA.
+ID del Requisito	RNF-20
+Nombre del Requisito	Eficiencia Energética
+Actor de Sistema	Sistema
+Descripción	El sistema debe estar diseñado para ser eficiente en términos de consumo de recursos.
+Usabilidad
+RNF-08: USABILIDAD.
+ID del Requisito	RNF-08
+Nombre del Requisito	Usabilidad
+Actor de Sistema	Cliente
+Descripción	La interfaz de usuario debe ser intuitiva y fácil de usar.
+
+RNF-15: ACCESIBILIDAD.
+ID del Requisito	RNF-15
+Nombre del Requisito	Accesibilidad
+Actor de Sistema	Cliente
+Descripción	La página web debe cumplir con pautas de accesibilidad.
+Mantenibilidad
+RNF-09: MANTENIBILIDAD.
+ID del Requisito	RNF-09
+Nombre del Requisito	Mantenibilidad
+Actor de Sistema	Equipo de Desarrollo
+Descripción	El código debe estar bien documentado y seguir estándares de codificación para facilitar su mantenimiento.
+
+RNF-14: ACTUALIZACIONES Y PARCHEO.
+ID del Requisito	RNF-14
+Nombre del Requisito	Actualizaciones y Parcheo
+Actor de Sistema	Equipo de Desarrollo
+Descripción	El sistema debe permitir la instalación de actualizaciones y parches de manera fácil.
+3.3 Requisitos Comunes de Interfaces
+3.3.1 Interfaces de Usuario
+La interfaz de la tienda web está construida con React 18 + Vite 5 y estilizada con Tailwind CSS y DaisyUI. El diseño refleja la identidad visual de la cafetería Don Palito Junior mediante una paleta de colores cálidos, tipografía legible y componentes accesibles.
+
+La interfaz es completamente responsiva, adaptándose a dispositivos móviles, tablets y escritorio. La navegación es intuitiva: menú principal con acceso a catálogo, carrito, perfil e historial de pedidos. Las imágenes de productos son gestionadas mediante Cloudinary con carga optimizada (lazy loading).
+El panel de administración es una interfaz separada que ofrece vistas de inventario, pedidos, estadísticas y configuración. Ambas interfaces comparten el mismo sistema de autenticación vía Clerk.
+3.3.2 Interfaces de Hardware
+El sistema no requiere integración con hardware especializado para su operación principal. Opera sobre infraestructura estándar de navegador web y dispositivos móviles convencionales.
+Se contempla compatibilidad con códigos QR de pago, que son generados por el sistema y leídos por dispositivos móviles del cliente mediante la cámara nativa. No se requieren impresoras de tickets ni escáneres de código de barras en la versión actual del sistema.
+3.3.3 Interfaces de Software
+El sistema interactúa con los siguientes servicios externos mediante sus APIs oficiales:
+
+Clerk (autenticación): Gestión de sesiones, OAuth con Google, control de roles (user / admin) y verificación de correo electrónico. Stripe (pagos): Procesamiento de pagos con tarjeta, creación de Payment Intents y webhooks para confirmación de transacciones. Cloudinary (media): Almacenamiento, transformación y entrega optimizada de imágenes de productos. Inngest (jobs): Orquestación de tareas en segundo plano como envío de correos y actualización de estados. Nodemailer (correo): Envío de notificaciones de pedidos y facturas por correo electrónico. Google Maps API: Mapa interactivo para visualización de la ubicación de la cafetería.
+3.3.4 Interfaces de Comunicación
+Toda la comunicación entre el frontend (React), la aplicación móvil (React Native) y el backend (Node.js + Express 5) se realiza mediante API REST sobre HTTPS, con autenticación basada en JWT emitidos por Clerk.
+El backend expone endpoints documentados bajo rutas versionadas (/api/v1/). Los webhooks de Stripe y Clerk se reciben en rutas protegidas con firma criptográfica. Las notificaciones de estado de pedido se envían por correo electrónico mediante Nodemailer a través de Inngest, garantizando entrega asíncrona y reintentos automáticos en caso de fallo.
+
+4. APÉNDICES
+4.1 Glosario
+El presente glosario define los términos técnicos, funcionales y normativos empleados a lo largo de este documento, contextualizados al stack tecnológico y al alcance real del Sistema de Comercio Electrónico Don Palito Junior implementado en marzo de 2026.
+React 18 + Vite 5: Stack frontend de la tienda web. React gestiona la interfaz de usuario mediante componentes reutilizables; Vite es el bundler y servidor de desarrollo con tiempos de arranque notablemente rápidos frente a alternativas como Create React App.
+React Native + Expo SDK 52: Stack de la aplicación móvil. Permite desarrollar apps nativas para Android e iOS desde una base de código JavaScript compartida, aprovechando las APIs nativas del dispositivo.
+Node.js + Express 5: Entorno de ejecución y framework del servidor backend. Node.js ejecuta JavaScript en el servidor; Express 5 gestiona las rutas HTTP, el middleware de autorización y la lógica de la API REST.
+MongoDB Atlas: Base de datos NoSQL en la nube utilizada para almacenar productos, pedidos, usuarios, categorías, cupones y calificaciones. Ofrece escalabilidad automática, backups gestionados y acceso global con baja latencia.
+Clerk: Servicio de autenticación e identidad. Gestiona el registro, inicio de sesión (incluido OAuth con Google), verificación de correo electrónico, sesiones JWT y control de roles (user / admin) sin necesidad de implementación propia.
+Stripe: Pasarela de pagos utilizada para procesar pagos con tarjeta de crédito/débito. Gestiona Payment Intents y emite webhooks al backend para confirmar o rechazar transacciones de forma automática.
+Cloudinary: Servicio de gestión de imágenes en la nube. Almacena, transforma y entrega las imágenes de productos con optimización automática de formato, resolución y carga diferida (lazy loading).
+Inngest: Plataforma de orquestación de tareas en segundo plano (background jobs). Se utiliza para disparar envíos de correo, actualización de estados de pedido y otras operaciones asíncronas con reintentos automáticos ante fallos.
+Nodemailer: Biblioteca Node.js para el envío de correos electrónicos transaccionales. Utilizada junto a Inngest para notificar a los clientes sobre el estado de sus pedidos y enviarles la factura de compra.
+Tailwind CSS + DaisyUI: Herramientas de estilizado del frontend web. Tailwind CSS provee clases utilitarias de bajo nivel; DaisyUI agrega componentes preconstruidos (botones, modales, formularios, tarjetas) con soporte para temas de color.
+Git / GitHub: Sistema de control de versiones y plataforma de alojamiento de repositorios. El equipo coordina el código del frontend, backend y app móvil mediante ramas y pull requests en repositorios compartidos.
+JWT (JSON Web Token): Estándar abierto (RFC 7519) para transmitir información entre partes de forma segura. El backend verifica los JWT emitidos por Clerk en cada solicitud a la API para autenticar al usuario y determinar su rol.
+API REST: Estilo arquitectónico para servicios web. El backend expone endpoints bajo rutas versionadas (/api/v1/) que el frontend y la app móvil consumen mediante peticiones HTTP estándar (GET, POST, PUT, DELETE).
+Webhook: Notificación HTTP enviada automáticamente por un servicio externo (Stripe, Clerk) al backend cuando ocurre un evento relevante, como la confirmación de un pago o la creación de un usuario nuevo.
+Catálogo de Productos: Sección de la tienda web y la app móvil que muestra los productos disponibles de la cafetería con imagen, nombre, descripción, precio y disponibilidad. Permite filtrado por categoría y búsqueda por nombre.
+Código QR de Pago: Método de pago que permite a los clientes realizar transferencias bancarias escaneando un código QR desde su dispositivo móvil. El comprobante se envía al administrador vía WhatsApp para su validación manual.
+Panel de Administración: Interfaz web exclusiva para administradores que permite gestionar productos, categorías, pedidos, cupones, facturas, calificaciones y estadísticas de ventas del negocio.
+Cupón de Descuento: Código alfanumérico creado por el administrador que los clientes pueden aplicar durante el proceso de compra para obtener un descuento sobre el total del pedido.
+Estado del Pedido: Etapa en el ciclo de vida de una orden: Pendiente → Pagado / Rechazado → Entregado. El administrador actualiza el estado manualmente desde el panel; el sistema notifica al cliente por correo en cada cambio.
+Calificación de Producto: Evaluación numérica de 1 a 5 estrellas que un cliente puede dejar sobre un producto después de haberlo comprado. El administrador puede moderar y eliminar calificaciones desde el panel.
+Factura: Documento electrónico generado automáticamente por el sistema cuando se confirma el pago de un pedido. Se envía al correo del cliente y queda disponible para descarga desde el panel de administración.
+Personalización de Empaques: Funcionalidad que permite al cliente incluir una nota especial al momento de realizar su pedido, solicitando un diseño o mensaje personalizado en el empaque del producto.
+IEEE 830-1998: Estándar del Institute of Electrical and Electronics Engineers para la documentación de Especificaciones de Requisitos de Software (ERS). Define la estructura mínima, el contenido y las características de calidad que debe tener un documento de requisitos.
+WCAG 2.1: Web Content Accessibility Guidelines. Directrices del W3C para mejorar la accesibilidad del contenido web. El sistema aspira a cumplir el nivel AA en la interfaz de la tienda web, garantizando acceso a personas con diversidad funcional.
+Ley 1581 de 2012: Ley colombiana de protección de datos personales (Habeas Data). Establece las condiciones para el tratamiento de datos de ciudadanos colombianos. El sistema la cumple mediante políticas de privacidad, consentimiento explícito y protección de los datos de clientes.
+SENA: Servicio Nacional de Aprendizaje. Entidad pública colombiana de formación profesional. El presente proyecto es el trabajo de grado del programa Tecnología en Análisis y Desarrollo de Software del Centro del Diseño y Manufactura del Cuero (CDMC), Regional Antioquia.
+Disponibilidad: Porcentaje de tiempo en que el sistema está operativo y accesible. El sistema debe estar disponible 24/7 con tiempo de inactividad mínimo, respaldado por la infraestructura de MongoDB Atlas y los servicios cloud utilizados.
+Escalabilidad: Capacidad del sistema para manejar un aumento en el tráfico de usuarios sin afectar el rendimiento. La arquitectura basada en servicios cloud (MongoDB Atlas, Cloudinary, Clerk) facilita el escalado horizontal.
+Responsividad: Propiedad de la interfaz de usuario que le permite adaptarse correctamente a distintos tamaños de pantalla: móviles, tablets y escritorio. Implementada con Tailwind CSS en la tienda web y con los componentes nativos de Expo en la app móvil.
+Seguridad de Datos: Conjunto de medidas que protegen la información personal y transaccional de los usuarios. Se implementa mediante HTTPS, JWT firmados por Clerk, webhooks con firma criptográfica (Stripe) y cumplimiento de la Ley 1581 de 2012.
+Tiempo de Carga: Tiempo máximo permitido para que el sistema responda a una solicitud del usuario. El estándar definido en los RNF establece menos de 3 segundos en conexión estándar, apoyado por la optimización de imágenes de Cloudinary y la caché del frontend.
+Mantenibilidad: Facilidad para modificar, corregir y actualizar el sistema. Se garantiza mediante código documentado, separación de responsabilidades entre frontend, backend y app móvil, y uso de repositorios Git con historial de cambios.
+Backup de Datos: Copias de seguridad automáticas de la base de datos realizadas por MongoDB Atlas de forma periódica. Permiten recuperar el sistema ante fallos graves sin pérdida significativa de información.
+Control de Acceso: Mecanismo que restringe las funciones disponibles según el rol del usuario autenticado. Los roles definidos son user (cliente) y admin (administrador), gestionados por Clerk y verificados en cada endpoint del backend.
+
+
+4.2 Referencias Técnicas
+Las siguientes referencias corresponden a la documentación oficial, normativas y estándares utilizados durante el desarrollo y la documentación del sistema.
+
+Referencia	Título	Fuente / URL
+IEEE 830-1998	Standard for Software Requirements Specifications	standards.ieee.org/ieee/830/1222/
+Clerk Docs	Clerk Authentication — Documentación oficial	clerk.com/docs
+Stripe Docs	Stripe Payments API — Documentación oficial	stripe.com/docs
+Cloudinary Docs	Cloudinary Media Management — Documentación oficial	cloudinary.com/documentation
+Inngest Docs	Inngest Background Jobs — Documentación oficial	inngest.com/docs
+MongoDB Atlas Docs	MongoDB Atlas Cloud Database — Documentación oficial	mongodb.com/docs/atlas
+React Docs	React 18 — Documentación oficial	react.dev
+Vite Docs	Vite 5 — Documentación oficial	vitejs.dev
+Express Docs	Express 5 — Documentación oficial	expressjs.com
+Expo Docs	Expo SDK 52 — Documentación oficial	docs.expo.dev
+Tailwind CSS Docs	Tailwind CSS — Documentación oficial	tailwindcss.com/docs
+DaisyUI Docs	DaisyUI Components — Documentación oficial	daisyui.com/docs
+Google Maps API	Google Maps JavaScript API — Documentación oficial	developers.google.com/maps
+WCAG 2.1	Web Content Accessibility Guidelines 2.1 — W3C Recommendation	w3.org/TR/WCAG21
+Ley 1581 de 2012	Protección de datos personales — Función Pública Colombia	funcionpublica.gov.co
+Ley 2013 de 2019	Modificación Ley 1581 de 2012 — Función Pública Colombia	funcionpublica.gov.co
+
+

@@ -24,12 +24,12 @@ const LocalCartProvider = ({ children, onItemsRef }) => {
       const existing = prev.find((i) => getProductId(i.product) === id);
       if (existing) {
         const newQty = Math.min(existing.quantity + quantity, LIMITS.maxQuantityPerItem);
-        toast.success(`${product.name} actualizado en el carrito`);
+        toast.success(`${product.name} actualizado en el carrito`, { toastId: 'cart-action' });
         return prev.map((i) =>
           getProductId(i.product) === id ? { ...i, quantity: newQty } : i
         );
       }
-      toast.success(`${product.name} agregado al carrito`);
+      toast.success(`${product.name} agregado al carrito`, { toastId: 'cart-action' });
       return [...prev, { product, quantity }];
     });
   };

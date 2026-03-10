@@ -19,7 +19,23 @@ const useServerCart = () => {
   });
 
   // El backend devuelve { cart: { items: [...] } }, pero también soportamos { items: [...] }
-  const items = cartData?.cart?.items || cartData?.items || [];
+  const rawItems = cartData?.cart?.items || cartData?.items || [];
+  // Normalizar: fusionar entradas del mismo producto (previene duplicados por clicks rápidos)
+  // Usa el mismo patrón que getProductId: _id > id > productId como fallback
+  const itemMap = new Map();
+  rawItems.forEach((item, idx) => {
+    const id = item.product?._id?.toString()
+      || item.product?.id?.toString()
+      || item.productId?.toString();
+    const key = id || `item-${idx}`;
+    if (id && itemMap.has(id)) {
+      const prev = itemMap.get(id);
+      itemMap.set(id, { ...prev, quantity: prev.quantity + item.quantity });
+    } else {
+      itemMap.set(key, item);
+    }
+  });
+  const items = Array.from(itemMap.values());
   const subtotal = items.reduce((acc, item) => {
     const price = item.product?.discount
       ? Math.round(item.product.price * (1 - item.product.discount / 100))
@@ -60,7 +76,7 @@ const useServerCart = () => {
     addItem: (product, quantity = 1) => {
       const productId = getProductId(product);
       addToCartMutation.mutate({ productId, quantity });
-      toast.success(`${product.name} agregado al carrito`);
+      toast.success(`${product.name} agregado al carrito`, { toastId: 'cart-action' });
     },
     updateItem: (productId, quantity) =>
       updateItemMutation.mutate({ productId, quantity }),

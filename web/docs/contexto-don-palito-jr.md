@@ -2,12 +2,12 @@
 
 ## 📋 Información General del Proyecto
 
-**Nombre:** Don Palito Jr - Sistema de Comercio Electrónico  
-**Tipo:** Aplicación web y móvil para cafetería  
-**Estado:** En desarrollo activo  
-**Cliente:** Rosiris Buelvas Pedroza y Luis Eduardo Muñoz (Propietarios Cafetería Don Palito Junior)  
-**Equipo de Desarrollo:** Andrea Arcila Cano, Jair González Buelvas, Maicol Estiven Córdoba  
-**Institución:** SENA - Tecnología en Análisis y Desarrollo de Software  
+**Nombre:** Don Palito Jr - Sistema de Comercio Electrónico
+**Tipo:** Aplicación web, móvil y panel administrativo para cafetería
+**Estado:** Desarrollo completado — pendiente despliegue en producción
+**Cliente:** Rosiris Buelvas Pedroza y Luis Eduardo Muñoz (Propietarios Cafetería Don Palito Junior)
+**Equipo de Desarrollo:** Jair González Buelvas, Andrea Arcila Cano, Maicol Estiven Córdoba
+**Institución:** SENA - Tecnología en Análisis y Desarrollo de Software
 **Ubicación del Negocio:** Cra 47 76D Sur - 37, Sabaneta, Antioquia
 
 ---
@@ -15,12 +15,12 @@
 ## 🎯 Objetivo del Proyecto
 
 Desarrollar un sistema integral de comercio electrónico para la Cafetería Don Palito Junior que permita:
-- Modernizar la experiencia del cliente mediante una plataforma digital
-- Optimizar la gestión interna del negocio
+- Modernizar la experiencia del cliente mediante una plataforma digital (web + mobile)
+- Optimizar la gestión interna del negocio mediante un panel administrativo
 - Expandir el alcance comercial más allá del público local
 - Fortalecer la presencia digital manteniendo la esencia tradicional
-- Automatizar procesos operativos y reducir errores
-- Fomentar la fidelización mediante promociones y sistema de reseñas
+- Automatizar procesos operativos (pagos, emails, facturas) y reducir errores
+- Fomentar la fidelización mediante cupones y sistema de reseñas
 
 ---
 
@@ -32,7 +32,7 @@ Desarrollar un sistema integral de comercio electrónico para la Cafetería Don 
 - Café y bebidas
 - Productos típicos colombianos
 
-**Desafío:** El negocio necesita adaptarse a las nuevas tendencias digitales donde los clientes esperan realizar compras desde dispositivos móviles, pagar digitalmente y tener una experiencia personalizada.
+**Contexto:** El negocio opera desde 2005 en Sabaneta, Antioquia. El proyecto busca adaptar la experiencia al canal digital, donde los clientes esperan realizar compras desde dispositivos móviles, pagar con tarjeta o transferencia, y tener una experiencia personalizada.
 
 ---
 
@@ -40,482 +40,618 @@ Desarrollar un sistema integral de comercio electrónico para la Cafetería Don 
 
 ### Stack Tecnológico Completo
 
-#### Frontend Web ✅ En desarrollo activo
-- **Lenguajes:** HTML5, CSS3, JavaScript (ES6+), JSX
-- **Framework:** React 18.2.0 + Vite 5
-- **Estilos:** Tailwind CSS 3.4 + DaisyUI 4.12
-- **Estado del servidor:** @tanstack/react-query 5
-- **Enrutamiento:** React Router DOM 6
-- **Formularios:** React Hook Form + Yup
-- **HTTP / Auth:** Axios + Clerk (`@clerk/clerk-react`)
-- **Pagos:** Stripe (`@stripe/react-stripe-js`)
-- **UI:** React Icons, React Toastify
+#### Frontend Web ✅ Completado (Jair González Buelvas)
+- **Lenguajes:** HTML5, CSS3, JavaScript ES6+, JSX
+- **Framework:** React 18.2.0 + Vite 5.0.8
+- **Estilos:** Tailwind CSS 3.4.19 + DaisyUI 4.12.24
+- **Estado del servidor:** @tanstack/react-query 5.90.21
+- **Enrutamiento:** React Router DOM 6.30.3
+- **Formularios:** React Hook Form 7.71.1 + Yup 1.7.1
+- **HTTP / Auth:** Axios 1.13.5 + @clerk/clerk-react 5.60.1
+- **Pagos:** @stripe/react-stripe-js 5.6.0 + @stripe/stripe-js 8.7.0
+- **UI:** React Icons 4.12.0, React Toastify 9.1.3
+- **Repo:** https://github.com/DarkerJB/donpalitojrweb.git
 
-#### Frontend Mobile ⚠️ Planificado — no iniciado aún
-- **Framework:** React Native / Android nativo
-- **Lenguaje:** JavaScript/JSX
-- **Gestión de Estado:** React Hooks, Context API
-- **Navegación:** React Navigation
+#### Frontend Mobile ✅ Completado (Andrea Arcila + Maicol Córdoba)
+- **Framework:** React Native + Expo (Expo SDK 52)
+- **Lenguaje:** TypeScript / TSX
+- **Navegación:** Expo Router (file-based routing)
+- **Autenticación:** Clerk Expo (@clerk/clerk-expo)
+- **Plataformas:** iOS + Android
+- **Repo:** https://github.com/[equipo]/ecommerce_app.git (READ-ONLY para Jair)
 
-#### Backend
+#### Admin Panel ✅ Completado (Maicol Córdoba)
+- **Framework:** React 18 + Vite
+- **Estilos:** Tailwind CSS
+- **Autenticación:** Clerk (@clerk/clerk-react)
+- **HTTP:** Axios
+- **Acceso:** Solo usuarios con `sessionClaims.metadata.role === 'admin'`
+- **Repo:** mismo repo `ecommerce_app/admin` (READ-ONLY para Jair)
+
+#### Backend ✅ Completado (Andrea Arcila + Jair)
 - **Entorno:** Node.js
-- **Framework:** Express.js
-- **Lenguaje:** JavaScript
+- **Framework:** Express 5.2.1
+- **Lenguaje:** JavaScript ES Modules
 - **Arquitectura:** MVC (Modelo-Vista-Controlador)
-- **API:** REST con documentación Swagger
-- **Autenticación:** Clerk (gestión externa de usuarios) + JWT para protección de endpoints
-- **Validación:** Express Validator
+- **API:** REST (documentación manual — no Swagger)
+- **Autenticación:** @clerk/express (verifica JWT de Clerk en cada request protegido)
+- **ODM:** Mongoose 8.19.3
+- **Background jobs:** Inngest (sync-user: crea usuario en MongoDB al registrarse en Clerk)
+- **Imágenes:** Cloudinary + Multer (subida en admin)
+- **Pagos:** Stripe 19 (intención de pago + webhook para confirmar)
+- **Emails:** Nodemailer (Gmail App Password)
+- **Facturas:** PDFKit + csv-writer (se generan al pasar orden a "paid")
+- **Repo:** `donpalitojrweb/backend` (Jair mantiene esta copia)
 
 #### Base de Datos
 - **Motor:** MongoDB
-- **ODM:** Mongoose
+- **ODM:** Mongoose 8.19.3
 - **Tipo:** NoSQL orientada a documentos
 - **Hosting:** MongoDB Atlas (Cloud)
 
-#### Herramientas de Desarrollo y Diseño
-- **Diseño UX/UI:** Figma
-- **Diagramación:** PlantUML, Markdown
-- **Testing:** Postman, Swagger
-- **Control de Versiones:** Git, GitHub (repositorio privado)
-- **Metodología:** Scrum (sprints de desarrollo)
+#### Servicios Externos
+| Servicio | Uso |
+|---|---|
+| Clerk | Autenticación (registro, login, OAuth Google, JWT, webhooks) |
+| MongoDB Atlas | Base de datos cloud |
+| Cloudinary | Almacenamiento de imágenes de productos |
+| Stripe | Pagos con tarjeta (PaymentIntent + webhook) |
+| Inngest | Background job: sincronizar usuario Clerk → MongoDB |
+| Nodemailer/Gmail | Emails transaccionales y facturas |
+| ngrok | Túnel HTTPS para webhooks en desarrollo local |
 
-#### Infraestructura y Despliegue
-- **Hosting:** Servicio Cloud (por definir)
-- **Dominio:** Registro web personalizado
-- **Integración:** API REST documentada
-- **Ambiente:** Desarrollo, Staging, Producción
+#### Herramientas de Desarrollo
+- **Editor:** Visual Studio Code
+- **Testing API:** Postman
+- **Diseño:** Figma
+- **Base de Datos (local):** MongoDB Compass
+- **Control de Versiones:** Git, GitHub
+- **Diagramas:** PlantUML, Draw.io
 
 ---
 
 ## 📦 Estructura del Proyecto
 
 ```
-donpalitojrweb/
-├── web/                          # Frontend Web — React + Vite (Jair)
+donpalitojrweb/                    ← Repo de Jair
+├── web/                           # Frontend Web — React + Vite
 │   ├── src/
-│   │   ├── assets/               # Imágenes, logos
+│   │   ├── assets/                # logos, imágenes estáticas
 │   │   ├── components/
-│   │   │   ├── common/           # Button, Badge, Loading…
-│   │   │   ├── layout/           # Navbar, Footer
-│   │   │   ├── products/         # ProductCard
-│   │   │   └── checkout/         # StripeCheckoutForm, PaymentMethodSelector…
-│   │   ├── contexts/             # AuthContext, CartContext
-│   │   ├── data/                 # mockData.js (productos mock mientras backend)
-│   │   ├── hooks/                # useProducts, useProduct, useServerCart
+│   │   │   ├── common/            # Button, Badge, Loading, FilterBar, SearchBar…
+│   │   │   ├── layout/            # Navbar, Footer
+│   │   │   ├── products/          # ProductCard, ProductReviews
+│   │   │   ├── checkout/          # StripeCheckoutForm, PaymentMethodSelector
+│   │   │   └── profile/           # RatingModal, AddressForm, AddressCard…
+│   │   ├── contexts/
+│   │   │   ├── AuthContext.jsx    # useAuth, isAdmin (sessionClaims.role)
+│   │   │   └── CartContext.jsx    # Carrito híbrido local/servidor
+│   │   ├── hooks/
+│   │   │   ├── useProducts.js     # React Query: lista de productos
+│   │   │   ├── useProduct.js      # React Query: detalle de producto
+│   │   │   ├── useServerCart.js   # Carrito en servidor (autenticado)
+│   │   │   ├── useOrders.js       # Historial y detalle de pedidos
+│   │   │   ├── useAddresses.js    # CRUD de direcciones de entrega
+│   │   │   ├── useWishlist.js     # Lista de favoritos
+│   │   │   ├── useReviews.js      # Reseñas de productos
+│   │   │   └── useProfile.js      # Perfil: demografía, notificaciones, desactivar
 │   │   ├── pages/
-│   │   │   ├── Home.jsx
-│   │   │   ├── Catalog.jsx
-│   │   │   ├── ProductDetail.jsx
-│   │   │   ├── Cart.jsx
-│   │   │   ├── auth/             # Login, Register, ForgotPassword, PostLogin
-│   │   │   ├── checkout/         # Checkout, CheckoutSuccess
-│   │   │   ├── profile/          # Profile, Orders, OrderDetail, Wishlist
-│   │   │   └── info/             # About, Contact, Terms, Privacy, Cookies
-│   │   ├── services/             # api.js, productService, orderService, cartService…
-│   │   ├── styles/               # globals.css (Tailwind + animaciones)
-│   │   ├── utils/                # constants.js, productHelpers.js
-│   │   ├── App.jsx
-│   │   └── main.jsx
-│   ├── docs/                     # Documentación específica del frontend
+│   │   │   ├── Home.jsx           # Hero, promos, favoritos, mapa
+│   │   │   ├── Catalog.jsx        # Catálogo con filtros y búsqueda
+│   │   │   ├── ProductDetail.jsx  # Detalle, reseñas, wishlist
+│   │   │   ├── Cart.jsx           # Carrito con cupones
+│   │   │   ├── InactiveAccount.jsx
+│   │   │   ├── NotFound.jsx       # 404
+│   │   │   ├── auth/
+│   │   │   │   ├── Login.jsx
+│   │   │   │   ├── Register.jsx
+│   │   │   │   ├── ForgotPassword.jsx
+│   │   │   │   └── PostLogin.jsx  # Redirect post-auth (admin o home)
+│   │   │   ├── checkout/
+│   │   │   │   ├── Checkout.jsx   # Stepper 3 pasos: dirección, pago, confirmación
+│   │   │   │   └── CheckoutSuccess.jsx
+│   │   │   ├── profile/
+│   │   │   │   ├── Profile.jsx    # Tabs: Info, Pedidos, Direcciones, Wishlist
+│   │   │   │   └── OrderDetail.jsx
+│   │   │   └── info/
+│   │   │       ├── About.jsx, Contact.jsx, FAQ.jsx
+│   │   │       ├── Terms.jsx, Privacy.jsx, Cookies.jsx
+│   │   ├── services/
+│   │   │   ├── api.js             # Axios instance + interceptor Clerk + ACCOUNT_INACTIVE
+│   │   │   └── index.js           # Funciones de servicio por módulo
+│   │   ├── styles/
+│   │   │   └── globals.css        # Tailwind + DaisyUI + animaciones custom
+│   │   ├── utils/
+│   │   │   ├── constants.js       # VITE_API_URL, VITE_STRIPE_PUBLISHABLE_KEY…
+│   │   │   ├── productHelpers.js  # formatCategoryLabel, helpers de productos
+│   │   │   └── formatters.js      # formatCurrency (COP)
+│   │   ├── App.jsx                # Router + rutas + ProtectedRoute + QueryClientProvider
+│   │   └── main.jsx               # ClerkProvider + App
+│   ├── public/                    # palitos.png, logo-color.png…
+│   ├── docs/
 │   │   ├── CHANGELOG.md
-│   │   └── contexto-don-palito-jr.md
-│   ├── .env                      # Variables de entorno (no subir a git)
+│   │   ├── contexto-don-palito-jr.md       ← este archivo
+│   │   ├── GUIA-CLAUDE-CHAT-DOCUMENTACION.md
+│   │   ├── ARRANCAR-PROYECTO.md
+│   │   ├── cambio-backend-productos-publicos.md
+│   │   ├── REQUISITOS FUNCIONALES.txt
+│   │   └── REQUISITOS NO FUNCIONALES.txt
+│   ├── .env                       # VITE_CLERK_PUBLISHABLE_KEY, VITE_API_URL, VITE_STRIPE_PUBLISHABLE_KEY
 │   ├── package.json
 │   ├── vite.config.js
 │   ├── tailwind.config.js
 │   └── postcss.config.js
 │
-└── (backend en repositorio separado — compañeros de equipo)
-    # Node.js + Express + MongoDB + Clerk + Inngest + Stripe
+└── backend/                       # Backend Node.js + Express 5
+    └── src/
+        ├── config/
+        │   ├── db.js              # Conexión MongoDB Atlas
+        │   ├── env.js             # Centraliza process.env con defaults
+        │   └── inngest.js         # Inngest client + sync-user function
+        ├── controllers/
+        │   ├── admin.controller.js    # Dashboard, pedidos, clientes, estadísticas
+        │   ├── auth.controller.js     # Endpoint de sincronización
+        │   ├── cart.controller.js     # CRUD carrito servidor
+        │   ├── coupon.controller.js   # CRUD cupones + validación + getActiveCoupons
+        │   ├── order.controller.js    # Crear (transferencia), listar, detalle
+        │   ├── payment.controller.js  # Stripe PaymentIntent + webhook + createTransferOrder
+        │   ├── product.controller.js  # CRUD productos + Cloudinary
+        │   ├── review.controller.js   # Crear y listar reseñas
+        │   └── user.controller.js     # Perfil, direcciones, wishlist, notificaciones
+        ├── middleware/
+        │   ├── protectRoute.js        # Verifica JWT de Clerk
+        │   ├── adminOnly.js           # Verifica role === 'admin'
+        │   └── upload.js              # Multer (memoria) para imágenes
+        ├── models/
+        │   ├── user.model.js
+        │   ├── product.model.js
+        │   ├── cart.model.js
+        │   ├── order.model.js
+        │   ├── coupon.model.js
+        │   └── review.model.js
+        ├── routes/
+        │   ├── admin.routes.js        # /api/admin/*
+        │   ├── auth.routes.js         # /api/auth/*
+        │   ├── cart.routes.js         # /api/cart/*
+        │   ├── coupon.routes.js       # /api/coupons/*
+        │   ├── order.routes.js        # /api/orders/*
+        │   ├── payment.routes.js      # /api/payment/*
+        │   ├── product.routes.js      # /api/products/*
+        │   ├── review.routes.js       # /api/reviews/*
+        │   └── user.routes.js         # /api/users/*
+        ├── services/
+        │   ├── email.service.js       # Nodemailer: bienvenida, pedidos, facturas, marketing
+        │   └── invoice.service.js     # PDFKit (PDF) + csv-writer (CSV)
+        └── server.js                  # Express app, CORS, rutas, puerto 3000
+
+ecommerce_app/                     ← Repo de Andrea/Maicol (READ-ONLY para Jair)
+├── mobile/                        # App Mobile — React Native + Expo
+│   └── app/
+│       ├── (auth)/
+│       │   ├── login.tsx          # Login con Clerk SSO (Google, email)
+│       │   └── sso-callback.tsx   # Callback OAuth
+│       ├── (tabs)/
+│       │   ├── index.tsx          # Home / Catálogo
+│       │   ├── cart.tsx           # Carrito
+│       │   └── profile.tsx        # Perfil básico
+│       ├── product/
+│       │   └── [id].tsx           # Detalle de producto
+│       └── profile/
+│           ├── orders.tsx         # Historial de pedidos
+│           ├── wishlist.tsx       # Favoritos
+│           ├── edit-profile.tsx   # Editar datos personales
+│           ├── addresses.tsx      # Gestión de direcciones
+│           ├── privacy-security.tsx
+│           └── account-inactive.tsx
+│
+├── admin/                         # Admin Panel — React + Vite
+│   └── src/
+│       └── pages/
+│           ├── LoginPage.jsx
+│           ├── DashboardPage.jsx  # Estadísticas generales
+│           ├── ProductsPage.jsx   # CRUD productos + imágenes
+│           ├── CustomersPage.jsx  # Listar, activar/desactivar clientes
+│           ├── OrdersPage.jsx     # Listar pedidos, cambiar estado
+│           ├── CouponsPage.jsx    # Crear, editar, activar/desactivar cupones
+│           └── UnauthorizedPage.jsx
+│
+└── backend/                       # Backend compartido (misma base que donpalitojrweb/backend)
 ```
 
 ---
 
 ## 🗃️ Modelo de Datos (MongoDB)
 
-### Colecciones Principales
+### Colecciones Activas: 6
 
-#### 1. **Usuarios (Users)**
-```javascript
-{
-  _id: ObjectId,
-  nombre: String,
-  apellido: String,
-  email: String (único, requerido),
-  password: String (hasheado con bcrypt),
-  telefono: String,
-  direccion: {
-    calle: String,
-    ciudad: String,
-    departamento: String,
-    codigoPostal: String
+> Nota: Los campos usan nombres en inglés (ES Modules, Mongoose 8). No existe colección de Inventario ni Analytics separada — el stock está en Product y las estadísticas se calculan en tiempo real.
+
+#### 1. **Users** — sincronizado vía Inngest webhook desde Clerk
+```js
+import mongoose from "mongoose";
+
+const addressSchema = new mongoose.Schema({
+  label: String,        // "Casa", "Trabajo"
+  street: String,
+  city: String,
+  department: String,
+  zipCode: String,
+  isDefault: { type: Boolean, default: false },
+}, { _id: true });
+
+const userSchema = new mongoose.Schema({
+  clerkId: { type: String, required: true, unique: true },
+  name: String,
+  email: { type: String, required: true, unique: true },
+  imageUrl: String,
+  role: { type: String, enum: ["user", "admin"], default: "user" },
+  isActive: { type: Boolean, default: true },
+  phone: String,
+  documentType: String,   // CC | CE | Pasaporte | NIT
+  documentNumber: String,
+  gender: String,         // Masculino | Femenino | No binario | Prefiero no decirlo
+  dateOfBirth: Date,
+  addresses: [addressSchema],
+  emailNotifications: { type: Boolean, default: true },
+  marketingEmails: { type: Boolean, default: false },
+}, { timestamps: true });
+
+export const User = mongoose.model("User", userSchema);
+```
+
+#### 2. **Products**
+```js
+const productSchema = new mongoose.Schema({
+  name: { type: String, required: true, trim: true },
+  description: String,
+  category: {
+    type: String,
+    enum: ["Palitos Premium", "Cocteleros", "Dulces", "Especiales", "Nuevos"],
+    required: true,
   },
-  rol: String, // 'cliente', 'admin'
-  fechaRegistro: Date,
-  activo: Boolean,
-  preguntasSeguridad: [{
-    pregunta: String,
-    respuesta: String (hasheada)
-  }],
-  ultimoAcceso: Date,
-  intentosFallidos: Number,
-  bloqueado: Boolean
-}
+  price: { type: Number, required: true, min: 0 },
+  stock: { type: Number, default: 0 },
+  images: [String],            // URLs de Cloudinary
+  isActive: { type: Boolean, default: true },
+}, { timestamps: true });
+
+export const Product = mongoose.model("Product", productSchema);
 ```
 
-#### 2. **Productos (Products)**
-```javascript
-{
-  _id: ObjectId,
-  nombre: String (requerido),
-  descripcion: String,
-  categoria: String, // 'buñuelos', 'palitos', 'cafe', 'bebidas', 'otros'
-  precio: Number (requerido),
-  precioAnterior: Number, // para mostrar descuentos
-  stock: Number,
-  disponible: Boolean,
-  imagenes: [String], // URLs de imágenes
-  promocion: {
-    activa: Boolean,
-    descuento: Number, // porcentaje
-    fechaInicio: Date,
-    fechaFin: Date
+#### 3. **Carts** — carrito del servidor (usuarios autenticados)
+```js
+const cartSchema = new mongoose.Schema({
+  user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true, unique: true },
+  cartItems: [{
+    product: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
+    quantity: { type: Number, default: 1 },
+  }],
+}, { timestamps: true });
+
+export const Cart = mongoose.model("Cart", cartSchema);
+```
+
+#### 4. **Orders**
+```js
+const orderSchema = new mongoose.Schema({
+  user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  orderItems: [{
+    product: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
+    name: String,
+    image: String,
+    price: Number,
+    quantity: Number,
+  }],
+  shippingAddress: {
+    street: String,
+    city: String,
+    department: String,
+    zipCode: String,
   },
-  valoraciones: [{
-    usuarioId: ObjectId,
-    calificacion: Number, // 1-5 estrellas
-    comentario: String,
-    fecha: Date
-  }],
-  promedioCalificacion: Number,
-  totalReseñas: Number,
-  fechaCreacion: Date,
-  fechaActualizacion: Date
-}
-```
-
-#### 3. **Pedidos (Orders)**
-```javascript
-{
-  _id: ObjectId,
-  clienteId: ObjectId (ref: 'Users'),
-  items: [{
-    productoId: ObjectId (ref: 'Products'),
-    nombre: String,
-    cantidad: Number,
-    precioUnitario: Number,
-    subtotal: Number
-  }],
-  subtotal: Number,
-  descuentos: Number,
-  total: Number,
-  estado: String, // 'pendiente', 'confirmado', 'preparando', 'listo', 'entregado', 'cancelado'
-  metodoPago: String, // 'qr', 'efectivo', 'transferencia'
-  comprobantePago: String, // URL del QR o comprobante
-  fechaPedido: Date,
-  fechaEntrega: Date,
-  direccionEntrega: Object,
-  notas: String,
-  historialEstados: [{
-    estado: String,
-    fecha: Date,
-    comentario: String
-  }]
-}
-```
-
-#### 4. **Reseñas (Reviews)**
-```javascript
-{
-  _id: ObjectId,
-  usuarioId: ObjectId (ref: 'Users'),
-  productoId: ObjectId (ref: 'Products'),
-  calificacion: Number, // 1-5
-  titulo: String,
-  comentario: String,
-  verificado: Boolean, // si compró el producto
-  util: Number, // votos de utilidad
-  respuestaAdmin: {
-    texto: String,
-    fecha: Date,
-    adminId: ObjectId
+  paymentMethod: { type: String, enum: ["stripe", "transferencia"], required: true },
+  paymentResult: {
+    id: String,           // "pi_..." (Stripe) | "transfer_..." (transferencia)
+    status: String,
+    update_time: String,
+    email_address: String,
   },
-  fecha: Date,
-  visible: Boolean
-}
+  totalPrice: { type: Number, required: true },
+  couponCode: String,
+  discountAmount: { type: Number, default: 0 },
+  status: {
+    type: String,
+    enum: ["pending", "paid", "in_preparation", "ready", "delivered", "canceled", "rejected"],
+    default: "pending",
+  },
+}, { timestamps: true });
+
+export const Order = mongoose.model("Order", orderSchema);
 ```
 
-#### 5. **Promociones (Promotions)**
-```javascript
-{
-  _id: ObjectId,
-  titulo: String,
-  descripcion: String,
-  tipoDescuento: String, // 'porcentaje', 'monto_fijo', '2x1', 'envio_gratis'
-  valor: Number,
-  productosAplicables: [ObjectId], // refs a Products
-  categoriaAplicable: String,
-  codigoPromocional: String (único),
-  fechaInicio: Date,
-  fechaFin: Date,
-  activa: Boolean,
-  usosMaximos: Number,
-  usosActuales: Number,
-  restricciones: {
-    montoMinimo: Number,
-    soloNuevosClientes: Boolean,
-    limiteUsosPorCliente: Number
-  }
-}
+**Ciclo de vida del estado de orden:**
+```
+pending → paid → in_preparation → ready → delivered
+pending → canceled (si no se paga)
+paid/in_preparation → rejected (si hay problema)
 ```
 
-#### 6. **Inventario (Inventory)**
-```javascript
-{
-  _id: ObjectId,
-  productoId: ObjectId (ref: 'Products'),
-  stockActual: Number,
-  stockMinimo: Number, // alerta de reabastecimiento
-  ultimaActualizacion: Date,
-  movimientos: [{
-    tipo: String, // 'entrada', 'salida', 'ajuste'
-    cantidad: Number,
-    motivo: String,
-    fecha: Date,
-    usuarioId: ObjectId
-  }]
-}
+#### 5. **Coupons**
+```js
+const couponSchema = new mongoose.Schema({
+  code: { type: String, required: true, unique: true, uppercase: true, trim: true },
+  discountType: { type: String, enum: ["percentage", "fixed"], required: true },
+  discountValue: { type: Number, required: true },
+  isActive: { type: Boolean, default: true },
+  expiresAt: Date,                          // null = sin expiración
+  usedBy: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+}, { timestamps: true });
+
+export const Coupon = mongoose.model("Coupon", couponSchema);
 ```
 
-#### 7. **Reportes/Estadísticas (Analytics)**
-```javascript
-{
-  _id: ObjectId,
-  tipo: String, // 'ventas_diarias', 'productos_populares', 'clientes_activos'
-  fecha: Date,
-  datos: Object, // estructura flexible según el tipo de reporte
-  generadoPor: ObjectId (ref: 'Users'),
-  fechaGeneracion: Date
-}
+> `usedBy[]` garantiza que cada cupón sea de uso único por usuario (no se necesita un campo `firstOrderOnly`).
+
+#### 6. **Reviews** — solo rating numérico (sin comentario de texto)
+```js
+const reviewSchema = new mongoose.Schema({
+  product: { type: mongoose.Schema.Types.ObjectId, ref: "Product", required: true },
+  user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  rating: { type: Number, required: true, min: 1, max: 5 },
+}, { timestamps: true });
+
+export const Review = mongoose.model("Review", reviewSchema);
 ```
+
+---
+
+## 🔌 API REST — Endpoints
+
+### Rutas públicas (sin autenticación)
+| Método | Ruta | Descripción |
+|---|---|---|
+| GET | `/api/products` | Lista todos los productos activos |
+| GET | `/api/products/:id` | Detalle de un producto |
+| GET | `/api/coupons/active` | Cupones activos para carrusel del Home |
+| POST | `/api/webhooks/clerk` | Webhook Clerk (Inngest sync-user) |
+| POST | `/api/payment/webhook` | Webhook Stripe (confirmar pago) |
+
+### Rutas protegidas (requieren token Clerk)
+| Método | Ruta | Descripción |
+|---|---|---|
+| GET | `/api/cart` | Obtener carrito del usuario |
+| POST | `/api/cart` | Agregar item al carrito |
+| PUT | `/api/cart/:productId` | Actualizar cantidad |
+| DELETE | `/api/cart/:productId` | Eliminar item del carrito |
+| DELETE | `/api/cart` | Vaciar carrito |
+| GET | `/api/orders` | Historial de pedidos del usuario |
+| GET | `/api/orders/:id` | Detalle de pedido |
+| POST | `/api/payment/create-intent` | Crear PaymentIntent de Stripe |
+| POST | `/api/payment/create-transfer-order` | Crear orden de pago por transferencia |
+| POST | `/api/coupons/validate` | Validar y calcular descuento de cupón |
+| GET | `/api/users/profile` | Obtener perfil del usuario |
+| PUT | `/api/users/profile` | Actualizar datos personales |
+| PUT | `/api/users/notification-preferences` | Actualizar preferencias de notificaciones |
+| PATCH | `/api/users/deactivate` | Desactivar cuenta (isActive: false) |
+| GET | `/api/users/addresses` | Listar direcciones |
+| POST | `/api/users/addresses` | Agregar dirección |
+| PUT | `/api/users/addresses/:id` | Editar dirección |
+| DELETE | `/api/users/addresses/:id` | Eliminar dirección |
+| GET | `/api/users/wishlist` | Obtener wishlist |
+| POST | `/api/users/wishlist/:productId` | Agregar a wishlist |
+| DELETE | `/api/users/wishlist/:productId` | Eliminar de wishlist |
+| GET | `/api/reviews/:productId` | Reseñas de un producto |
+| POST | `/api/reviews` | Crear reseña (requiere pedido entregado) |
+
+### Rutas de Admin (requieren token Clerk + role === 'admin')
+| Método | Ruta | Descripción |
+|---|---|---|
+| GET | `/api/admin/dashboard` | Estadísticas del dashboard |
+| GET | `/api/admin/orders` | Listar todos los pedidos |
+| PATCH | `/api/admin/orders/:id/status` | Cambiar estado de pedido |
+| GET | `/api/admin/customers` | Listar clientes |
+| PATCH | `/api/admin/customers/:id/status` | Activar/desactivar cliente |
+| POST | `/api/products` | Crear producto (con imágenes Cloudinary) |
+| PUT | `/api/products/:id` | Editar producto |
+| DELETE | `/api/products/:id` | Eliminar producto |
+| GET | `/api/coupons` | Listar todos los cupones |
+| POST | `/api/coupons` | Crear cupón |
+| PUT | `/api/coupons/:id` | Editar cupón |
+| DELETE | `/api/coupons/:id` | Eliminar cupón |
 
 ---
 
 ## 🔑 Funcionalidades Principales
 
-### Sistema para Clientes
+### Sistema para Clientes (Web + Mobile)
 
 #### Catálogo de Productos
-- ✅ Visualización de productos con imágenes
+- ✅ Visualización de productos con imágenes (Cloudinary)
 - ✅ Precios y disponibilidad en tiempo real
-- ✅ Filtrado por categoría
+- ✅ Filtrado por categoría (5 categorías reales)
 - ✅ Búsqueda de productos
-- ✅ Vista detallada de producto
+- ✅ Vista detallada de producto con reseñas
 
 #### Carrito de Compras
 - ✅ Agregar/eliminar productos
 - ✅ Modificar cantidades
 - ✅ Calcular subtotales y total
-- ✅ Aplicar promociones y descuentos
-- ✅ Persistencia del carrito
+- ✅ Aplicar cupones de descuento (porcentaje o monto fijo)
+- ✅ Carrito híbrido: local (invitado) → servidor (autenticado) con transferencia automática
 
 #### Gestión de Cuenta
-- ✅ Registro de nuevos clientes
-- ✅ Inicio de sesión seguro
-- ✅ Recuperación de cuenta con preguntas de seguridad
-- ✅ Actualización de perfil
-- ✅ Historial de pedidos
+- ✅ Registro de nuevos clientes (Clerk)
+- ✅ Inicio de sesión seguro (email, Google — vía Clerk)
+- ✅ Recuperación de contraseña vía Clerk
+- ✅ Actualización de perfil (demografía, notificaciones)
+- ✅ Historial de pedidos y detalle de cada pedido
+- ✅ Gestión de direcciones de entrega (CRUD)
+- ✅ Lista de favoritos (wishlist)
+- ✅ Calificación de productos (1–5 estrellas) — solo para pedidos entregados
+- ✅ Desactivar cuenta
 
 #### Sistema de Pagos
-- ⏳ Pago con tarjeta mediante Stripe (en progreso — Fase 5)
-- ❌ Pago QR Nequi/Daviplata (pendiente integración backend)
-- ❌ Transferencia bancaria (pendiente integración backend)
-- ❌ Confirmación y comprobante de pago (pendiente backend)
+- ✅ Pago con tarjeta mediante Stripe (PaymentIntent + webhooks)
+- ✅ Pago por transferencia bancaria
+- ✅ Confirmación por email al cliente y al admin al crear pedido
+- ✅ Factura PDF + CSV enviada por email al confirmar pago (estado "paid")
 
-#### Promociones y Descuentos
-- ✅ Visualización de promociones activas
-- ✅ Aplicación automática de descuentos
-- ✅ Códigos promocionales
-- ✅ Ofertas por tiempo limitado
+#### Cupones y Descuentos
+- ✅ Carrusel de cupones activos en el Home (público, sin login)
+- ✅ Validación de cupón en checkout (activo, no expirado, no usado por el usuario)
+- ✅ Descuento porcentual o monto fijo
+- ✅ Uso único por usuario (controlado por `usedBy[]`)
 
-#### Sistema de Reseñas
-- ✅ Calificación de productos (1-5 estrellas)
-- ✅ Comentarios y opiniones
-- ✅ Visualización de reseñas de otros clientes
-- ✅ Promedio de calificaciones
+### Sistema para Administradores (Admin Panel)
 
-### Sistema para Administradores
+#### Dashboard
+- ✅ Métricas clave (ventas, pedidos, clientes)
+- ✅ Resumen de actividad reciente
 
-#### Gestión de Inventario
-- ✅ Alta/baja/modificación de productos
-- ✅ Control de stock
-- ✅ Alertas de inventario bajo
-- ✅ Actualización de precios
-- ✅ Gestión de imágenes
+#### Gestión de Productos
+- ✅ Crear, editar, eliminar productos
+- ✅ Subida de imágenes a Cloudinary
+- ✅ Control de stock y estado activo/inactivo
 
 #### Gestión de Pedidos
-- ✅ Visualización de pedidos en tiempo real
-- ✅ Cambio de estado de pedidos
-- ✅ Historial completo de pedidos
-- ✅ Filtrado y búsqueda
-- ✅ Notificaciones de nuevos pedidos
+- ✅ Listar todos los pedidos con filtros
+- ✅ Cambio de estado (7 estados)
+- ✅ Email automático al cliente y admin en cada cambio de estado
+- ✅ Generación de factura PDF + CSV al marcar como "paid"
 
-#### Gestión de Promociones
-- ✅ Creación de promociones
-- ✅ Configuración de descuentos
-- ✅ Activación/desactivación
-- ✅ Seguimiento de uso
-- ✅ Análisis de efectividad
+#### Gestión de Clientes
+- ✅ Listar clientes con datos completos
+- ✅ Activar / desactivar cuenta de cliente
 
-#### Gestión de Usuarios
-- ✅ Listado de clientes
-- ✅ Gestión de cuentas administrativas
-- ✅ Asignación de roles y permisos
-- ✅ Bloqueo/desbloqueo de usuarios
-- ✅ Registro de actividad
-
-#### Sistema de Reportes
-- ✅ Ventas por período (día/semana/mes)
-- ✅ Productos más vendidos
-- ✅ Análisis de reseñas
-- ✅ Estadísticas de clientes
-- ✅ Reportes de inventario
-- ✅ Gráficos visuales
-- ✅ Exportación a CSV/PDF
-
-#### Panel de Control (Dashboard)
-- ✅ Métricas clave en tiempo real
-- ✅ Gráficos de ventas
-- ✅ Alertas y notificaciones
-- ✅ Resumen de actividad
-
-### Servicios de Seguridad
-
-#### Autenticación
-- ✅ Registro y login mediante **Clerk** (gestión externa de identidad)
-- ✅ Login social (Google, Apple) desde el frontend
-- ⏳ Activar login Email/Password en Clerk dashboard (pendiente)
-- ✅ Recuperación de contraseña vía Clerk
-- ✅ Rutas protegidas con `ProtectedRoute` en el frontend
-
-#### Autorización
-- ✅ Control de acceso basado en roles (Clerk + backend)
-- ✅ Validación de permisos en middleware del backend
-- ✅ Rutas protegidas (frontend y backend)
-- ✅ Token Clerk enviado en cabecera `Authorization` via Axios interceptor
-
-#### Protección
-- ✅ Contraseñas gestionadas por Clerk (sin almacenamiento local)
-- ✅ Validación de datos de entrada (Express Validator)
-- ✅ Prevención de inyecciones NoSQL
-- ✅ Rate limiting
-- ✅ Variables de entorno para todas las claves sensibles
+#### Gestión de Cupones
+- ✅ Crear cupones (porcentaje o monto fijo)
+- ✅ Editar cupones (código, valor, expiración)
+- ✅ Activar / desactivar cupones
+- ✅ Eliminar cupones
+- ✅ Ver qué usuarios han usado cada cupón
 
 ---
 
 ## 🔐 Seguridad
 
 ### Autenticación y Autorización
-- **JWT:** Tokens firmados con expiración configurable
-- **Roles:** Cliente, Administrador
-- **Bcrypt:** Hash de contraseñas con salt rounds
-- **Recuperación:** Sistema de preguntas de seguridad
+- **Autenticación:** Clerk gestiona todo — registro, login, OAuth (Google), sesiones y JWT
+- **Backend:** `@clerk/express` verifica el JWT de Clerk en `protectRoute` middleware
+- **Roles:** `user` | `admin` — asignado en Clerk Dashboard (metadata.role), verificado en `adminOnly` middleware
+- **Webhooks:** Clerk firma los webhooks con `CLERK_WEBHOOK_SECRET`; el backend verifica la firma antes de procesar
 
-### Validación y Sanitización
-- **Frontend:** Validación en tiempo real
-- **Backend:** Express Validator para todas las entradas
-- **Sanitización:** Limpieza de datos para prevenir XSS
-- **CORS:** Configuración restrictiva
+### Autenticación en el Frontend
+- **Interceptor Axios:** `api.js` obtiene el token de Clerk con `getToken()` y lo adjunta en `Authorization: Bearer {token}`
+- **Rutas protegidas:** `ProtectedRoute` en el frontend redirige a login si no está autenticado
+- **Cuenta inactiva:** si el backend devuelve 403 con `code: 'ACCOUNT_INACTIVE'`, el interceptor redirige a `/cuenta-inactiva`
 
 ### Protección de Datos
-- **Variables de entorno:** Configuración sensible en .env
-- **Conexión DB:** Credenciales encriptadas
-- **HTTPS:** Comunicación segura en producción
-- **Rate Limiting:** Protección contra ataques de fuerza bruta
+- **Variables de entorno:** todas las claves sensibles en `.env` (no subir a git)
+- **CORS:** `allowedOrigins: ['http://localhost:5173', 'http://localhost:5174']`
+- **Stripe:** secretos de webhook verificados con `stripe.webhooks.constructEvent()`
+- **HTTPS:** Comunicación segura en producción; ngrok provee HTTPS en desarrollo
 
 ---
 
 ## 🚀 Decisiones Técnicas Importantes
 
 ### ¿Por qué MongoDB?
-- Flexibilidad para esquemas que evolucionan (productos, promociones)
-- Excelente rendimiento con documentos anidados (pedidos con items, reseñas)
+- Flexibilidad para esquemas que evolucionan
+- Excelente rendimiento con documentos anidados (pedidos con items, cupones con usedBy)
 - Escalabilidad horizontal para crecimiento futuro
 - MongoDB Atlas ofrece hosting gratuito para comenzar
 - Integración natural con Node.js y Mongoose
-- Permite consultas complejas y agregaciones
 
-### ¿Por qué Node.js/Express?
-- JavaScript en frontend y backend (mismo lenguaje)
-- Excelente rendimiento para aplicaciones I/O intensivas
-- Ecosistema npm robusto
-- Express es minimalista y flexible
-- Fácil creación de APIs REST
-- Gran comunidad y documentación
+### ¿Por qué Clerk en lugar de JWT propio?
+- Elimina la necesidad de almacenar contraseñas (no hay bcrypt en el proyecto)
+- Ofrece OAuth (Google) sin configuración adicional
+- Webhooks para sincronizar usuarios al backend con Inngest
+- Dashboard para gestionar usuarios y roles
 
-### ¿Por qué React para Mobile?
-- Componentes reutilizables entre web y móvil
-- React Native permite desarrollo multiplataforma
-- Gran ecosistema de librerías
-- Hot reload para desarrollo rápido
-- Performance nativo en dispositivos móviles
+### ¿Por qué React + Vite para el Web?
+- Ecosistema maduro, gran comunidad
+- Vite es significativamente más rápido que CRA
+- Tailwind + DaisyUI agiliza el diseño sin CSS custom extenso
 
-### ¿Por qué Metodología Scrum?
-- Entregas incrementales funcionales
-- Retroalimentación continua del cliente
-- Adaptabilidad a cambios de requisitos
-- Transparencia en el progreso
-- Equipo de desarrollo está en formación SENA (contexto académico)
+### ¿Por qué Expo para Mobile?
+- Desarrollo multiplataforma (iOS + Android) con un solo codebase
+- Expo Router simplifica la navegación con file-based routing
+- Compatible con Clerk Expo para autenticación consistente con el web
+
+### ¿Por qué Inngest?
+- Gestión de background jobs sin infraestructura adicional
+- Retry automático si el webhook de Clerk falla
+- Dashboard visual para monitorear ejecuciones
+
+### ¿Por qué Nodemailer + Gmail?
+- Bajo costo (cuenta de Google con contraseña de aplicación)
+- Suficiente para el volumen de un negocio pequeño
+- Fácil configuración con Gmail App Password
 
 ### Consideraciones de Negocio
 - El sistema debe ser intuitivo para clientes de todas las edades
-- La identidad visual debe reflejar la tradición de Don Palito Junior
-- Necesidad de trabajar con conexión intermitente (considerar offline mode futuro)
+- La identidad visual refleja la tradición de Don Palito Junior (colores cálidos, tipografía familiar)
+- Integración con métodos de pago locales (transferencia bancaria)
 - Facilidad de uso para propietarios con conocimientos técnicos limitados
-- Escalabilidad para agregar múltiples sucursales en el futuro
-- Integración con métodos de pago locales (QR, transferencias)
 
 ---
 
 ## 📊 Estado Actual del Proyecto
-> Última revisión: 23 de febrero de 2026
+> Última revisión: 1 de marzo de 2026 — v4.0
 
 ### ✅ Completado — Frontend Web (React + Vite)
-- [x] Entorno configurado: Vite 5 + Tailwind CSS 3.4 + DaisyUI 4.12
-- [x] Autenticación Clerk integrada (`ClerkProvider`, `useAuth`, interceptor Axios)
-- [x] React Query configurado con token Clerk
-- [x] Todas las páginas UI implementadas:
-  - Home, Catálogo, Detalle de Producto
-  - Carrito, Checkout (UI stepper 3 pasos)
-  - Login, Registro, Recuperar Contraseña
-  - Perfil, Mis Pedidos, Detalle Pedido, Wishlist
-  - 404, Contacto, Sobre Nosotros, Términos, Privacidad, Cookies
-- [x] CartContext dual: local (invitado) → servidor (autenticado) con transferencia automática
-- [x] Hooks: `useProducts`, `useProduct`, `useServerCart`
-- [x] Estructura dual Mock/Real para productos mientras backend esté listo
 
-### ⏳ En Progreso — Frontend Web
-- [ ] Fase 5: Integración Checkout real (Stripe + órdenes backend + WhatsApp)
+Todas las fases de integración completadas:
 
-### ❌ Pendiente — Frontend Web
-- [ ] Fase 6: Direcciones y Wishlist conectadas al backend real
-- [ ] Fase 7: Reseñas de productos con backend
-- [ ] Fase 8: Redirect al panel admin (app externa)
+- **Fase 0** — React Query configurado con `QueryClientProvider`
+- **Fase 1** — `api.js` con interceptor Clerk (token en headers) + manejo `ACCOUNT_INACTIVE`
+- **Fase 2** — Estructura dual Clerk/Mock para todos los hooks
+- **Fase 3** — `useProducts`, `useProduct`, `productHelpers` — catálogo real del backend
+- **Fase 4** — Carrito híbrido servidor/local (`useServerCart`, `CartContext` actualizado)
+- **Fase 5** — Pedidos + Checkout con Stripe + Transferencia (payloads corregidos, cupones alineados)
+- **Fase 6** — Direcciones (`useAddresses`) + Wishlist (`useWishlist`, botones en ProductCard/ProductDetail)
+- **Fase 7** — Reseñas con backend (`useReviews`, `RatingModal` sin campo comentario)
+- **Fase 8** — Redirect admin (`isAdmin` vía `sessionClaims.role`, `PostLogin.jsx`)
+- **Perfil Extendido** — `useProfile` (demografía, notificaciones, desactivar cuenta)
 
-### ⏳ Pendiente — Integración con backend (para reunión de equipo)
-- [ ] Activar Email/Password en Clerk dashboard (Configure → User & Authentication)
-- [ ] Configurar ngrok + webhook Clerk → Inngest → creación de usuario en MongoDB
-- [ ] Actualizar `STRIPE_WEBHOOK_SECRET` en `.env` del backend
+Páginas completadas (20):
+- Home, Catálogo, Detalle de Producto, Carrito, Checkout, CheckoutSuccess
+- Login, Register, ForgotPassword, PostLogin
+- Profile (tabs: Info Personal, Pedidos, Direcciones, Wishlist), OrderDetail
+- About, Contact, FAQ, Terms, Privacy, Cookies
+- InactiveAccount, 404 (NotFound)
 
-### 🔄 Pendiente — Backend (compañeros de equipo)
-- [ ] Modelos Mongoose (User, Product, Order, Review, Promotion)
-- [ ] API REST completa y documentada (Swagger)
-- [ ] Panel administrativo
-- [ ] Sistema de reseñas
-- [ ] Reportes y estadísticas
-- [ ] Aplicación móvil
-- [ ] Testing completo
-- [ ] Despliegue en producción
+### ✅ Completado — Backend (Node.js + Express 5)
+- API REST completa (auth, products, cart, orders, coupons, reviews, users, admin, payment)
+- Sistema de emails (Nodemailer): bienvenida, creación de pedido, cambio de estado, factura, marketing
+- Facturas PDF + CSV (PDFKit + csv-writer) generadas al pasar orden a estado `"paid"`
+- 7 estados de orden con emails automáticos en cada transición
+- Rutas GET de productos públicas (catálogo sin login para web)
+- `GET /coupons/active` — ruta pública para carrusel del Home
+- `POST /payment/create-transfer-order` — flujo completo de pago por transferencia
+- Rutas de perfil: `GET/PUT /profile`, `PUT /notification-preferences`, `PATCH /deactivate`
+- `PATCH /admin/customers/:id/status` — activar/desactivar clientes desde el admin
+
+### ✅ Completado — Mobile (React Native + Expo)
+- App funcional en iOS y Android
+- Autenticación Clerk SSO (Google, email/password)
+- Tabs: Home/Catálogo, Carrito, Perfil
+- Detalle de producto
+- Perfil extendido: historial de pedidos, wishlist, editar perfil, gestión de direcciones, privacidad y seguridad
+- Pantallas: cuenta inactiva, sso-callback
+
+### ✅ Completado — Admin Panel (React)
+- Login con verificación de rol admin (Clerk)
+- Dashboard con estadísticas generales
+- CRUD de productos con subida de imágenes a Cloudinary
+- Gestión de clientes (listar, activar/desactivar)
+- Gestión de pedidos (listar, cambiar estado → email automático al cliente)
+- Gestión de cupones (crear, editar, activar/desactivar, eliminar)
+
+### 🔄 Pendiente — General
+- Despliegue en producción (hosting web, mobile store, backend cloud)
+- Testing formal (QA — casos de prueba por RF)
+- Documentación académica (6 documentos SENA)
+- Capacitación a propietarios
 
 ---
 
@@ -529,11 +665,11 @@ donpalitojrweb/
 - **Sprint 5-6:** Módulo de productos y catálogo
 - **Sprint 7-8:** Carrito de compras y pedidos
 - **Sprint 9-10:** Panel administrativo
-- **Sprint 11-12:** Sistema de reseñas y promociones
-- **Sprint 13-14:** Reportes y estadísticas
+- **Sprint 11-12:** Sistema de reseñas y cupones
+- **Sprint 13-14:** Sistema de emails y facturas
 - **Sprint 15-16:** Aplicación móvil
 - **Sprint 17:** Testing y correcciones
-- **Sprint 18:** Despliegue y capacitación
+- **Sprint 18:** Despliegue y documentación
 
 ---
 
@@ -547,13 +683,12 @@ donpalitojrweb/
   - Frontend Web: $2.000.000
   - Frontend Mobile: $1.500.000
   - Backend y BD: $3.000.000
-  - Testing y Documentación: $800.000
+  - Testing y Documentación: $800.000 (ajuste de suma al total)
 
 - **Infraestructura:** $1.000.000
   - Dominio web
   - Hosting cloud
-  - Servidor
-  - Herramientas
+  - Servicios externos (Clerk, Cloudinary, Stripe, MongoDB Atlas)
 
 - **Contingencia:** $500.000
   - Ajustes imprevistos
@@ -566,315 +701,193 @@ donpalitojrweb/
 
 ---
 
-## 🐛 Problemas Conocidos y Soluciones
+## 🐛 Bugs Conocidos y Resueltos
 
-### Problema 1: Migración de Tecnologías
-**Descripción:** Cambio inicial de Python/PostgreSQL a JavaScript/MongoDB  
-**Razón:** Unificación del lenguaje en todo el stack, mejor integración  
-**Estado:** ✅ Resuelto (nueva arquitectura definida)
+### Bug 1: Botón outline invisible en temas DaisyUI
+**Descripción:** `btn-outline + btn-primary` en globals.css causaba texto marrón sobre fondo marrón — invisible.
+**Solución:** Cuando `outline=true`, solo aplicar `btn-outline` sin combinar con `btn-primary` en `Button.jsx`.
+**Estado:** ✅ Resuelto
 
-### Problema 2: [Por documentar según surjan]
-**Descripción:**  
-**Solución:**  
-**Estado:**
+### Bug 2: Hamburguesa del Navbar no reabre tras scroll
+**Descripción:** El tap en mobile generaba un micro-scroll que inmediatamente cerraba el menú.
+**Solución:** `setTimeout(150ms)` antes de registrar el listener de click externo en `Navbar.jsx`.
+**Estado:** ✅ Resuelto
+
+### Bug 3: Checkout enviaba payload incorrecto al backend
+**Descripción:** `couponCode` faltaba en el payload, el endpoint de transferencia era 404, `couponData.discountPercent` no existía.
+**Solución:** Corregidos en `services/index.js` + `Checkout.jsx`: couponCode incluido, endpoint correcto (`/payment/create-transfer-order`), campo correcto `discountAmount`.
+**Estado:** ✅ Resuelto
+
+### Bug 4: CORS bloqueaba al admin en puerto 5174
+**Descripción:** Cuando `web` tomaba el puerto 5173 y `admin` el 5174, el backend rechazaba requests del admin.
+**Solución:** Agregar `http://localhost:5174` al array `allowedOrigins` en `backend/src/server.js`.
+**Estado:** ✅ Resuelto
 
 ---
 
 ## 📝 Convenciones de Código
 
-### JavaScript/Node.js
-- **Estilo:** ESLint con configuración Airbnb
+### JavaScript/Node.js (Backend)
+- **Módulos:** ES Modules (`import`/`export`) — **no** CommonJS (`require`)
+- **Estilo:** async/await, arrow functions
 - **Nomenclatura:**
   - Variables y funciones: camelCase
-  - Constantes: UPPER_SNAKE_CASE
-  - Clases y componentes: PascalCase
-- **Idioma:** Nombres en español para entidades de negocio
-- **Comentarios:** En español para lógica de negocio
-- **Async/Await:** Preferir sobre Promises encadenadas
+  - Constantes globales: UPPER_SNAKE_CASE
+  - Clases y modelos: PascalCase
+  - Archivos de módulo: `nombre.controller.js`, `nombre.model.js`, `nombre.routes.js`
+- **Idioma:** Variables y código en inglés; mensajes de error al usuario en español
 
-### Estructura de Controladores
-```javascript
-// controllers/productController.js
+### Estructura de Controlador (ES Modules)
+```js
+// controllers/product.controller.js
+import { Product } from "../models/product.model.js";
 
-const Product = require('../models/Product');
-
-// @desc    Obtener todos los productos
-// @route   GET /api/products
-// @access  Public
-const getProducts = async (req, res) => {
+export const getAllProducts = async (req, res) => {
   try {
-    const products = await Product.find({ disponible: true });
-    
-    res.status(200).json({
-      success: true,
-      count: products.length,
-      data: products
-    });
+    const products = await Product.find({ isActive: true });
+    return res.status(200).json({ products });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: 'Error al obtener productos'
-    });
+    console.error("Error in getAllProducts:", error);
+    return res.status(500).json({ error: "Internal server error" });
   }
 };
-
-module.exports = { getProducts };
 ```
 
-### Estructura de Modelos Mongoose
-```javascript
-// models/Product.js
+### Estructura de Modelo (ES Modules)
+```js
+// models/product.model.js
+import mongoose from "mongoose";
 
-const mongoose = require('mongoose');
-
-const ProductSchema = new mongoose.Schema({
-  nombre: {
+const productSchema = new mongoose.Schema({
+  name: { type: String, required: true, trim: true },
+  price: { type: Number, required: true, min: 0 },
+  category: {
     type: String,
-    required: [true, 'El nombre es requerido'],
-    trim: true,
-    maxlength: [100, 'El nombre no puede exceder 100 caracteres']
+    enum: ["Palitos Premium", "Cocteleros", "Dulces", "Especiales", "Nuevos"],
+    required: true,
   },
-  precio: {
-    type: Number,
-    required: [true, 'El precio es requerido'],
-    min: [0, 'El precio no puede ser negativo']
-  },
-  categoria: {
-    type: String,
-    enum: ['buñuelos', 'palitos', 'cafe', 'bebidas', 'otros'],
-    required: true
-  },
-  disponible: {
-    type: Boolean,
-    default: true
-  }
-}, {
-  timestamps: true // Agrega createdAt y updatedAt automáticamente
-});
+  isActive: { type: Boolean, default: true },
+}, { timestamps: true });
 
-module.exports = mongoose.model('Product', ProductSchema);
+export const Product = mongoose.model("Product", productSchema);
 ```
 
-### Estructura de Rutas
-```javascript
-// routes/products.routes.js
+### Estructura de Rutas (ES Modules)
+```js
+// routes/product.routes.js
+import { Router } from "express";
+import { getAllProducts, getProductById, createProduct } from "../controllers/product.controller.js";
+import { protectRoute } from "../middleware/protectRoute.js";
+import { adminOnly } from "../middleware/adminOnly.js";
 
-const express = require('express');
-const router = express.Router();
-const { getProducts, getProduct, createProduct } = require('../controllers/productController');
-const { protect, authorize } = require('../middleware/auth');
+const router = Router();
 
-router.route('/')
-  .get(getProducts)
-  .post(protect, authorize('admin'), createProduct);
+router.get("/", getAllProducts);                           // público
+router.get("/:id", getProductById);                       // público
+router.post("/", protectRoute, adminOnly, createProduct); // solo admin
 
-router.route('/:id')
-  .get(getProduct);
-
-module.exports = router;
+export default router;
 ```
 
-### React Components (para mobile)
-```jsx
-// components/ProductCard.jsx
-
-import React from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
-
-const ProductCard = ({ product, onPress }) => {
-  return (
-    <TouchableOpacity 
-      style={styles.card} 
-      onPress={() => onPress(product._id)}
-    >
-      <Image 
-        source={{ uri: product.imagenes[0] }} 
-        style={styles.image} 
-      />
-      <View style={styles.info}>
-        <Text style={styles.nombre}>{product.nombre}</Text>
-        <Text style={styles.precio}>${product.precio.toLocaleString()}</Text>
-        {product.promocion?.activa && (
-          <Text style={styles.descuento}>
-            {product.promocion.descuento}% OFF
-          </Text>
-        )}
-      </View>
-    </TouchableOpacity>
-  );
-};
-
-const styles = StyleSheet.create({
-  card: {
-    backgroundColor: '#fff',
-    borderRadius: 8,
-    marginBottom: 16,
-    elevation: 2,
-  },
-  image: {
-    width: '100%',
-    height: 200,
-    borderTopLeftRadius: 8,
-    borderTopRightRadius: 8,
-  },
-  info: {
-    padding: 12,
-  },
-  nombre: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 4,
-  },
-  precio: {
-    fontSize: 16,
-    color: '#2E75B6',
-    fontWeight: '600',
-  },
-  descuento: {
-    color: '#E74C3C',
-    fontWeight: 'bold',
-  },
-});
-
-export default ProductCard;
-```
-
-### Git
-- **Commits:** Mensajes descriptivos en español
+### Git — Mensajes de Commit
 - **Formato:** `tipo(alcance): descripción`
-- **Tipos:** 
-  - `feat`: Nueva funcionalidad
-  - `fix`: Corrección de bug
-  - `docs`: Cambios en documentación
-  - `style`: Formato, punto y coma, etc (no afecta código)
-  - `refactor`: Refactorización de código
-  - `test`: Añadir o modificar tests
-  - `chore`: Tareas de mantenimiento
+- **Tipos:** `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`
 
-**Ejemplos:**
 ```bash
-git commit -m "feat(productos): añadir endpoint para búsqueda"
-git commit -m "fix(auth): corregir validación de token expirado"
-git commit -m "docs(api): actualizar documentación de swagger"
+git commit -m "feat(checkout): integrar pago por transferencia bancaria"
+git commit -m "fix(navbar): corregir cierre accidental del menú mobile"
+git commit -m "docs(contexto): actualizar estado del proyecto a v4.0"
 ```
-
----
-
-## 🔄 Próximos Pasos Inmediatos
-
-### Frontend Web — Fase 5 (Jair)
-- [ ] Conectar Checkout con `orderService` real del backend
-- [ ] Integrar Stripe (PaymentIntent + StripeCheckoutForm)
-- [ ] Validar cupones mediante `couponService`
-- [ ] Notificación por WhatsApp al confirmar pedido
-
-### Integración Backend — Reunión de equipo
-- [ ] Activar Email/Password en Clerk dashboard
-- [ ] Configurar ngrok + webhook `user.created` → Inngest → MongoDB
-- [ ] Actualizar `STRIPE_WEBHOOK_SECRET` en `.env` del backend
-- [ ] Verificar endpoints: productos, carrito, órdenes, direcciones
-
-### Backend — Compañeros de equipo
-- [ ] API REST completa documentada con Swagger
-- [ ] Panel administrativo
-- [ ] Sistema de reseñas
-- [ ] Reportes y estadísticas
-
-### General
-- [ ] Testing end-to-end
-- [ ] Despliegue en producción
-- [ ] Capacitación a propietarios
 
 ---
 
 ## 📚 Referencias y Recursos
 
 ### Documentación Oficial
-- [Node.js Documentation](https://nodejs.org/docs/)
-- [Express.js Guide](https://expressjs.com/en/guide/routing.html)
-- [MongoDB Manual](https://docs.mongodb.com/manual/)
-- [Mongoose Documentation](https://mongoosejs.com/docs/)
-- [React Documentation](https://react.dev/)
-- [React Native Docs](https://reactnative.dev/docs/getting-started)
-- [JWT.io](https://jwt.io/introduction)
+- [React 18](https://react.dev/)
+- [Vite 5](https://vitejs.dev/)
+- [Tailwind CSS 3](https://tailwindcss.com/docs)
+- [DaisyUI 4](https://daisyui.com/)
+- [TanStack Query 5](https://tanstack.com/query/v5)
+- [Clerk React](https://clerk.com/docs/references/react/overview)
+- [Express 5](https://expressjs.com/)
+- [Mongoose 8](https://mongoosejs.com/docs/)
+- [MongoDB Atlas](https://docs.mongodb.com/atlas/)
+- [Stripe Node.js](https://stripe.com/docs/api)
+- [Inngest](https://www.inngest.com/docs)
+- [Nodemailer](https://nodemailer.com/)
+- [Expo SDK 52](https://docs.expo.dev/)
 
-### Tutoriales Recomendados
-- [Node.js & Express - Crash Course (Traversy Media)](https://www.youtube.com/watch?v=L72fhGm1tfE)
-- [MongoDB in 100 Seconds](https://www.youtube.com/watch?v=-bt_y4Loofg)
-- [React Native Tutorial for Beginners](https://www.youtube.com/watch?v=0-S5a0eXPoc)
+### Librerías del Proyecto
 
-### Herramientas de Desarrollo
-- **Editor:** Visual Studio Code
-- **Testing API:** Postman
-- **Diseño:** Figma
-- **Base de Datos:** MongoDB Compass
-- **Control de Versiones:** Git, GitHub
-- **Diagramas:** PlantUML, Draw.io
-
-### Librerías y Paquetes Clave
-
-#### Backend
-```json
-{
-  "express": "^4.18.2",
-  "mongoose": "^7.0.0",
-  "bcryptjs": "^2.4.3",
-  "jsonwebtoken": "^9.0.0",
-  "express-validator": "^7.0.0",
-  "dotenv": "^16.0.3",
-  "cors": "^2.8.5",
-  "helmet": "^7.0.0",
-  "express-rate-limit": "^6.7.0",
-  "swagger-jsdoc": "^6.2.8",
-  "swagger-ui-express": "^4.6.2"
-}
-```
-
-#### Frontend Web (instalado en `web/`)
+#### Frontend Web
 ```json
 {
   "react": "^18.2.0",
-  "react-dom": "^18.2.0",
   "@clerk/clerk-react": "^5.60.1",
-  "@clerk/localizations": "^3.35.4",
   "@tanstack/react-query": "^5.90.21",
   "@stripe/react-stripe-js": "^5.6.0",
   "@stripe/stripe-js": "^8.7.0",
   "react-router-dom": "^6.30.3",
   "react-hook-form": "^7.71.1",
-  "@hookform/resolvers": "^3.10.0",
   "yup": "^1.7.1",
   "axios": "^1.13.5",
   "react-icons": "^4.12.0",
   "react-toastify": "^9.1.3",
   "tailwindcss": "^3.4.19",
   "daisyui": "^4.12.24",
-  "vite": "^5.0.0"
+  "vite": "^5.0.8"
 }
 ```
 
-#### Frontend Mobile ⚠️ No iniciado — dependencias a definir
+#### Backend
+```json
+{
+  "express": "^5.2.1",
+  "mongoose": "^8.19.3",
+  "@clerk/express": "latest",
+  "inngest": "latest",
+  "cloudinary": "latest",
+  "multer": "latest",
+  "stripe": "^19.x",
+  "nodemailer": "latest",
+  "pdfkit": "^0.17.2",
+  "csv-writer": "^1.6.0",
+  "dotenv": "latest",
+  "cors": "latest",
+  "express-rate-limit": "latest"
+}
 ```
-Planificado: React Native + React Navigation + Axios
-```
+
+### Herramientas de Desarrollo
+- **Editor:** Visual Studio Code
+- **Testing API:** Postman
+- **Diseño:** Figma
+- **Base de Datos (local):** MongoDB Compass
+- **Control de Versiones:** Git, GitHub
+- **Diagramas:** PlantUML, Draw.io
+- **Pagos (dev):** Stripe CLI (`stripe listen --forward-to localhost:3000/api/payment/webhook`)
+- **Túnel HTTPS (dev):** ngrok (`ngrok http 3000`)
 
 ---
 
 ## 👥 Equipo de Desarrollo
 
 ### Desarrolladores
-- **Andrea Arcila Cano** - Desarrollo Frontend/UX
-- **Jair González Buelvas** - Desarrollo Frontend Web (React + Vite)
-- **Maicol Estiven Córdoba** - Desarrollo Mobile/Testing
+| Nombre | Rol |
+|---|---|
+| **Jair González Buelvas** (DarkerJB) | Frontend Web (React + Vite) + Backend (co-mantenedor) |
+| **Andrea Arcila Cano** | Backend (Node.js + Express) + Mobile |
+| **Maicol Estiven Córdoba** | Mobile (Expo/React Native) + Admin Panel |
 
 ### Cliente
-- **Rosiris Buelvas Pedroza** - Propietaria
-- **Luis Eduardo Muñoz** - Propietario
+- **Rosiris Buelvas Pedroza** — Propietaria
+- **Luis Eduardo Muñoz** — Propietario
 - **Email:** luchodonpalito@gmail.com
-- **Teléfono:** 314 870 2078
+- **Teléfono:** +57 314 870 2078
 
 ### Institución
-- **SENA** - Servicio Nacional de Aprendizaje
+- **SENA** — Servicio Nacional de Aprendizaje
 - **Programa:** Tecnología en Análisis y Desarrollo de Software
 
 ---
@@ -884,123 +897,77 @@ Planificado: React Native + React Navigation + Axios
 ### Sobre el Proyecto
 - Este es un proyecto formativo del SENA con cliente real
 - Se debe mantener comunicación constante con los propietarios
-- Cada sprint debe incluir demostración al cliente
-- La documentación es parte fundamental de la evaluación académica
-- El proyecto debe estar completamente funcional al finalizar
+- La documentación académica (6 documentos) es parte fundamental de la evaluación
+- El proyecto debe estar completamente funcional y desplegado al finalizar
+
+### Repositorios
+- **donpalitojrweb** (Jair): Contiene `web/` y `backend/` — es el repo de trabajo activo
+- **ecommerce_app** (Andrea/Maicol): Contiene `mobile/`, `admin/` y `backend/` — READ-ONLY para Jair (solo leer para analizar cambios del backend compartido)
 
 ### Mejores Prácticas
-- Hacer commits pequeños y frecuentes
-- Documentar código complejo
-- Realizar testing antes de cada merge
-- Mantener el README actualizado
+- Commits pequeños y frecuentes con mensajes descriptivos
+- No subir `.env` ni credenciales al repositorio
+- Variables de entorno para todas las claves sensibles
 - Backup regular de la base de datos
-- No subir credenciales al repositorio
-- Usar variables de entorno
+- Testear con Stripe CLI antes de integrar webhooks
 
 ### Comunicación con el Cliente
 - Reuniones quincenales de seguimiento
 - Demos al final de cada sprint
-- WhatsApp para dudas urgentes
-- Email para documentación oficial
 - Validación de diseños antes de implementar
 
 ---
 
 ## 🎯 Criterios de Éxito
 
-El proyecto será considerado exitoso cuando:
-
 ### Técnico
 - ✅ Sistema web completamente funcional
 - ✅ Aplicación móvil operativa
-- ✅ API REST documentada
-- ✅ Base de datos optimizada
-- ✅ Seguridad implementada
-- ✅ Testing completo realizado
+- ✅ Panel administrativo funcional
+- ✅ API REST completa
+- ✅ Sistema de pagos (Stripe + transferencia)
+- ✅ Sistema de emails y facturas
+- 🔄 Testing completo (pendiente)
+- 🔄 Despliegue en producción (pendiente)
 
 ### Funcional
 - ✅ Clientes pueden navegar y comprar productos
 - ✅ Administradores pueden gestionar todo el sistema
 - ✅ Sistema de pagos operativo
-- ✅ Reportes generándose correctamente
-- ✅ Reseñas y promociones funcionando
+- ✅ Reseñas y cupones funcionando
+- 🔄 Reportes avanzados (pendiente expansión)
 
 ### Negocio
-- ✅ Propietarios capacitados en el uso
-- ✅ Manual de usuario entregado
-- ✅ Sistema desplegado en producción
-- ✅ Clientes reales usando la plataforma
-- ✅ Incremento medible en ventas
+- 🔄 Propietarios capacitados en el uso
+- 🔄 Manual de usuario entregado
+- 🔄 Sistema desplegado en producción
+- 🔄 Documentación académica entregada
 
 ---
 
-**Última actualización:** 23 de febrero de 2026
-**Versión del documento:** 3.0 (Actualizado al estado real del proyecto — Frontend Web Fase 5)
-**Mantenido por:** Equipo de Desarrollo Don Palito Jr.
+## 🚀 Comandos de Arranque (Desarrollo Local)
 
----
-
-## 🚀 Comandos Útiles
-
-### Frontend Web
+Ver `ARRANCAR-PROYECTO.md` para instrucciones completas. Resumen:
 
 ```bash
-# Clonar repositorio y entrar al frontend
-git clone https://github.com/DarkerJB/donpalitojrweb.git
-cd donpalitojrweb/web
+# Terminal 1 — Backend (puerto 3000 + Inngest 8288)
+cd D:\1_donpalitojr\donpalitojrweb\backend
+npm run dev:all
 
-# Instalar dependencias
-npm install
-
-# Iniciar servidor de desarrollo (Vite)
-npm run dev
-# → http://localhost:5173
-
-# Build para producción
-npm run build
-
-# Previsualizar build
-npm run preview
-```
-
-### Variables de entorno necesarias (`web/.env`)
-
-```bash
-VITE_CLERK_PUBLISHABLE_KEY=pk_test_...      # Clave pública de Clerk (app del equipo)
-VITE_API_URL=http://localhost:3000           # URL del backend
-VITE_STRIPE_PUBLISHABLE_KEY=pk_test_...     # Clave pública de Stripe
-VITE_ADMIN_URL=http://localhost:5174        # URL del panel admin (app separada)
-```
-
-### Reiniciar servidor de desarrollo (Google Antigravity)
-
-```
-h + Enter   → detener
-q + Enter   → salir
-npm run dev → reiniciar
-```
-
-### Backend (repositorio de compañeros)
-
-```bash
-# Ver repositorio backend — contactar a Andrea o Maicol
-# Requiere Node.js + MongoDB Atlas configurado
-# Exponer con ngrok para webhooks de Clerk en desarrollo local
+# Terminal 2 — ngrok (túnel HTTPS para webhooks Clerk)
 ngrok http 3000
-# Luego configurar webhook en Clerk Dashboard → https://<ngrok-url>/api/webhooks/clerk
+# Copiar URL → actualizar en Clerk Dashboard → Webhooks
+
+# Terminal 3 — Frontend Web (puerto 5173)
+cd D:\1_donpalitojr\donpalitojrweb\web
+npm run dev
+
+# Terminal 4 — Stripe CLI (opcional, para probar webhooks de pago)
+stripe listen --forward-to localhost:3000/api/payment/webhook
 ```
 
 ---
 
-## 📖 Glosario
-
-- **Sprint:** Iteración de desarrollo de 1-2 semanas
-- **JWT:** JSON Web Token - sistema de autenticación
-- **CRUD:** Create, Read, Update, Delete
-- **API REST:** Interfaz de programación de aplicaciones RESTful
-- **ODM:** Object Document Mapper (Mongoose)
-- **Middleware:** Función intermedia en el flujo de peticiones
-- **Endpoint:** Ruta específica de la API
-- **Payload:** Datos enviados en una petición
-- **Seed:** Datos iniciales para la base de datos
-- **Migration:** Cambio en la estructura de la base de datos
+**Última actualización:** 1 de marzo de 2026
+**Versión del documento:** 4.0 (Sistema completo — Web + Mobile + Admin + Backend)
+**Mantenido por:** Jair González Buelvas (DarkerJB)

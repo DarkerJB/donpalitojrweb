@@ -13,7 +13,7 @@ const OrderTimeline = ({ timeline, currentStatus }) => {
       <div className="space-y-3">
         {timeline.length > 0 ? (
           timeline.map((entry, i) => (
-            <div key={i} className="flex items-center gap-3">
+            <div key={entry.status || i} className="flex items-center gap-3">
               {entry.status === 'rejected' ? (
                 <IoCloseCircle className="text-red-500" size={20} />
               ) : (

@@ -10,7 +10,7 @@ const AddressCard = ({ address, onEdit, onDelete }) => {
           <div>
             <div className="flex items-center gap-2 mb-1">
               <span className="font-semibold">{address.label}</span>
-              {address.isDefault && <Badge variant="primary" size="sm">Principal</Badge>}
+              {address.isDefault && <Badge variant="primary" size="sm">Predeterminada</Badge>}
             </div>
             <p className="text-sm text-gray-700">{address.fullName}</p>
             <p className="text-sm text-gray-500">{address.streetAddress}</p>
@@ -28,7 +28,7 @@ const AddressCard = ({ address, onEdit, onDelete }) => {
             <IoCreate size={18} />
           </button>
           <button
-            onClick={() => onDelete(address.id)}
+            onClick={() => onDelete(address._id)}
             className="text-gray-400 hover:text-red-500 transition-colors"
             title="Eliminar"
           >

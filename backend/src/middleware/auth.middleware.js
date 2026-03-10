@@ -1,9 +1,9 @@
-import { requireAuth } from "@clerk/express";
+import { requireAuth, clerkClient } from "@clerk/express";
 import { User } from "../models/user.model.js";
 import { ENV } from "../config/env.js";
 
 export const protectRoute = [
-    requireAuth(),
+    requireAuth({ signInUrl: undefined }),
     async (req, res, next) => {
         try {
             const auth = req.auth();
@@ -15,12 +15,32 @@ export const protectRoute = [
                 });
             }
 
-            const user = await User.findOne({ clerkId });
-            
+            let user = await User.findOne({ clerkId });
+
+            // Auto-sync: usuario existe en Clerk pero no está en MongoDB con ese clerkId
+            // Puede ocurrir cuando: (a) el webhook de Inngest no disparó, o (b) el usuario
+            // fue recreado en Clerk Dashboard y tiene un nuevo clerkId para el mismo email.
             if (!user) {
-                return res.status(404).json({ 
-                    message: "User not found" 
-                });
+                try {
+                    const clerkUser = await clerkClient.users.getUser(clerkId);
+                    const email = clerkUser.emailAddresses[0]?.emailAddress || '';
+                    const name = `${clerkUser.firstName || ''} ${clerkUser.lastName || ''}`.trim() || email.split('@')[0];
+                    const imageUrl = clerkUser.imageUrl || '';
+
+                    // findOneAndUpdate con upsert: si existe por email actualiza el clerkId,
+                    // si no existe lo crea — evita el duplicate key error en email
+                    user = await User.findOneAndUpdate(
+                        { email },
+                        { $set: { clerkId, imageUrl }, $setOnInsert: { name, email } },
+                        { upsert: true, new: true, setDefaultsOnInsert: true }
+                    );
+                    console.log(`Auto-sync: usuario sincronizado en MongoDB — ${email}`);
+                } catch (syncError) {
+                    console.error("Error auto-sincronizando usuario desde Clerk:", syncError.message);
+                    return res.status(404).json({
+                        message: "User not found"
+                    });
+                }
             }
 
             req.user = user;

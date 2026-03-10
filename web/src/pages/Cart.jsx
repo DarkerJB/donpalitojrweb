@@ -155,7 +155,7 @@ const Cart = () => {
                 Iniciar sesión
               </Button>
             </Link>
-            <Link to="/registro" state={{ from: { pathname: '/checkout' } }}>
+            <Link to="/login" state={{ from: { pathname: '/checkout' } }}>
               <Button variant="ghost" fullWidth onClick={() => setShowLoginModal(false)}>
                 Crear cuenta gratis
               </Button>
