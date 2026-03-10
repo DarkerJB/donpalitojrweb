@@ -23,6 +23,7 @@ export const ENV = {
     COMPANY_CITY: process.env.COMPANY_CITY,
     COMPANY_PHONE: process.env.COMPANY_PHONE,
     CLIENT_URL: process.env.CLIENT_URL,
+    ADMIN_URL:  process.env.ADMIN_URL,
     STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
     STRIPE_PUBLISHABLE_KEY: process.env.STRIPE_PUBLISHABLE_KEY,
     STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,

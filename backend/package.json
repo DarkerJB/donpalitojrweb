@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon src/server.js",
+    "start": "node src/server.js",
     "inngest": "npx inngest-cli@latest dev -u http://localhost:3000/api/inngest",
     "dev:all": "concurrently \"npm run dev\" \"npm run inngest\"",
     "seed:products": "node src/seeds/index.js"
