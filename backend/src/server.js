@@ -90,14 +90,6 @@ app.use("/api/inngest", serve({client:inngest, functions}));
 
 app.use(clerkMiddleware());
 
-app.get("/", (req, res) => {
-  res.json({ 
-    message: "API funcionando correctamente",
-    status: "ok",
-    endpoints: ["/api/health", "/api/products", "/api/cart"]
-  });
-});
-
 app.use("/api/admin", adminRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/orders", orderRoutes);
@@ -110,17 +102,27 @@ app.get("/api/health", (req, res) => {
     res.status(200).json({ message: "Success" });
 });
 
-// Make app ready for deployment
-if (ENV.NODE_ENV === "production") {
-  app.use("/admin", express.static(path.join(__dirname, "../admin/dist")));
-  app.get("/admin/{*any}", (req, res) => {
-      res.sendFile(path.join(__dirname, "../admin", "dist", "index.html"));
-  });
+if (ENV.NODE_ENV !== "production") {
+    app.get("/", (req, res) => {
+        res.json({ 
+            message: "API funcionando correctamente",
+            status: "ok",
+            endpoints: ["/api/health", "/api/products", "/api/cart"]
+        });
+    });
+}
 
-  app.use(express.static(path.join(__dirname, "../web/dist")));
-  app.get("/{*any}", (req, res) => {
-      res.sendFile(path.join(__dirname, "../web", "dist", "index.html"));
-  });
+if (ENV.NODE_ENV === "production") {
+    app.use("/admin", express.static(path.join(__dirname, "../admin/dist")));
+    app.get("/admin/{*any}", (req, res) => {
+        res.sendFile(path.join(__dirname, "../admin", "dist", "index.html"));
+    });
+
+    app.use(express.static(path.join(__dirname, "../web/dist")));
+    app.get("/{*any}", (req, res) => {
+        if (req.path.startsWith("/api")) return next();
+        res.sendFile(path.join(__dirname, "../web", "dist", "index.html"));
+    });
 }
 
 const getNetworkIPs = () => {
