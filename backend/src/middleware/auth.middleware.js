@@ -26,17 +26,24 @@ export const protectRoute = [
                     const email = clerkUser.emailAddresses[0]?.emailAddress || '';
                     const name = `${clerkUser.firstName || ''} ${clerkUser.lastName || ''}`.trim() || email.split('@')[0];
                     const imageUrl = clerkUser.imageUrl || '';
+                    const role = clerkUser.publicMetadata?.role || 'user';
 
                     // findOneAndUpdate con upsert: si existe por email actualiza el clerkId,
                     // si no existe lo crea — evita el duplicate key error en email
                     user = await User.findOneAndUpdate(
                         { email },
-                        { $set: { clerkId, imageUrl }, $setOnInsert: { name, email } },
-                        { upsert: true, new: true, setDefaultsOnInsert: true }
-                    );
-                    console.log(`Auto-sync: usuario sincronizado en MongoDB — ${email}`);
-                } catch (syncError) {
-                    console.error("Error auto-sincronizando usuario desde Clerk:", syncError.message);
+                        { $set: { 
+                            clerkId, 
+                            imageUrl, 
+                            role: clerkUser.publicMetadata?.role || "user" 
+                        }, 
+                        $setOnInsert: { name, email } 
+                    },
+                    { upsert: true, new: true, setDefaultsOnInsert: true }
+                );
+                console.log(`Auto-sync: usuario sincronizado en MongoDB — ${email}`);
+            } catch (syncError) {
+                console.error("Error auto-sincronizando usuario desde Clerk:", syncError.message);
                     return res.status(404).json({
                         message: "User not found"
                     });
@@ -59,35 +66,27 @@ export const protectRoute = [
 export const adminOnly = async (req, res, next) => {
     try {
         if (!req.user || !req.clerkAuth) {
-            return res.status(401).json({ 
-                message: "Unauthorized - authentication required" 
+            return res.status(401).json({
+                message: "Unauthorized - authentication required"
             });
         }
 
-        const userRole = req.clerkAuth.sessionClaims?.role;
-        const userEmail = req.user.email;
-
-        const dbRole = req.user.role;
-
-        const isAdmin = userRole === 'admin' || dbRole === 'admin';
-        
-        const isAdminByEmail = ENV.NODE_ENV === 'development' &&
-                                ENV.ADMIN_EMAIL && 
-                                ENV.ADMIN_EMAIL.split(',')
-                                    .map(e => e.trim())
-                                    .includes(userEmail);
+        // Primario: rol en MongoDB (seteado al crear usuario via webhook/auto-sync)
+        // Secundario: sessionClaims.role del JWT (requiere JWT template en Clerk)
+        const isAdmin = req.user.role === 'admin' ||
+                        req.clerkAuth.sessionClaims?.role === 'admin';
 
         if (!isAdmin) {
-            return res.status(403).json({ 
+            return res.status(403).json({
                 message: "Forbidden - admin access only",
             });
         }
-        
+
         next();
     } catch (error) {
         console.error("Error in adminOnly middleware:", error);
-        return res.status(500).json({ 
-            message: "Internal server error" 
+        return res.status(500).json({
+            message: "Internal server error"
         });
     }
 };

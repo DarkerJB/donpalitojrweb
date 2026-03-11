@@ -15,7 +15,7 @@ const syncUser = inngest.createFunction(
         console.log("sync user function executed");
 
         await connectDB();
-        const {id, email_addresses, first_name, last_name, image_url}=event.data;
+        const {id, email_addresses, first_name, last_name, image_url, public_metadata}=event.data;
         const newUser = {
             clerkId:id,
             email:email_addresses[0]?.email_address,
