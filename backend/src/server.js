@@ -113,15 +113,20 @@ if (ENV.NODE_ENV !== "production") {
 }
 
 if (ENV.NODE_ENV === "production") {
+    // Admin
     app.use("/admin", express.static(path.join(__dirname, "../admin/dist")));
-    app.get("/admin/{*any}", (req, res) => {
-        res.sendFile(path.join(__dirname, "../admin", "dist", "index.html"));
+    app.get("/admin", (req, res) => {
+        res.sendFile(path.join(__dirname, "../admin/dist/index.html"));
+    });
+    app.get("/admin/*", (req, res) => {
+        res.sendFile(path.join(__dirname, "../admin/dist/index.html"));
     });
 
+    // Web
     app.use(express.static(path.join(__dirname, "../web/dist")));
-    app.get("/{*any}", (req, res) => {
-        if (req.path.startsWith("/api")) return next();
-        res.sendFile(path.join(__dirname, "../web", "dist", "index.html"));
+    app.get("*", (req, res, next) => {
+        if (req.path.startsWith("/api") || req.path.startsWith("/admin")) return next();
+        res.sendFile(path.join(__dirname, "../web/dist/index.html"));
     });
 }
 
