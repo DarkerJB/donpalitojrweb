@@ -210,7 +210,7 @@ const Home = () => {
           <div className="mx-auto max-w-4xl overflow-hidden rounded-lg border-2 border-ui-border shadow-lg">
             <iframe
               title="Ubicación Don Palito Jr"
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15864.5!2d-75.6167!3d6.1517!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e4682e3d5e6b5c7%3A0x5b7a7d2c5c5b5b5b!2sSabaneta%2C%20Antioquia!5e0!3m2!1ses!2sco!4v1700000000000"
+              src="https://maps.google.com/maps?q=6.150298469999058,-75.6222687987544&z=17&output=embed"
               width="100%"
               height="350"
               style={{ border: 0 }}

@@ -1,28 +1,12 @@
-import nodemailer from "nodemailer";
+// services/email.service.js
+import { Resend } from "resend";
 import { ENV } from "../config/env.js";
 
-const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 587,
-    secure: false,
-    auth: {
-        user: ENV.ADMIN_EMAIL,
-        pass: ENV.EMAIL_PASSWORD,
-    },
-    tls: {
-        rejectUnauthorized: false
-    }
-});
-
-transporter.verify((error) => {
-    if (error) {
-        console.error("Error conectando al servidor de email:", error);
-    } else {
-        console.log("Servidor de email listo");
-    }
-});
+const resend = new Resend(ENV.RESEND_API_KEY);
 
 const SHIPPING_COST = 10000;
+
+// ─── Helpers de plantilla ────────────────────────────────────────────────────
 
 const buildEmail = (bodyContent) => `
 <!DOCTYPE html>
@@ -36,28 +20,24 @@ const buildEmail = (bodyContent) => `
         <tr>
             <td align="center">
                 <table width="600" cellpadding="0" cellspacing="0" style="background-color:#ffffff;border-radius:6px;overflow:hidden;border:1px solid #e8e8e8;">
-
                     <tr>
                         <td style="padding:20px 32px;border-bottom:1px solid #eeeeee;">
                             <img src="${ENV.LOGO_URL}" alt="${ENV.APP_NAME}" height="64" style="display:block;">
                         </td>
                     </tr>
-
                     <tr>
                         <td style="padding:32px;">
                             ${bodyContent}
                         </td>
                     </tr>
-
                     <tr>
                         <td style="padding:20px 32px;border-top:1px solid #eeeeee;text-align:center;background-color:#fafafa;">
                             <p style="margin:0;font-size:12px;color:#aaaaaa;line-height:1.8;">
                                 Este correo fue enviado automáticamente. Por favor no respondas a este mensaje.<br>
-                                © ${new Date().getFullYear()} ${ENV.APP_NAME || "Don Palito Jr"}. Todos los derechos reservados.
+                                © ${new Date().getFullYear()} ${ENV.APP_NAME}. Todos los derechos reservados.
                             </p>
                         </td>
                     </tr>
-
                 </table>
             </td>
         </tr>
@@ -77,7 +57,6 @@ const buildEmailWithOrderRef = (orderId, bodyContent) => `
         <tr>
             <td align="center">
                 <table width="600" cellpadding="0" cellspacing="0" style="background-color:#ffffff;border-radius:6px;overflow:hidden;border:1px solid #e8e8e8;">
-
                     <tr>
                         <td style="padding:20px 32px;border-bottom:1px solid #eeeeee;">
                             <table width="100%" cellpadding="0" cellspacing="0">
@@ -92,22 +71,19 @@ const buildEmailWithOrderRef = (orderId, bodyContent) => `
                             </table>
                         </td>
                     </tr>
-
                     <tr>
                         <td style="padding:32px;">
                             ${bodyContent}
                         </td>
                     </tr>
-
                     <tr>
                         <td style="padding:20px 32px;border-top:1px solid #eeeeee;text-align:center;background-color:#fafafa;">
                             <p style="margin:0;font-size:12px;color:#aaaaaa;line-height:1.8;">
                                 Este correo fue enviado automáticamente. Por favor no respondas a este mensaje.<br>
-                                © ${new Date().getFullYear()} ${ENV.APP_NAME || "Don Palito Jr"}. Todos los derechos reservados.
+                                © ${new Date().getFullYear()} ${ENV.APP_NAME}. Todos los derechos reservados.
                             </p>
                         </td>
                     </tr>
-
                 </table>
             </td>
         </tr>
@@ -188,33 +164,50 @@ const buildFullOrderDetail = (orderData) => `
     ${sectionTitle('Resumen del pedido')}
     ${buildOrderItems(orderData.items)}
     ${buildTotals(orderData.total, orderData.discount || 0)}
-
     ${divider()}
     ${sectionTitle('Información del cliente')}
     ${buildAddressColumns(orderData.shippingAddress, orderData.billingAddress)}
-
     ${orderData.paymentMethod ? `
     ${divider()}
     <p style="margin:0 0 4px;font-size:13px;font-weight:700;color:#333333;">Pago</p>
     <p style="margin:0;font-size:13px;color:#555555;">${orderData.paymentMethod}</p>` : ''}
 `;
 
+// ─── Función base de envío ────────────────────────────────────────────────────
+
 export const sendEmail = async ({ to, subject, html, attachments = [] }) => {
     try {
-        const info = await transporter.sendMail({
-            from: `"${ENV.APP_NAME}" <${ENV.ADMIN_EMAIL}>`,
+        const payload = {
+            from: `${ENV.APP_NAME} <onboarding@resend.dev>`,
             to,
             subject,
             html,
-            ...(attachments && attachments.length > 0 && { attachments }),
-        });
-        console.log(`Email enviado a ${to}: ${info.messageId}`);
-        return { success: true, messageId: info.messageId };
+        };
+
+        // Resend soporta attachments con { filename, content, contentType }
+        if (attachments && attachments.length > 0) {
+            payload.attachments = attachments.map(att => ({
+                filename: att.filename,
+                content: att.content,
+            }));
+        }
+
+        const { data, error } = await resend.emails.send(payload);
+
+        if (error) {
+            console.error(`Error enviando email a ${to}:`, error.message);
+            return { success: false, error: error.message };
+        }
+
+        console.log(`✅ Email enviado a ${to}: ${data.id}`);
+        return { success: true, messageId: data.id };
     } catch (error) {
         console.error(`Error enviando email a ${to}:`, error.message);
         return { success: false, error: error.message };
     }
 };
+
+// ─── Emails específicos ───────────────────────────────────────────────────────
 
 export const sendWelcomeEmail = async ({ userName, userEmail }) => {
     const subject = `¡Bienvenido/a a ${ENV.APP_NAME}!`;
@@ -237,9 +230,10 @@ export const sendWelcomeEmail = async ({ userName, userEmail }) => {
         </table>
     `);
 
-    const clientEmail = sendEmail({ to: userEmail, subject, html });
-    const adminEmail = sendEmail({ to: ENV.ADMIN_EMAIL, subject: `Nuevo usuario registrado - ${ENV.APP_NAME}`, html: adminHtml });
-    return Promise.allSettled([clientEmail, adminEmail]);
+    return Promise.allSettled([
+        sendEmail({ to: userEmail, subject, html }),
+        sendEmail({ to: ENV.ADMIN_EMAIL, subject: `Nuevo usuario registrado - ${ENV.APP_NAME}`, html: adminHtml }),
+    ]);
 };
 
 export const sendOrderCreatedAdminEmail = async (orderData) => {
@@ -259,7 +253,7 @@ export const sendOrderCreatedAdminEmail = async (orderData) => {
 };
 
 export const sendOrderCreatedClientEmail = async (orderData) => {
-    if (orderData.emailNotifications === false) return { success: true, skipped: true };
+    if (!orderData.emailNotifications) return { success: true, skipped: true };
 
     const orderId = orderData.orderId.slice(-8).toUpperCase();
     const subject = `Pedido recibido #${orderId} - ${ENV.APP_NAME}`;
@@ -277,14 +271,7 @@ export const sendOrderCreatedClientEmail = async (orderData) => {
 
 export const sendOrderUpdatedAdminEmail = async (orderData) => {
     const orderId = orderData.orderId.slice(-8).toUpperCase();
-    const statusLabels = {
-        paid:           'Pagado',
-        in_preparation: 'En Preparación',
-        ready:          'Listo para Entrega',
-        delivered:      'Entregado',
-        canceled:       'Cancelado',
-        rejected:       'Rechazado',
-    };
+    const statusLabels = { paid: 'Pagado', delivered: 'Entregado' };
     const subject = `Pedido #${orderId} actualizado - ${ENV.APP_NAME}`;
 
     const html = buildEmailWithOrderRef(orderId, `
@@ -301,7 +288,7 @@ export const sendOrderUpdatedAdminEmail = async (orderData) => {
 };
 
 export const sendOrderUpdatedClientEmail = async (orderData) => {
-    if (orderData.emailNotifications === false) return { success: true, skipped: true };
+    if (!orderData.emailNotifications) return { success: true, skipped: true };
 
     const orderId = orderData.orderId.slice(-8).toUpperCase();
     const statusConfig = {
@@ -309,25 +296,9 @@ export const sendOrderUpdatedClientEmail = async (orderData) => {
             title: '¡Pedido Confirmado!',
             message: 'Tu pago ha sido procesado exitosamente. Estamos preparando tu pedido.',
         },
-        in_preparation: {
-            title: 'Pedido en Preparación',
-            message: 'Tu pedido está siendo preparado con mucho cuidado.',
-        },
-        ready: {
-            title: '¡Tu Pedido Está Listo!',
-            message: 'Tu pedido está listo y será entregado pronto.',
-        },
         delivered: {
             title: '¡Pedido Entregado!',
             message: '¡Esperamos que disfrutes tu compra! Si tienes algún inconveniente, contáctanos.',
-        },
-        canceled: {
-            title: 'Pedido Cancelado',
-            message: 'Tu pedido ha sido cancelado. Si tienes preguntas, no dudes en contactarnos.',
-        },
-        rejected: {
-            title: 'Pedido Rechazado',
-            message: 'Tu pedido ha sido rechazado. Por favor contáctanos para más información.',
         },
     };
 
@@ -360,7 +331,7 @@ export const sendMarketingSubscriptionEmail = async ({ userName, userEmail }) =>
         </ul>
         ${divider()}
         <p style="margin:0;font-size:12px;color:#aaaaaa;line-height:1.7;">
-            Si deseas cancelar tu suscripción, puedes hacerlo desde la sección
+            Si deseas cancelar tu suscripción, puedes hacerlo desde la sección 
             <strong>Privacidad &amp; Seguridad</strong> en la aplicación.
         </p>
     `);
@@ -383,7 +354,7 @@ export const sendMarketingSubscriptionEmail = async ({ userName, userEmail }) =>
 export const sendInvoiceEmails = async ({ userName, userEmail, orderId, invoiceNumber, pdfBuffer, csvContent, emailNotifications }) => {
     const orderIdShort = orderId.toString().slice(-8).toUpperCase();
 
-    const clientPromise = emailNotifications !== false ? sendEmail({
+    const clientPromise = emailNotifications ? sendEmail({
         to: userEmail,
         subject: `¡Pedido Confirmado! #${orderIdShort} - ${ENV.APP_NAME}`,
         html: buildEmailWithOrderRef(orderIdShort, `

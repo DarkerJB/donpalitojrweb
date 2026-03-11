@@ -133,7 +133,7 @@ export async function downloadInvoice(req, res) {
                 quantity: item.quantity,
                 price: item.price,
             })),
-            shipping: 0,
+            shipping: order.shippingCost || 0,
             discount: 0,
             customer: {
                 name: order.shippingAddress?.fullName || user.name,

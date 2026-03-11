@@ -8,8 +8,6 @@ const OrderSummary = ({
   baseWithoutIva,
   couponDiscount,
   appliedCoupon,
-  includeShipping,
-  onToggleShipping,
   shipping,
   iva,
   total,
@@ -41,19 +39,9 @@ const OrderSummary = ({
             <span className="font-medium">{formatCurrency(iva)}</span>
           </div>
 
-          <div className="flex items-center justify-between">
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input
-                type="checkbox"
-                className="checkbox checkbox-sm checkbox-primary"
-                checked={includeShipping}
-                onChange={onToggleShipping}
-              />
-              <span className="text-gray-600">Envío a domicilio</span>
-            </label>
-            <span className="font-medium">
-              {includeShipping ? formatCurrency(shipping) : '-'}
-            </span>
+          <div className="flex justify-between">
+            <span className="text-gray-600">Envío</span>
+            <span className="font-medium">{formatCurrency(shipping)}</span>
           </div>
 
           <div className="divider my-1"></div>

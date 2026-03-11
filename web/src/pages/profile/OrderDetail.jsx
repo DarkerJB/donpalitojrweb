@@ -46,7 +46,7 @@ const OrderDetail = () => {
   const total = order.total || order.totalPrice || 0;
   const subtotal = order.subtotal || total;
   const iva = order.iva || 0;
-  const shipping = order.shipping || 0;
+  const shipping = order.shippingCost || order.shipping || 0;
   const paymentMethod = order.paymentMethod
     || order.paymentResult?.method
     || (order.paymentResult?.id?.startsWith('pi_') ? 'stripe'

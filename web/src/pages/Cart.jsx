@@ -22,13 +22,12 @@ const Cart = () => {
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
-  const [includeShipping, setIncludeShipping] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
 
   // Cálculo de totales
   const iva = Math.round(subtotal * IVA_RATE);
   const baseWithoutIva = subtotal - iva;
-  const shipping = includeShipping ? SHIPPING_COST : 0;
+  const shipping = SHIPPING_COST;
   const total = subtotal + shipping;
 
   /**
@@ -60,7 +59,7 @@ const Cart = () => {
     });
     msg += `\nSubtotal (sin IVA): ${formatCurrency(baseWithoutIva)}`;
     msg += `\nIVA (19%): ${formatCurrency(iva)}`;
-    if (includeShipping) msg += `\nEnvío: ${formatCurrency(shipping)}`;
+    msg += `\nEnvío: ${formatCurrency(shipping)}`;
     msg += `\n*Total: ${formatCurrency(total)}*`;
     return encodeURIComponent(msg);
   };
@@ -123,8 +122,6 @@ const Cart = () => {
             baseWithoutIva={baseWithoutIva}
             couponDiscount={0}
             appliedCoupon={null}
-            includeShipping={includeShipping}
-            onToggleShipping={() => setIncludeShipping(!includeShipping)}
             shipping={shipping}
             iva={iva}
             total={total}
