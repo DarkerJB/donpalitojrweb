@@ -5,7 +5,7 @@ import { User } from "../models/user.model.js";
 import { sendOrderUpdatedAdminEmail, sendOrderUpdatedClientEmail, sendInvoiceEmails } from "../services/email.service.js";
 import { generateInvoicePDF, generateInvoiceCSV } from "../services/invoice.service.js";
 
-const VALID_STATUSES = ["pending", "paid", "in_preparation", "ready", "delivered", "canceled", "rejected"];
+const VALID_STATUSES = ["pending", "paid", "delivered"];
 
 const inferPaymentMethod = (paymentResultId = "") => {
     if (paymentResultId.startsWith("pi_"))       return "stripe";

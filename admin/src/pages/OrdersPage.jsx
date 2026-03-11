@@ -8,25 +8,15 @@ const ORDERS_FILTER_GROUPS = [
   {
     key: "status",
     options: [
-      { label: "Todos",           value: "__all__" },
-      { label: "Pendiente",       value: "pending",        activeClass: "bg-yellow-400 text-white border-yellow-400" },
-      { label: "Pagado",          value: "paid",           activeClass: "bg-blue-500 text-white border-blue-500" },
-      { label: "En Preparación",  value: "in_preparation", activeClass: "bg-orange-500 text-white border-orange-500" },
-      { label: "Listo",           value: "ready",          activeClass: "bg-teal-500 text-white border-teal-500" },
-      { label: "Entregado",       value: "delivered",      activeClass: "bg-green-500 text-white border-green-500" },
+      { label: "Todos",      value: "__all__" },
+      { label: "Pendiente",  value: "pending",   activeClass: "bg-yellow-400 text-white border-yellow-400" },
+      { label: "Pagado",     value: "paid",      activeClass: "bg-blue-500 text-white border-blue-500" },
+      { label: "Entregado",  value: "delivered", activeClass: "bg-green-500 text-white border-green-500" },
     ],
   },
 ];
 
-const STATUS_LABELS = {
-  pending: "Pendiente",
-  paid: "Pagado",
-  in_preparation: "En Preparación",
-  ready: "Listo",
-  delivered: "Entregado",
-  canceled: "Cancelado",
-  rejected: "Rechazado",
-};
+const STATUS_LABELS = { pending: "Pendiente", paid: "Pagado", delivered: "Entregado" };
 
 function OrdersPage() {
   const queryClient = useQueryClient();
@@ -49,7 +39,7 @@ function OrdersPage() {
   const { filtered, query, setQuery, activeFilters, setFilter, clearAll, activeCount } =
     useSearchFilter({
       data: orders,
-      searchFields: ["_id", "shippingAddress.fullName", "shippingAddress.city", "orderItems.0.name", "status"],
+      searchFields: ["_id", "shippingAddress.fullName", "shippingAddress.city", "orderItems.0.name", "totalPrice", "status"],
       filterGroups: ORDERS_FILTER_GROUPS,
     });
 
@@ -134,7 +124,7 @@ function OrdersPage() {
                         <td>
                           <select
                             value={order.status}
-                            onChange={(e) => updateStatusMutation.mutate({ orderId: order._id, status: e.target.value })}
+                            onChange={(e) => updateStatusMutation.mutate({orderId: order._id, status: e.target.value})}
                             className="select select-sm"
                             disabled={updateStatusMutation.isPending}
                           >

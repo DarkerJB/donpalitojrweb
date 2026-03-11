@@ -1,4 +1,4 @@
-import { IoCheckmarkCircle, IoEllipseOutline, IoCloseCircle } from 'react-icons/io5';
+import { IoCheckmarkCircle, IoEllipseOutline } from 'react-icons/io5';
 import { ORDER_STATUS_LABELS } from '../../utils/constants';
 import { formatDateTime } from '../../utils/formatters';
 
@@ -7,36 +7,6 @@ const STEPS = ['pending', 'paid', 'delivered'];
 const STEP_ORDER = { pending: 0, paid: 1, delivered: 2 };
 
 const OrderTimeline = ({ timeline, currentStatus }) => {
-  // Caso especial: rechazado
-  if (currentStatus === 'rejected') {
-    return (
-      <div className="space-y-3">
-        {timeline.length > 0 ? (
-          timeline.map((entry, i) => (
-            <div key={entry.status || i} className="flex items-center gap-3">
-              {entry.status === 'rejected' ? (
-                <IoCloseCircle className="text-red-500" size={20} />
-              ) : (
-                <IoCheckmarkCircle className="text-green-500" size={20} />
-              )}
-              <div>
-                <p className={`font-medium text-sm ${entry.status === 'rejected' ? 'text-red-600' : 'text-gray-800'}`}>
-                  {ORDER_STATUS_LABELS[entry.status] || entry.status}
-                </p>
-                <p className="text-xs text-gray-500">{formatDateTime(entry.date)}</p>
-              </div>
-            </div>
-          ))
-        ) : (
-          <div className="flex items-center gap-3">
-            <IoCloseCircle className="text-red-500" size={20} />
-            <p className="font-medium text-sm text-red-600">Rechazado</p>
-          </div>
-        )}
-      </div>
-    );
-  }
-
   // Si el backend no retorna timeline, derivamos los pasos completados del currentStatus
   const currentStepIndex = STEP_ORDER[currentStatus] ?? -1;
   const completedStatuses =
