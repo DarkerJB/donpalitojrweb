@@ -58,9 +58,7 @@ export const protectRoute = [
 
 export const adminOnly = async (req, res, next) => {
     try {
-        console.log("SESSION CLAIMS:", JSON.stringify(req.clerkAuth.sessionClaims));
         if (!req.user || !req.clerkAuth) {
-            console.error("adminOnly: protectRoute no se ejecutó primero");
             return res.status(401).json({ 
                 message: "Unauthorized - authentication required" 
             });
@@ -69,15 +67,9 @@ export const adminOnly = async (req, res, next) => {
         const userRole = req.clerkAuth.sessionClaims?.role;
         const userEmail = req.user.email;
 
-        if (ENV.NODE_ENV === 'development') {
-            console.log(`Admin check:`, {
-                email: userEmail,
-                role: userRole || 'sin role',
-                clerkId: req.user.clerkId
-            });
-        }
+        const dbRole = req.user.role;
 
-        const isAdmin = userRole === 'admin';
+        const isAdmin = userRole === 'admin' || dbRole === 'admin';
         
         const isAdminByEmail = ENV.NODE_ENV === 'development' &&
                                 ENV.ADMIN_EMAIL && 
@@ -85,24 +77,12 @@ export const adminOnly = async (req, res, next) => {
                                     .map(e => e.trim())
                                     .includes(userEmail);
 
-        if (!isAdmin && !isAdminByEmail) {
-            if (ENV.NODE_ENV === 'development') {
-                console.log(`Acceso denegado:`, {
-                    email: userEmail,
-                    role: userRole || 'sin rol'
-                });
-            }        
+        if (!isAdmin) {
             return res.status(403).json({ 
                 message: "Forbidden - admin access only",
-                details: ENV.NODE_ENV === 'development' 
-                    ? `Rol actual: ${userRole || 'ninguno'}` 
-                    : undefined
             });
         }
-
-        if (ENV.NODE_ENV === 'development') {
-            console.log(`Admin autorizado: ${userEmail} (${isAdmin ? 'por rol' : 'por email'})`);
-        }
+        
         next();
     } catch (error) {
         console.error("Error in adminOnly middleware:", error);

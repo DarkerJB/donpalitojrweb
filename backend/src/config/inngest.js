@@ -23,6 +23,7 @@ const syncUser = inngest.createFunction(
             imageUrl:image_url,
             address:[],
             wishlist:[],
+            role: public_metadata?.role || "user"
         };
         await User.create(newUser);
         console.log("User created in DB");
