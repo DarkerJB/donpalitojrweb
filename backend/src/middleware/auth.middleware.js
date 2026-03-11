@@ -58,6 +58,7 @@ export const protectRoute = [
 
 export const adminOnly = async (req, res, next) => {
     try {
+        console.log("SESSION CLAIMS:", JSON.stringify(req.clerkAuth.sessionClaims));
         if (!req.user || !req.clerkAuth) {
             console.error("adminOnly: protectRoute no se ejecutó primero");
             return res.status(401).json({ 
