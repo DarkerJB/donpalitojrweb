@@ -26,7 +26,6 @@ export const protectRoute = [
                     const email = clerkUser.emailAddresses[0]?.emailAddress || '';
                     const name = `${clerkUser.firstName || ''} ${clerkUser.lastName || ''}`.trim() || email.split('@')[0];
                     const imageUrl = clerkUser.imageUrl || '';
-                    const role = clerkUser.publicMetadata?.role || 'user';
 
                     // findOneAndUpdate con upsert: si existe por email actualiza el clerkId,
                     // si no existe lo crea — evita el duplicate key error en email
