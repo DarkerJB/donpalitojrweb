@@ -54,7 +54,6 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.use(clerkMiddleware());
 
 app.use(
   "/api/payment",
@@ -88,6 +87,8 @@ app.post("/api/webhooks/clerk", async (req, res) => {
 });
 
 app.use("/api/inngest", serve({client:inngest, functions}));
+
+app.use(clerkMiddleware());
 
 app.use("/api/admin", adminRoutes);
 app.use("/api/users", userRoutes);

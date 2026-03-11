@@ -17,9 +17,6 @@ export const protectRoute = [
 
             let user = await User.findOne({ clerkId });
 
-            // Auto-sync: usuario existe en Clerk pero no está en MongoDB con ese clerkId
-            // Puede ocurrir cuando: (a) el webhook de Inngest no disparó, o (b) el usuario
-            // fue recreado en Clerk Dashboard y tiene un nuevo clerkId para el mismo email.
             if (!user) {
                 try {
                     const clerkUser = await clerkClient.users.getUser(clerkId);
@@ -27,8 +24,6 @@ export const protectRoute = [
                     const name = `${clerkUser.firstName || ''} ${clerkUser.lastName || ''}`.trim() || email.split('@')[0];
                     const imageUrl = clerkUser.imageUrl || '';
 
-                    // findOneAndUpdate con upsert: si existe por email actualiza el clerkId,
-                    // si no existe lo crea — evita el duplicate key error en email
                     user = await User.findOneAndUpdate(
                         { email },
                         { $set: { 
@@ -39,14 +34,24 @@ export const protectRoute = [
                         $setOnInsert: { name, email } 
                     },
                     { upsert: true, new: true, setDefaultsOnInsert: true }
-                );
-                console.log(`Auto-sync: usuario sincronizado en MongoDB — ${email}`);
-            } catch (syncError) {
-                console.error("Error auto-sincronizando usuario desde Clerk:", syncError.message);
+                    );
+                    console.log(`Auto-sync: usuario sincronizado en MongoDB — ${email}`);
+                } catch (syncError) {
+                    console.error("Error auto-sincronizando usuario desde Clerk:", syncError.message);
                     return res.status(404).json({
                         message: "User not found"
                     });
                 }
+            }
+
+            if (!user.isActive) {
+                const adminEmail = ENV.ADMIN_EMAIL;
+                return res.status(403).json({
+                    code: "ACCOUNT_INACTIVE",
+                    message: adminEmail
+                        ? `Tu cuenta ha sido desactivada. Escríbenos a ${adminEmail} para recuperarla.`
+                        : "Tu cuenta ha sido desactivada. Contacta a soporte para recuperarla.",
+                });
             }
 
             req.user = user;
@@ -65,27 +70,25 @@ export const protectRoute = [
 export const adminOnly = async (req, res, next) => {
     try {
         if (!req.user || !req.clerkAuth) {
-            return res.status(401).json({
-                message: "Unauthorized - authentication required"
+            return res.status(401).json({ 
+                message: "Unauthorized - authentication required" 
             });
         }
 
-        // Primario: rol en MongoDB (seteado al crear usuario via webhook/auto-sync)
-        // Secundario: sessionClaims.role del JWT (requiere JWT template en Clerk)
-        const isAdmin = req.user.role === 'admin' ||
+        const isAdmin = req.user.role === 'admin' || 
                         req.clerkAuth.sessionClaims?.role === 'admin';
 
         if (!isAdmin) {
-            return res.status(403).json({
-                message: "Forbidden - admin access only",
+            return res.status(403).json({ 
+                message: "Forbidden - admin access only"
             });
         }
 
         next();
     } catch (error) {
         console.error("Error in adminOnly middleware:", error);
-        return res.status(500).json({
-            message: "Internal server error"
+        return res.status(500).json({ 
+            message: "Internal server error" 
         });
     }
 };

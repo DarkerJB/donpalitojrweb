@@ -32,6 +32,9 @@ const Login = () => {
               colorInputBackground: '#F9FAFB',
             },
             elements: {
+              rootBox: { background: 'transparent', boxShadow: 'none' },
+              cardBox: { background: 'transparent', boxShadow: 'none' },
+              pageScrollBox: { background: 'transparent', padding: '0', minHeight: 'unset' },
               headerTitle: { display: 'none' },
               logoBox: { height: '120px', justifyContent: 'center', marginBottom: '4px' },
               logoImage: { height: '120px', width: 'auto', maxWidth: 'none' },
