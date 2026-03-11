@@ -76,7 +76,7 @@ app.post("/api/webhooks/clerk", async (req, res) => {
 
   try {
     await inngest.send({
-      name: `clerk.${event.type}`,
+      name: `clerk/${event.type}`,
       data: event.data,
     });
     res.status(200).json({ received: true });
