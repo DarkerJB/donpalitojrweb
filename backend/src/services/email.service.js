@@ -2,7 +2,9 @@ import nodemailer from "nodemailer";
 import { ENV } from "../config/env.js";
 
 const transporter = nodemailer.createTransport({
-    service: "gmail",
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true,
     auth: {
         user: ENV.ADMIN_EMAIL,
         pass: ENV.EMAIL_PASSWORD,
@@ -11,7 +13,7 @@ const transporter = nodemailer.createTransport({
 
 transporter.verify((error) => {
     if (error) {
-        console.error("Error conectando al servidor de email:", error.message);
+        console.error("Error conectando al servidor de email:", error);
     } else {
         console.log("Servidor de email listo");
     }

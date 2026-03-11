@@ -11,7 +11,7 @@ const stripe = new Stripe(ENV.STRIPE_SECRET_KEY);
 
 export async function createPaymentIntent(req, res) {
     try {
-        const { cartItems, shippingAddress, couponCode, includeShipping } = req.body;
+        const { cartItems, shippingAddress, couponCode } = req.body;
         const user = req.user;
 
         if (!cartItems || cartItems.length === 0) {
@@ -74,7 +74,7 @@ export async function createPaymentIntent(req, res) {
             appliedCoupon = coupon;
         }
 
-        const shipping = includeShipping ? 10000 : 0;
+        const shipping = 10000;
         const total = subtotal + shipping - discount;
 
         if (total <= 0) {
@@ -127,7 +127,6 @@ export async function createPaymentIntent(req, res) {
                 shippingAddress: JSON.stringify(shippingAddress),
                 couponCode: appliedCoupon ? appliedCoupon.code : "",
                 totalPrice: total.toString(),
-                includeShipping: includeShipping ? 'true' : 'false',
             },
         });
 
@@ -159,8 +158,8 @@ export async function handleWebhook(req, res) {
         const paymentIntent = event.data.object;
 
         try {
-            const { userId, clerkId, orderItems, shippingAddress, couponCode, totalPrice, includeShipping } = paymentIntent.metadata;
-            const shippingCost = includeShipping === 'true' ? 10000 : 0;
+            const { userId, clerkId, orderItems, shippingAddress, couponCode, totalPrice } = paymentIntent.metadata;
+            const shippingCost = 10000;
 
             const existingOrder = await Order.findOne({ "paymentResult.id": paymentIntent.id });
 
@@ -308,7 +307,7 @@ export async function handleWebhook(req, res) {
 
 export async function createTransferOrder(req, res) {
     try {
-        const { cartItems, shippingAddress, couponCode, includeShipping } = req.body;
+        const { cartItems, shippingAddress, couponCode } = req.body;
         const user = req.user;
 
         if (!cartItems?.length) {
@@ -364,7 +363,7 @@ export async function createTransferOrder(req, res) {
             appliedCoupon = coupon;
         }
 
-        const shippingCost = includeShipping ? 10000 : 0;
+        const shippingCost = 10000;
         const totalPrice = subtotal + shippingCost - discount;
 
         const order = await Order.create({

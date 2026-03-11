@@ -33,7 +33,6 @@ const Checkout = () => {
   const preselectedMethod = location.state?.paymentMethod || '';
 
   const [step, setStep] = useState(0);
-  const [includeShipping, setIncludeShipping] = useState(false);
 
   // Cupón
   const [couponCode, setCouponCode] = useState('');
@@ -75,7 +74,7 @@ const Checkout = () => {
   const discountedSubtotal = subtotal - discount;
   const iva = Math.round(discountedSubtotal * IVA_RATE / (1 + IVA_RATE));
   const baseWithoutIva = discountedSubtotal - iva;
-  const shipping = includeShipping ? SHIPPING_COST : 0;
+  const shipping = SHIPPING_COST;
   const total = discountedSubtotal + shipping;
 
   if (items.length === 0) {
@@ -152,8 +151,7 @@ const Checkout = () => {
       const data = await paymentService.createPaymentIntent(
         buildCartItems(),
         getSelectedAddress(),
-        couponData ? couponCode : undefined,
-        includeShipping
+        couponData ? couponCode : undefined
       );
       setClientSecret(data.clientSecret);
     } catch (err) {
@@ -177,8 +175,7 @@ const Checkout = () => {
       const res = await paymentService.createTransferOrder(
         buildCartItems(),
         getSelectedAddress(),
-        couponData ? couponCode : undefined,
-        includeShipping
+        couponData ? couponCode : undefined
       );
       const orderId = res?.order?._id || res?.order?.id || res?._id;
       clearCart();
@@ -228,19 +225,6 @@ const Checkout = () => {
             })}
           </div>
 
-          {/* Envío */}
-          <div className="form-control mb-4">
-            <label className="label cursor-pointer justify-start gap-3">
-              <input
-                type="checkbox"
-                className="checkbox checkbox-primary checkbox-sm"
-                checked={includeShipping}
-                onChange={(e) => setIncludeShipping(e.target.checked)}
-              />
-              <span className="label-text">Incluir envío ({formatCurrency(SHIPPING_COST)})</span>
-            </label>
-          </div>
-
           {/* Cupón */}
           <div className="flex gap-2 mb-2">
             <input
@@ -284,12 +268,10 @@ const Checkout = () => {
                 <span>-{formatCurrency(discount)}</span>
               </div>
             )}
-            {includeShipping && (
-              <div className="flex justify-between text-gray-500">
-                <span>Envío</span>
-                <span>{formatCurrency(shipping)}</span>
-              </div>
-            )}
+            <div className="flex justify-between text-gray-500">
+              <span>Envío</span>
+              <span>{formatCurrency(shipping)}</span>
+            </div>
             <div className="flex justify-between font-bold text-base border-t pt-2">
               <span>Total</span>
               <span className="text-brand-primary">{formatCurrency(total)}</span>
@@ -312,16 +294,7 @@ const Checkout = () => {
       {/* ── Step 1: Dirección ── */}
       {step === 1 && (
         <div className="bg-white rounded-xl shadow-md p-6">
-          <h2 className="text-xl font-semibold mb-4">
-            {includeShipping ? 'Dirección de envío' : 'Datos de contacto'}
-          </h2>
-
-          {!includeShipping && (
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4 text-sm text-blue-700">
-              📍 <strong>Retiro en tienda:</strong> Tu pedido estará listo para recoger en nuestra cafetería.
-              Nos contactaremos al número registrado para confirmar la hora de recogida.
-            </div>
-          )}
+          <h2 className="text-xl font-semibold mb-4">Dirección de envío</h2>
 
           {addressLoading ? (
             <div className="flex items-center gap-2 text-gray-500 py-4">

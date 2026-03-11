@@ -137,22 +137,20 @@ export const wishlistService = {
 
 // ============= PAGOS =============
 export const paymentService = {
-  createPaymentIntent: async (cartItems, shippingAddress, couponCode, includeShipping) => {
+  createPaymentIntent: async (cartItems, shippingAddress, couponCode) => {
     const response = await api.post('/payment/create-intent', {
       cartItems,
       shippingAddress,
       couponCode,
-      includeShipping,
     });
     return response.data;
   },
 
-  createTransferOrder: async (cartItems, shippingAddress, couponCode, includeShipping) => {
+  createTransferOrder: async (cartItems, shippingAddress, couponCode) => {
     const response = await api.post('/payment/create-transfer-order', {
       cartItems,
       shippingAddress,
       couponCode,
-      includeShipping,
     });
     return response.data;
   },
