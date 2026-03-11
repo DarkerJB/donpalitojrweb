@@ -23,6 +23,7 @@ const Login = () => {
         <SignIn
           routing="hash"
           afterSignInUrl="/"
+          signUpUrl="/registro"
           appearance={{
             layout: {
               logoImageUrl: logoColor,
