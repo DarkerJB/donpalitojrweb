@@ -6,9 +6,9 @@ import { serve } from "inngest/express";
 import cors from "cors";
 
 import { functions, inngest } from "./config/inngest.js";
-
 import { ENV } from "./config/env.js";
 import { connectDB } from "./config/db.js";
+import { handleWebhook } from "./controllers/payment.controller.js"; // ← importar directo
 
 import adminRoutes from "./routes/admin.routes.js";
 import userRoutes from "./routes/user.routes.js";
@@ -20,32 +20,23 @@ import paymentRoutes from "./routes/payment.routes.js"
 import couponRoutes from "./routes/coupon.routes.js";
 import "./services/email.service.js";
 
-
 const app = express();
-
 const __dirname = path.resolve();
 
 const corsOptions = {
   origin: ENV.NODE_ENV === "production" 
     ? ENV.CLIENT_URL  
     : function (origin, callback) {
-        if (!origin) {
-          return callback(null, true);
-        }
-        
+        if (!origin) return callback(null, true);
         const localPatterns = [
           /^http:\/\/localhost(:\d+)?$/,
           /^http:\/\/127\.0\.0\.1(:\d+)?$/,
-          /^http:\/\/10\.0\.2\.2(:\d+)?$/,       // Emulador Android
-          /^http:\/\/192\.168\.\d+\.\d+(:\d+)?$/, // Red local WiFi
-          /^http:\/\/172\.\d+\.\d+\.\d+(:\d+)?$/, // Docker / otras redes locales
-          /^exp:\/\//,                             // Expo Go
+          /^http:\/\/10\.0\.2\.2(:\d+)?$/,
+          /^http:\/\/192\.168\.\d+\.\d+(:\d+)?$/,
+          /^http:\/\/172\.\d+\.\d+\.\d+(:\d+)?$/,
+          /^exp:\/\//,
         ];
-        
-        if (localPatterns.some((pattern) => pattern.test(origin))) {
-          return callback(null, true);
-        }
-
+        if (localPatterns.some((pattern) => pattern.test(origin))) return callback(null, true);
         callback(new Error('Not allowed by CORS'));
       },
   credentials: true,
@@ -55,25 +46,20 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-app.use(
-  "/api/payment",
-  (req, res, next) => {
-    if (req.originalUrl === "/api/payment/webhook") {
-      express.raw({ type: "application/json" })(req, res, next);
-    } else {
-      express.json()(req, res, next);
-    }
-  },
-  paymentRoutes
+// ✅ WEBHOOK ANTES DE TODO - raw body sin tocar
+app.post(
+  "/api/payment/webhook",
+  express.raw({ type: "*/*" }),
+  handleWebhook
 );
 
+// Resto de middlewares después del webhook
 app.use(express.json());
+app.use(clerkMiddleware());
 
 app.post("/api/webhooks/clerk", async (req, res) => {
   const event = req.body;
-
   console.log("Webhook received:", event.type);
-
   try {
     await inngest.send({
       name: `clerk/${event.type}`,
@@ -86,9 +72,7 @@ app.post("/api/webhooks/clerk", async (req, res) => {
   }
 });
 
-app.use("/api/inngest", serve({client:inngest, functions}));
-
-app.use(clerkMiddleware());
+app.use("/api/inngest", serve({ client: inngest, functions }));
 
 app.use("/api/admin", adminRoutes);
 app.use("/api/users", userRoutes);
@@ -96,6 +80,7 @@ app.use("/api/orders", orderRoutes);
 app.use("/api/reviews", reviewRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/cart", cartRoutes);
+app.use("/api/payment", paymentRoutes); // ← ya sin lógica especial del webhook
 app.use("/api/coupons", couponRoutes);
 
 app.get("/api/health", (req, res) => {
@@ -104,22 +89,15 @@ app.get("/api/health", (req, res) => {
 
 if (ENV.NODE_ENV !== "production") {
     app.get("/", (req, res) => {
-        res.json({ 
-            message: "API funcionando correctamente",
-            status: "ok",
-            endpoints: ["/api/health", "/api/products", "/api/cart"]
-        });
+        res.json({ message: "API funcionando correctamente", status: "ok" });
     });
 }
 
 if (ENV.NODE_ENV === "production") {
-    // Admin
     app.use("/admin", express.static(path.join(__dirname, "../admin/dist")));
     app.get("/admin/{*any}", (req, res) => {
         res.sendFile(path.join(__dirname, "../admin/dist/index.html"));
     });
-
-    // Web
     app.use(express.static(path.join(__dirname, "../web/dist")));
     app.get("/{*any}", (req, res, next) => {
         if (req.path.startsWith("/api") || req.path.startsWith("/admin")) return next();
@@ -132,9 +110,7 @@ const getNetworkIPs = () => {
   const ips = [];
   for (const iface of Object.values(interfaces)) {
     for (const config of iface) {
-      if (config.family === "IPv4" && !config.internal) {
-        ips.push(config.address);
-      }
+      if (config.family === "IPv4" && !config.internal) ips.push(config.address);
     }
   }
   return ips;
@@ -148,9 +124,7 @@ const startServer = async () => {
       const networkIPs = getNetworkIPs();
       console.log('🚀 Server is up and running!');
       console.log(`💻 Local:        http://localhost:${PORT}`);
-      networkIPs.forEach(ip => {
-        console.log(`📱 Network:      http://${ip}:${PORT}`);
-      });
+      networkIPs.forEach(ip => console.log(`📱 Network:      http://${ip}:${PORT}`));
       console.log(`🌍 Environment:  ${ENV.NODE_ENV || 'development'}`);
     });
 };
