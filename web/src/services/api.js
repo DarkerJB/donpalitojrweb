@@ -1,99 +1,33 @@
-import axios from 'axios';
-import { toast } from 'react-toastify';
+import { useUser, useAuth as useClerkAuth } from '@clerk/clerk-react';
+import api from '../services/api';
 
-const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
-  timeout: 10000,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  withCredentials: true,
-});
+const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL;
 
-// ─── Singleton para getToken de Clerk ────────────────────────────────────────
-// Se inicializa en ClerkTokenSync.jsx, dentro del árbol de ClerkProvider
-let _getToken = null;
-export const setTokenGetter = (fn) => {
-  _getToken = fn;
-};
+export const AuthProvider = ({ children }) => children;
 
-// ─── Request interceptor — adjunta token Clerk a cada petición ───────────────
-api.interceptors.request.use(
-  async (config) => {
-    if (_getToken) {
-      try {
-        const token = await _getToken();
-        if (token) {
-          config.headers.Authorization = `Bearer ${token}`;
+export const useAuth = () => {
+  const { user, isLoaded } = useUser();
+  const { signOut, sessionClaims } = useClerkAuth();
+
+  const isAdmin =
+    sessionClaims?.role === 'admin' ||
+    user?.publicMetadata?.role === 'admin' ||
+    user?.primaryEmailAddress?.emailAddress === ADMIN_EMAIL;
+
+  return {
+    user: user
+      ? {
+          name: user.fullName || user.firstName || '',
+          email: user.primaryEmailAddress?.emailAddress || '',
+          imageUrl: user.imageUrl || '',
+          id: user.id,
+          role: isAdmin ? 'admin' : 'user',
         }
-      } catch {
-        // Usuario no autenticado — la petición continúa sin token
-      }
-    }
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
-
-// ─── Response interceptor — manejo global de errores ─────────────────────────
-api.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response) {
-      const { status, data } = error.response;
-
-      switch (status) {
-        case 401:
-          // No redirigir automáticamente — Clerk maneja la sesión
-          break;
-
-        case 403:
-          if (data?.code === 'ACCOUNT_INACTIVE') {
-            toast.error('Tu cuenta ha sido desactivada. Serás redirigido.');
-            setTimeout(() => {
-              window.location.href = '/cuenta-inactiva';
-            }, 1500);
-          } else {
-            toast.error('No tienes permisos para realizar esta acción.');
-          }
-          break;
-
-        case 404:
-          // No mostrar toast para 404 — los hooks lo manejan con fallback a mock
-          break;
-
-        case 422:
-          if (data?.error?.details) {
-            Object.values(data.error.details).forEach((msg) => {
-              toast.error(msg);
-            });
-          }
-          break;
-
-        case 429:
-          toast.error('Demasiadas solicitudes. Por favor espera un momento.');
-          break;
-
-        case 500:
-          toast.error('Error del servidor. Por favor intenta más tarde.');
-          break;
-
-        default:
-          if (status >= 500) {
-            toast.error(
-              data?.message ||
-                data?.error?.message ||
-                'Ocurrió un error. Por favor intenta nuevamente.'
-            );
-          }
-      }
-    } else if (error.request) {
-      // No mostrar toast aquí — los hooks hacen fallback a datos mock
-      console.warn('Sin conexión al servidor — usando datos locales');
-    }
-
-    return Promise.reject(error);
-  }
-);
-
-export default api;
+      : null,
+    loading: !isLoaded,
+    isAuthenticated: !!user,
+    isAdmin,
+    logout: () => signOut({ redirectUrl: '/' }),
+    updateProfile: async () => {},
+  };
+};
