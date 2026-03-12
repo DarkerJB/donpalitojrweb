@@ -1,17 +1,9 @@
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
 import { ENV } from "../config/env.js";
 
-const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-        user: ENV.ADMIN_EMAIL,
-        pass: ENV.EMAIL_PASSWORD,
-    },
-});
+const resend = new Resend(ENV.RESEND_API_KEY);
 
-transporter.verify()
-    .then(() => console.log("✅ Servidor de email listo (Gmail SMTP)"))
-    .catch(err => console.error("❌ Error conectando al servidor de email:", err));
+console.log("✅ Servidor de email listo (Resend)");
 
 const SHIPPING_COST = 10000;
 
@@ -109,26 +101,34 @@ const buildFullOrderDetail = (orderData) => `
 
 export const sendEmail = async ({ to, subject, html, attachments = [] }) => {
     try {
-        const info = await transporter.sendMail({
-            from: `${ENV.APP_NAME} <${ENV.ADMIN_EMAIL}>`,
-            to,
+        const formattedAttachments = attachments.map(att => ({
+            filename: att.filename,
+            content: att.content,
+        }));
+
+        const { data, error } = await resend.emails.send({
+            from: `${ENV.APP_NAME} <onboarding@resend.dev>`,
+            to: [to],
             subject,
             html,
-            attachments: attachments.map(a => ({
-                filename: a.filename,
-                content: a.content,
-            })),
+            attachments: formattedAttachments.length > 0 ? formattedAttachments : undefined,
         });
-        console.log(`✅ Email enviado a ${to}: ${info.messageId}`);
-        return { success: true, id: info.messageId };
+
+        if (error) {
+            console.error(`❌ Error API Resend enviando a ${to}:`, error);
+            return { success: false, error };
+        }
+
+        console.log(`✅ Email enviado vía Resend a ${to}. ID: ${data.id}`);
+        return { success: true, id: data.id };
     } catch (err) {
-        console.error(`❌ Error enviando email a ${to}:`, err.message);
+        console.error(`❌ Fallo crítico en sendEmail:`, err.message);
         return { success: false, error: err.message };
     }
 };
 
 const fireAndForget = (promise) => {
-    promise.catch(err => console.error("❌ Error en email de segundo plano:", err.message));
+    promise.catch(err => console.error("❌ Error en email de segundo plano (Resend):", err.message));
 };
 
 // --- Mantenemos todas tus funciones de negocio (se usan exactamente igual) ---
