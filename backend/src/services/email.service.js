@@ -1,15 +1,23 @@
-// services/email.service.js
-import { Resend } from "resend";
+import nodemailer from "nodemailer";
 import { ENV } from "../config/env.js";
 
-const resend = new Resend(ENV.RESEND_API_KEY);
+const transporter = nodemailer.createTransport({
+    host: "smtp-relay.brevo.com",
+    port: 587,
+    secure: false,
+    auth: {
+        user: ENV.BREVO_SMTP_USER,
+        pass: ENV.BREVO_SMTP_PASS,
+    },
+});
 
-// Verificación al iniciar
-if (!ENV.RESEND_API_KEY) {
-    console.error("❌ RESEND_API_KEY no está configurada");
-} else {
-    console.log("✅ Servidor de email listo (Resend)");
-}
+transporter.verify((error) => {
+    if (error) {
+        console.error("Error conectando al servidor de email:", error);
+    } else {
+        console.log("✅ Servidor de email listo (Brevo)");
+    }
+});
 
 const SHIPPING_COST = 10000;
 
@@ -180,43 +188,22 @@ const buildFullOrderDetail = (orderData) => `
     <p style="margin:0;font-size:13px;color:#555555;">${orderData.paymentMethod}</p>` : ''}
 `;
 
-// ─── Función base de envío ────────────────────────────────────────────────────
-
 export const sendEmail = async ({ to, subject, html, attachments = [] }) => {
     try {
-        const payload = {
-            from: `${ENV.APP_NAME} <onboarding@resend.dev>`,
+        const info = await transporter.sendMail({
+            from: `"${ENV.APP_NAME}" <${ENV.BREVO_SMTP_USER}>`,
             to,
             subject,
             html,
-        };
-
-        if (attachments && attachments.length > 0) {
-            payload.attachments = attachments.map(att => ({
-                filename: att.filename,
-                // Resend espera el contenido en base64 si es Buffer
-                content: Buffer.isBuffer(att.content)
-                    ? att.content.toString("base64")
-                    : Buffer.from(att.content).toString("base64"),
-            }));
-        }
-
-        const { data, error } = await resend.emails.send(payload);
-
-        if (error) {
-            console.error(`Error enviando email a ${to}:`, error.message);
-            return { success: false, error: error.message };
-        }
-
-        console.log(`✅ Email enviado a ${to}: ${data.id}`);
-        return { success: true, messageId: data.id };
+            ...(attachments && attachments.length > 0 && { attachments }),
+        });
+        console.log(`✅ Email enviado a ${to}: ${info.messageId}`);
+        return { success: true, messageId: info.messageId };
     } catch (error) {
         console.error(`Error enviando email a ${to}:`, error.message);
         return { success: false, error: error.message };
     }
 };
-
-// ─── Emails específicos ───────────────────────────────────────────────────────
 
 export const sendWelcomeEmail = async ({ userName, userEmail }) => {
     const subject = `¡Bienvenido/a a ${ENV.APP_NAME}!`;
@@ -261,7 +248,6 @@ export const sendOrderCreatedAdminEmail = async (orderData) => {
 };
 
 export const sendOrderCreatedClientEmail = async (orderData) => {
-    console.log("🔍 [CLIENT EMAIL] emailNotifications:", orderData.emailNotifications, "| userEmail:", orderData.userEmail);
     if (!orderData.emailNotifications) return { success: true, skipped: true };
 
     const orderId = orderData.orderId.slice(-8).toUpperCase();
@@ -297,7 +283,6 @@ export const sendOrderUpdatedAdminEmail = async (orderData) => {
 };
 
 export const sendOrderUpdatedClientEmail = async (orderData) => {
-    console.log("🔍 [CLIENT UPDATED] emailNotifications:", orderData.emailNotifications, "| userEmail:", orderData.userEmail);
     if (!orderData.emailNotifications) return { success: true, skipped: true };
 
     const orderId = orderData.orderId.slice(-8).toUpperCase();
