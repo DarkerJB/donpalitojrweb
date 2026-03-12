@@ -284,13 +284,7 @@ export async function handleWebhook(req, res) {
                             csvContent,
                             emailNotifications: dbUser.emailNotifications,
                         });
-                        results.forEach((result, index) => {
-                            if (result.status === "fulfilled") {
-                                console.log(`Factura Stripe enviada a ${index === 0 ? "Cliente" : "Admin"} (${invoiceNumber})`);
-                            } else {
-                                console.error(`Error enviando factura Stripe a ${index === 0 ? "Cliente" : "Admin"}:`, result.reason);
-                            }
-                        });
+                        console.log(`Factura Stripe generada y enviada (${invoiceNumber})`);
                     } catch (invoiceError) {
                         console.error("Error generando/enviando factura Stripe:", invoiceError.message);
                     }

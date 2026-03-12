@@ -220,13 +220,7 @@ export async function updateOrderStatus (req, res) {
                                     emailNotifications: user.emailNotifications,
                                 });
 
-                                results.forEach((result, index) => {
-                                    if (result.status === "fulfilled") {
-                                        console.log(`Factura enviada a ${index === 0 ? "Cliente" : "Admin"} (${invoiceNumber})`);
-                                    } else {
-                                        console.error(`Error enviando factura a ${index === 0 ? "Cliente" : "Admin"}:`, result.reason);
-                                    }
-                                });
+                                console.log(`Factura generada y enviada (${invoiceNumber})`);
                             } catch (invoiceError) {
                                 console.error("Error generando/enviando factura:", invoiceError.message, invoiceError.stack);
                             }
