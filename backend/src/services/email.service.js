@@ -4,9 +4,14 @@ import { ENV } from "../config/env.js";
 
 const resend = new Resend(ENV.RESEND_API_KEY);
 
-const SHIPPING_COST = 10000;
+// Verificación al iniciar
+if (!ENV.RESEND_API_KEY) {
+    console.error("❌ RESEND_API_KEY no está configurada");
+} else {
+    console.log("✅ Servidor de email listo (Resend)");
+}
 
-// ─── Helpers de plantilla ────────────────────────────────────────────────────
+const SHIPPING_COST = 10000;
 
 const buildEmail = (bodyContent) => `
 <!DOCTYPE html>
@@ -34,7 +39,7 @@ const buildEmail = (bodyContent) => `
                         <td style="padding:20px 32px;border-top:1px solid #eeeeee;text-align:center;background-color:#fafafa;">
                             <p style="margin:0;font-size:12px;color:#aaaaaa;line-height:1.8;">
                                 Este correo fue enviado automáticamente. Por favor no respondas a este mensaje.<br>
-                                © ${new Date().getFullYear()} ${ENV.APP_NAME}. Todos los derechos reservados.
+                                © ${new Date().getFullYear()} MigaTech. Todos los derechos reservados.
                             </p>
                         </td>
                     </tr>
@@ -80,7 +85,7 @@ const buildEmailWithOrderRef = (orderId, bodyContent) => `
                         <td style="padding:20px 32px;border-top:1px solid #eeeeee;text-align:center;background-color:#fafafa;">
                             <p style="margin:0;font-size:12px;color:#aaaaaa;line-height:1.8;">
                                 Este correo fue enviado automáticamente. Por favor no respondas a este mensaje.<br>
-                                © ${new Date().getFullYear()} ${ENV.APP_NAME}. Todos los derechos reservados.
+                                © ${new Date().getFullYear()} MigaTech. Todos los derechos reservados.
                             </p>
                         </td>
                     </tr>
@@ -164,9 +169,11 @@ const buildFullOrderDetail = (orderData) => `
     ${sectionTitle('Resumen del pedido')}
     ${buildOrderItems(orderData.items)}
     ${buildTotals(orderData.total, orderData.discount || 0)}
+
     ${divider()}
     ${sectionTitle('Información del cliente')}
     ${buildAddressColumns(orderData.shippingAddress, orderData.billingAddress)}
+
     ${orderData.paymentMethod ? `
     ${divider()}
     <p style="margin:0 0 4px;font-size:13px;font-weight:700;color:#333333;">Pago</p>
@@ -184,11 +191,13 @@ export const sendEmail = async ({ to, subject, html, attachments = [] }) => {
             html,
         };
 
-        // Resend soporta attachments con { filename, content, contentType }
         if (attachments && attachments.length > 0) {
             payload.attachments = attachments.map(att => ({
                 filename: att.filename,
-                content: att.content,
+                // Resend espera el contenido en base64 si es Buffer
+                content: Buffer.isBuffer(att.content)
+                    ? att.content.toString("base64")
+                    : Buffer.from(att.content).toString("base64"),
             }));
         }
 
@@ -230,10 +239,9 @@ export const sendWelcomeEmail = async ({ userName, userEmail }) => {
         </table>
     `);
 
-    return Promise.allSettled([
-        sendEmail({ to: userEmail, subject, html }),
-        sendEmail({ to: ENV.ADMIN_EMAIL, subject: `Nuevo usuario registrado - ${ENV.APP_NAME}`, html: adminHtml }),
-    ]);
+    const clientEmail = sendEmail({ to: userEmail, subject, html });
+    const adminEmail = sendEmail({ to: ENV.ADMIN_EMAIL, subject: `Nuevo usuario registrado - ${ENV.APP_NAME}`, html: adminHtml });
+    return Promise.allSettled([clientEmail, adminEmail]);
 };
 
 export const sendOrderCreatedAdminEmail = async (orderData) => {
@@ -253,6 +261,7 @@ export const sendOrderCreatedAdminEmail = async (orderData) => {
 };
 
 export const sendOrderCreatedClientEmail = async (orderData) => {
+    console.log("🔍 [CLIENT EMAIL] emailNotifications:", orderData.emailNotifications, "| userEmail:", orderData.userEmail);
     if (!orderData.emailNotifications) return { success: true, skipped: true };
 
     const orderId = orderData.orderId.slice(-8).toUpperCase();
@@ -288,6 +297,7 @@ export const sendOrderUpdatedAdminEmail = async (orderData) => {
 };
 
 export const sendOrderUpdatedClientEmail = async (orderData) => {
+    console.log("🔍 [CLIENT UPDATED] emailNotifications:", orderData.emailNotifications, "| userEmail:", orderData.userEmail);
     if (!orderData.emailNotifications) return { success: true, skipped: true };
 
     const orderId = orderData.orderId.slice(-8).toUpperCase();
