@@ -1,8 +1,17 @@
-import { Resend } from "resend";
+import nodemailer from "nodemailer";
 import { ENV } from "../config/env.js";
 
-// Inicializamos Resend en lugar de Nodemailer
-const resend = new Resend(ENV.RESEND_API_KEY);
+const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+        user: ENV.ADMIN_EMAIL,
+        pass: ENV.EMAIL_PASSWORD,
+    },
+});
+
+transporter.verify()
+    .then(() => console.log("✅ Servidor de email listo (Gmail SMTP)"))
+    .catch(err => console.error("❌ Error conectando al servidor de email:", err));
 
 const SHIPPING_COST = 10000;
 
@@ -98,39 +107,28 @@ const buildFullOrderDetail = (orderData) => `
     ${buildAddressColumns(orderData.shippingAddress, orderData.billingAddress)}
 `;
 
-// --- NUEVA LÓGICA DE ENVÍO CON RESEND (VÍA HTTP API) ---
-
 export const sendEmail = async ({ to, subject, html, attachments = [] }) => {
     try {
-        // Resend usa un formato de adjuntos ligeramente distinto (content debe ser string base64 o buffer)
-        const formattedAttachments = attachments.map(att => ({
-            filename: att.filename,
-            content: att.content
-        }));
-
-        const { data, error } = await resend.emails.send({
-            from: `${ENV.APP_NAME} <onboarding@resend.dev>`, // Cambiar a tu dominio verificado cuando lo tengas
-            to: [to],
-            subject: subject,
-            html: html,
-            attachments: formattedAttachments.length > 0 ? formattedAttachments : undefined
+        const info = await transporter.sendMail({
+            from: `${ENV.APP_NAME} <${ENV.ADMIN_EMAIL}>`,
+            to,
+            subject,
+            html,
+            attachments: attachments.map(a => ({
+                filename: a.filename,
+                content: a.content,
+            })),
         });
-
-        if (error) {
-            console.error(`❌ Error API Resend enviando a ${to}:`, error);
-            return { success: false, error };
-        }
-
-        console.log(`✅ Email enviado vía Resend a ${to}. ID: ${data.id}`);
-        return { success: true, id: data.id };
+        console.log(`✅ Email enviado a ${to}: ${info.messageId}`);
+        return { success: true, id: info.messageId };
     } catch (err) {
-        console.error(`❌ Fallo crítico en sendEmail (Resend):`, err.message);
+        console.error(`❌ Error enviando email a ${to}:`, err.message);
         return { success: false, error: err.message };
     }
 };
 
 const fireAndForget = (promise) => {
-    promise.catch(err => console.error("❌ Error en email de segundo plano (Resend):", err.message));
+    promise.catch(err => console.error("❌ Error en email de segundo plano:", err.message));
 };
 
 // --- Mantenemos todas tus funciones de negocio (se usan exactamente igual) ---
